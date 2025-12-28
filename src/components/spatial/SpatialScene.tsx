@@ -17,9 +17,12 @@ import { useGravityHover } from '@/hooks/useGravityHover';
  * - Sections exist at fixed Z positions (spatial anchors)
  * - Focus weight determines visual prominence
  * - Gravity hover provides subtle physics-based interaction
+ * - Content appears via progressive disclosure when sections are focused
  */
 export function SpatialScene() {
   const [mounted, setMounted] = useState(false);
+  // Track active project for skill-project linking
+  const [activeProjectId, setActiveProjectId] = useState<string | null>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -46,8 +49,8 @@ export function SpatialScene() {
 
   // Gravity hover: subtle camera pull toward hovered section
   const { state: gravityState, onSectionHover, updateDisplacements } = useGravityHover({
-    maxCameraOffset: 0.2,      // Subtle camera pull
-    maxSectionDisplacement: 0.15, // Nearby sections shift away slightly
+    maxCameraOffset: 0.2,
+    maxSectionDisplacement: 0.15,
     smoothing: 0.06,
     gravityRange: 20,
   });
@@ -61,6 +64,13 @@ export function SpatialScene() {
       }))
     );
   }, [updateDisplacements]);
+
+  // Clear active project when leaving projects/skills sections
+  useEffect(() => {
+    if (activeSection?.id !== 'projects' && activeSection?.id !== 'skills') {
+      setActiveProjectId(null);
+    }
+  }, [activeSection?.id]);
 
   // Section positions (aligned on Z, centered on X/Y)
   const sectionPositions = useMemo(() => {
@@ -76,6 +86,10 @@ export function SpatialScene() {
     },
     [onSectionHover]
   );
+
+  const handleProjectSelect = useCallback((projectId: string | null) => {
+    setActiveProjectId(projectId);
+  }, []);
 
   if (!mounted) return null;
 
@@ -126,7 +140,7 @@ export function SpatialScene() {
         gravityOffset={gravityState.cameraOffset}
       />
 
-      {/* Section planes */}
+      {/* Section planes with content */}
       {sectionPositions.map((section, index) => (
         <SectionPlane
           key={section.id}
@@ -138,6 +152,8 @@ export function SpatialScene() {
           onHover={handleSectionHover}
           displacement={gravityState.sectionDisplacements.get(section.id)}
           index={index}
+          activeProjectId={activeProjectId}
+          onProjectSelect={handleProjectSelect}
         />
       ))}
 

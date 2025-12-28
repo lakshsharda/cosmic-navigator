@@ -2,6 +2,14 @@ import { useRef, useState, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Html } from '@react-three/drei';
 import * as THREE from 'three';
+import {
+  AboutContent,
+  ExperienceContent,
+  ProjectsContent,
+  SkillsContent,
+  AchievementsContent,
+  ContactContent,
+} from '@/components/content';
 
 interface SectionPlaneProps {
   id: string;
@@ -12,12 +20,14 @@ interface SectionPlaneProps {
   onHover?: (id: string | null, position?: THREE.Vector3) => void;
   displacement?: THREE.Vector3;
   index: number;
+  activeProjectId?: string | null;
+  onProjectSelect?: (projectId: string | null) => void;
 }
 
 /**
- * Section anchor in 3D space
+ * Section anchor in 3D space with content container
  * Visual prominence is driven by focus weight (camera proximity)
- * No decorative animation - all changes are state-driven
+ * Content appears via progressive disclosure when focused
  */
 export function SectionPlane({
   id,
@@ -28,6 +38,8 @@ export function SectionPlane({
   onHover,
   displacement = new THREE.Vector3(0, 0, 0),
   index,
+  activeProjectId,
+  onProjectSelect,
 }: SectionPlaneProps) {
   const groupRef = useRef<THREE.Group>(null);
   const meshRef = useRef<THREE.Mesh>(null);
@@ -99,6 +111,38 @@ export function SectionPlane({
   const planeColor = isActive ? '#1e3a5f' : '#0f172a';
   const borderColor = isActive ? '#38bdf8' : '#334155';
 
+  // Render section-specific content
+  const renderContent = () => {
+    const contentProps = { focusWeight, isActive };
+    
+    switch (id) {
+      case 'about':
+        return <AboutContent {...contentProps} />;
+      case 'experience':
+        return <ExperienceContent {...contentProps} />;
+      case 'projects':
+        return (
+          <ProjectsContent 
+            {...contentProps} 
+            onProjectSelect={onProjectSelect}
+          />
+        );
+      case 'skills':
+        return (
+          <SkillsContent 
+            {...contentProps} 
+            activeProjectId={activeProjectId}
+          />
+        );
+      case 'achievements':
+        return <AchievementsContent {...contentProps} />;
+      case 'contact':
+        return <ContactContent {...contentProps} />;
+      default:
+        return null;
+    }
+  };
+
   return (
     <group ref={groupRef} position={position}>
       {/* Main plane */}
@@ -122,30 +166,46 @@ export function SectionPlane({
         <lineBasicMaterial color={borderColor} transparent opacity={0.4} />
       </lineSegments>
 
-      {/* Label - visibility driven by focus weight */}
+      {/* Section label - visibility driven by focus weight */}
       <Html
         center
-        position={[0, 0, 0.1]}
+        position={[0, 2.8, 0.1]}
         style={{ pointerEvents: 'none', userSelect: 'none' }}
         transform
         occlude={false}
         distanceFactor={10}
       >
         <div
-          className="flex flex-col items-center gap-1"
-          style={{ opacity: Math.max(0.1, focusWeight) }}
+          className="flex items-center gap-2"
+          style={{ opacity: Math.max(0.2, focusWeight * 0.8) }}
         >
-          <span className="font-mono text-xs tracking-[0.25em] text-muted-foreground">
+          <span className="font-mono text-[10px] tracking-[0.25em] text-muted-foreground/60">
             {`0${index + 1}`}
           </span>
+          <span className="w-4 h-px bg-border/30" />
           <span
-            className={`font-mono text-xl tracking-[0.15em] font-medium ${
-              isActive ? 'text-foreground' : 'text-muted-foreground'
+            className={`font-mono text-xs tracking-[0.15em] font-medium uppercase ${
+              isActive ? 'text-foreground/80' : 'text-muted-foreground/60'
             }`}
           >
-            {label.toUpperCase()}
+            {label}
           </span>
         </div>
+      </Html>
+
+      {/* Content container - appears when focused */}
+      <Html
+        center
+        position={[0, -0.2, 0.2]}
+        style={{ 
+          pointerEvents: focusWeight > 0.5 ? 'auto' : 'none',
+          userSelect: 'none',
+        }}
+        transform
+        occlude={false}
+        distanceFactor={10}
+      >
+        {renderContent()}
       </Html>
 
       {/* Corner markers (structural frame) */}
