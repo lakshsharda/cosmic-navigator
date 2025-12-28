@@ -9,55 +9,69 @@ interface CameraScrollControllerProps {
   startZ?: number;
   /** Ending Z position of camera */
   endZ?: number;
-  /** Gravity offset from hover interactions (physics-based) */
+  /** Gravity offset from hover interactions */
   gravityOffset?: THREE.Vector3;
+  /** Scroll velocity for subtle drift effects */
+  velocity?: number;
 }
 
 /**
  * Controls camera position based on scroll progress
  * Maps scroll (0-1) to camera Z position with smooth interpolation
- * 
- * STRUCTURAL: Camera Z = portfolio progression
- * No decorative drift - all motion is intentional
+ * Adds subtle X/Y drift for depth perception
  */
 export function CameraScrollController({
   scrollProgress,
-  startZ = 10,
-  endZ = -82,
+  startZ = 8,
+  endZ = -70,
   gravityOffset = new THREE.Vector3(0, 0, 0),
+  velocity = 0,
 }: CameraScrollControllerProps) {
   const { camera } = useThree();
   const targetPosition = useRef(new THREE.Vector3(0, 0, startZ));
   const currentPosition = useRef(new THREE.Vector3(0, 0, startZ));
+  const timeRef = useRef(0);
 
-  // Update target Z based on scroll progress (linear mapping)
+  // Update target position based on scroll progress
   useEffect(() => {
-    targetPosition.current.z = startZ + (endZ - startZ) * scrollProgress;
+    // Linear interpolation between start and end Z
+    const targetZ = startZ + (endZ - startZ) * scrollProgress;
+    targetPosition.current.z = targetZ;
   }, [scrollProgress, startZ, endZ]);
 
-  // Smooth camera interpolation - no idle motion
-  useFrame(() => {
-    // Target includes gravity offset from hover
+  // Smooth camera movement with subtle drift
+  useFrame((_, delta) => {
+    timeRef.current += delta;
+
+    // Calculate target with gravity offset
     const targetX = gravityOffset.x;
     const targetY = gravityOffset.y;
-    const targetZ = targetPosition.current.z;
+    const targetZ = targetPosition.current.z + gravityOffset.z;
 
-    // Fixed lerp factor for consistent, predictable movement
-    const lerpFactor = 0.08;
+    // Add subtle breathing/drift effect based on time
+    // Very subtle sine wave for organic feel
+    const driftX = Math.sin(timeRef.current * 0.3) * 0.05;
+    const driftY = Math.cos(timeRef.current * 0.2) * 0.03;
 
-    // Interpolate toward target
-    currentPosition.current.x += (targetX - currentPosition.current.x) * lerpFactor;
-    currentPosition.current.y += (targetY - currentPosition.current.y) * lerpFactor;
+    // Smooth interpolation with adaptive speed
+    // Faster when far from target, slower when close
+    const distance = currentPosition.current.distanceTo(
+      new THREE.Vector3(targetX + driftX, targetY + driftY, targetZ)
+    );
+    const lerpFactor = Math.min(0.08 + distance * 0.02, 0.15);
+
+    currentPosition.current.x += (targetX + driftX - currentPosition.current.x) * lerpFactor;
+    currentPosition.current.y += (targetY + driftY - currentPosition.current.y) * lerpFactor;
     currentPosition.current.z += (targetZ - currentPosition.current.z) * lerpFactor;
 
     // Apply to camera
     camera.position.copy(currentPosition.current);
 
-    // Camera looks ahead along Z-axis (into negative Z)
+    // Camera always looks slightly ahead (into the negative Z direction)
     camera.lookAt(
-      currentPosition.current.x * 0.5, // Slight parallax on look target
-      currentPosition.current.y * 0.5,
-      currentPosition.current.z - 15
+      currentPosition.current.x,
+      currentPosition.current.y,
+      currentPosition.current.z - 10
     );
   });
 

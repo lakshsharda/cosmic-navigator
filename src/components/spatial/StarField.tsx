@@ -1,47 +1,113 @@
-import { useMemo } from 'react';
+import { useRef, useMemo } from 'react';
+import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
 interface StarFieldProps {
   /** Number of stars */
   count?: number;
-  /** Radius of the star field */
+  /** Radius of the star field sphere */
   radius?: number;
   /** Base star size */
   size?: number;
 }
 
 /**
- * Static star field for depth perception only
- * No animation - purely structural depth cue
- * Stars exist to show camera is moving through space
+ * Minimal star field for depth perception
+ * Extremely subtle - just enough to convey infinite space
  */
 export function StarField({
-  count = 400,
-  radius = 100,
-  size = 0.3,
+  count = 600,
+  radius = 150,
+  size = 0.4,
 }: StarFieldProps) {
-  // Generate star positions once - no animation
-  const positions = useMemo(() => {
-    const pos = new Float32Array(count * 3);
+  const pointsRef = useRef<THREE.Points>(null);
+
+  // Generate star positions
+  const { positions, sizes } = useMemo(() => {
+    const positions = new Float32Array(count * 3);
+    const sizes = new Float32Array(count);
 
     for (let i = 0; i < count; i++) {
-      // Distribute stars in a cylinder around the camera path
+      // Spherical distribution biased toward the camera path
       const theta = Math.random() * Math.PI * 2;
-      const r = radius * (0.3 + Math.random() * 0.7);
+      const phi = Math.acos(2 * Math.random() - 1);
+      const r = radius * (0.4 + Math.random() * 0.6);
 
-      // X/Y: circular distribution
-      pos[i * 3] = r * Math.cos(theta);
-      pos[i * 3 + 1] = r * Math.sin(theta) * 0.6; // Flatten slightly
+      // Position stars around the camera path (along Z axis)
+      positions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+      positions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+      // Distribute along Z from +20 to -100 (along camera path)
+      positions[i * 3 + 2] = 20 - Math.random() * 120;
 
-      // Z: distribute along camera path (from start to beyond end)
-      pos[i * 3 + 2] = 30 - Math.random() * 130;
+      // Varied sizes - mostly small
+      sizes[i] = size * (0.2 + Math.random() * 0.8) * (Math.random() > 0.97 ? 1.8 : 1);
     }
 
-    return pos;
-  }, [count, radius]);
+    return { positions, sizes };
+  }, [count, radius, size]);
+
+  // Subtle parallax animation
+  useFrame((state) => {
+    if (!pointsRef.current) return;
+    
+    // Very slow rotation for subtle life
+    pointsRef.current.rotation.y = state.clock.elapsedTime * 0.003;
+    pointsRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.008) * 0.005;
+  });
 
   return (
-    <points>
+    <points ref={pointsRef}>
+      <bufferGeometry>
+        <bufferAttribute
+          attach="attributes-position"
+          args={[positions, 3]}
+        />
+        <bufferAttribute
+          attach="attributes-size"
+          args={[sizes, 1]}
+        />
+      </bufferGeometry>
+      <pointsMaterial
+        size={size}
+        sizeAttenuation
+        color="#a8c5d9"
+        transparent
+        opacity={0.5}
+        blending={THREE.AdditiveBlending}
+        depthWrite={false}
+      />
+    </points>
+  );
+}
+
+/**
+ * Ambient dust particles for extra depth
+ */
+export function DustParticles({
+  count = 100,
+}: {
+  count?: number;
+}) {
+  const pointsRef = useRef<THREE.Points>(null);
+
+  const positions = useMemo(() => {
+    const pos = new Float32Array(count * 3);
+    for (let i = 0; i < count; i++) {
+      pos[i * 3] = (Math.random() - 0.5) * 80;
+      pos[i * 3 + 1] = (Math.random() - 0.5) * 40;
+      pos[i * 3 + 2] = -Math.random() * 90;
+    }
+    return pos;
+  }, [count]);
+
+  useFrame((state) => {
+    if (!pointsRef.current) return;
+    // Gentle floating motion
+    pointsRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.1) * 0.02;
+  });
+
+  return (
+    <points ref={pointsRef}>
       <bufferGeometry>
         <bufferAttribute
           attach="attributes-position"
@@ -49,11 +115,12 @@ export function StarField({
         />
       </bufferGeometry>
       <pointsMaterial
-        size={size}
+        size={0.15}
         sizeAttenuation
-        color="#64748b"
+        color="#38bdf8"
         transparent
-        opacity={0.4}
+        opacity={0.2}
+        blending={THREE.AdditiveBlending}
         depthWrite={false}
       />
     </points>
