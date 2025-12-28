@@ -4,14 +4,19 @@ import * as THREE from 'three';
 
 import { CameraScrollController } from './CameraScrollController';
 import { SectionPlane } from './SectionPlane';
-import { StarField, DustParticles } from './StarField';
+import { StarField } from './StarField';
 import { useScrollProgress } from '@/hooks/useScrollProgress';
 import { useFocusDetection, SECTION_CONFIGS } from '@/hooks/useFocusDetection';
 import { useGravityHover } from '@/hooks/useGravityHover';
 
 /**
- * Main spatial scene component
- * Orchestrates camera, sections, and interactions
+ * Main spatial scene
+ * 
+ * STRUCTURE:
+ * - Scroll controls camera Z position (portfolio progression)
+ * - Sections exist at fixed Z positions (spatial anchors)
+ * - Focus weight determines visual prominence
+ * - Gravity hover provides subtle physics-based interaction
  */
 export function SpatialScene() {
   const [mounted, setMounted] = useState(false);
@@ -20,61 +25,57 @@ export function SpatialScene() {
     setMounted(true);
   }, []);
 
-  // Scroll-based camera progress
+  // Scroll → Camera Z mapping
   const { smoothProgress } = useScrollProgress({
     scrollDistance: 4000,
     smoothing: 0.06,
     inertiaDecay: 0.92,
   });
 
-  // Calculate current camera Z position
+  // Camera position bounds
   const startZ = 10;
   const endZ = -82;
   const cameraZ = startZ + (endZ - startZ) * smoothProgress;
 
-  // Focus detection based on camera proximity to sections
+  // Focus detection: which section is camera closest to?
   const { activeSection, sectionWeights } = useFocusDetection(
     SECTION_CONFIGS,
     cameraZ,
-    10 // Focus threshold
+    10 // Focus threshold (Z distance for full focus)
   );
 
-  // Gravity hover interactions
+  // Gravity hover: subtle camera pull toward hovered section
   const { state: gravityState, onSectionHover, updateDisplacements } = useGravityHover({
-    maxCameraOffset: 0.3,
-    maxSectionDisplacement: 0.2,
-    smoothing: 0.08,
-    gravityRange: 25,
+    maxCameraOffset: 0.2,      // Subtle camera pull
+    maxSectionDisplacement: 0.15, // Nearby sections shift away slightly
+    smoothing: 0.06,
+    gravityRange: 20,
   });
 
-  // Update section positions for gravity calculations
+  // Initialize section positions for gravity calculations
   useEffect(() => {
-    const positions = SECTION_CONFIGS.map(section => ({
-      id: section.id,
-      position: new THREE.Vector3(0, 0, section.zPosition),
-    }));
-    updateDisplacements(positions);
+    updateDisplacements(
+      SECTION_CONFIGS.map(s => ({
+        id: s.id,
+        position: new THREE.Vector3(0, 0, s.zPosition),
+      }))
+    );
   }, [updateDisplacements]);
 
-  // Section plane positions (centered, slight variations for visual interest)
+  // Section positions (aligned on Z, centered on X/Y)
   const sectionPositions = useMemo(() => {
-    return SECTION_CONFIGS.map((section, i) => ({
+    return SECTION_CONFIGS.map((section) => ({
       ...section,
-      position: [
-        Math.sin(i * 0.6) * 0.4,
-        Math.cos(i * 0.8) * 0.25,
-        section.zPosition,
-      ] as [number, number, number],
+      position: [0, 0, section.zPosition] as [number, number, number],
     }));
   }, []);
 
-  // Handle section hover with gravity effect
-  const handleSectionHover = useCallback((
-    sectionId: string | null,
-    position?: THREE.Vector3
-  ) => {
-    onSectionHover(sectionId, position);
-  }, [onSectionHover]);
+  const handleSectionHover = useCallback(
+    (sectionId: string | null, position?: THREE.Vector3) => {
+      onSectionHover(sectionId, position);
+    },
+    [onSectionHover]
+  );
 
   if (!mounted) return null;
 
@@ -99,35 +100,23 @@ export function SpatialScene() {
         height: '100%',
       }}
     >
-      {/* Deep space background color */}
-      <color attach="background" args={['#040810']} />
+      {/* Background */}
+      <color attach="background" args={['#030712']} />
 
-      {/* Ambient lighting */}
-      <ambientLight intensity={0.15} />
-      
-      {/* Dynamic point light that follows camera */}
+      {/* Ambient light */}
+      <ambientLight intensity={0.12} />
+
+      {/* Main light follows camera - intensity affected by hover */}
       <pointLight
-        position={[0, 2, cameraZ + 8]}
-        intensity={gravityState.lightIntensity * 0.4}
-        color="#38bdf8"
-        distance={35}
+        position={[0, 3, cameraZ + 10]}
+        intensity={0.3 * gravityState.lightIntensity}
+        color="#e2e8f0"
+        distance={40}
         decay={2}
       />
 
-      {/* Secondary accent light */}
-      <pointLight
-        position={[4, -2, cameraZ - 5]}
-        intensity={0.1}
-        color="#818cf8"
-        distance={25}
-        decay={2}
-      />
-
-      {/* Star field background */}
-      <StarField count={500} radius={120} size={0.35} />
-      
-      {/* Ambient dust particles */}
-      <DustParticles count={80} />
+      {/* Stars for depth reference (static, no animation) */}
+      <StarField count={300} radius={80} size={0.25} />
 
       {/* Camera controller */}
       <CameraScrollController
@@ -152,8 +141,8 @@ export function SpatialScene() {
         />
       ))}
 
-      {/* Subtle depth fog */}
-      <fog attach="fog" args={['#040810', 50, 120]} />
+      {/* Depth fog */}
+      <fog attach="fog" args={['#030712', 40, 100]} />
     </Canvas>
   );
 }
