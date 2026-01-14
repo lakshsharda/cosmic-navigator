@@ -13,7 +13,6 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
   const [showContent, setShowContent] = useState(false);
   const [audioEnabled, setAudioEnabled] = useState(false);
   const [activeVideo, setActiveVideo] = useState<1 | 2>(1);
-  const [videoReady, setVideoReady] = useState(false);
 
   const activeVideoRef = useRef<1 | 2>(1);
   const switchingRef = useRef(false);
@@ -21,8 +20,7 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
   const video1Ref = useRef<HTMLVideoElement>(null);
   const video2Ref = useRef<HTMLVideoElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
-
-  const hasSeekedInitialRef = useRef(false);
+  const initialStartedRef = useRef(false);
 
   // Name letters for hover effect
   const nameLetters = "LAKSH SHARDA".split('');
@@ -163,30 +161,29 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
       <video
         ref={video1Ref}
         className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
-          videoReady ? (activeVideo === 1 ? 'opacity-100' : 'opacity-0') : 'opacity-0'
+          activeVideo === 1 ? 'opacity-100' : 'opacity-0'
         }`}
         src="/videos/cosmic-intro.mp4"
         muted
         playsInline
         preload="auto"
         onLoadedMetadata={(e) => {
-          // Seek immediately before first renderable frame to avoid flashing the explosion
+          // Seek before first play so we never show the explosion
           try {
             e.currentTarget.currentTime = 8;
+            e.currentTarget.pause();
           } catch {
             // ignore
           }
         }}
         onSeeked={async (e) => {
-          // Only run once for the initial mount
-          if (hasSeekedInitialRef.current) return;
-          hasSeekedInitialRef.current = true;
-
-          setVideoReady(true);
+          // Start playback only after the seek to 8s has completed
+          if (initialStartedRef.current) return;
+          initialStartedRef.current = true;
           try {
             await e.currentTarget.play();
           } catch {
-            // autoplay can fail in some browsers; video still shows
+            // autoplay can fail; user still sees the correct frame at 8s
           }
         }}
       />
