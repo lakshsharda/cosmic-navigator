@@ -13,6 +13,10 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
   const [showContent, setShowContent] = useState(false);
   const [audioEnabled, setAudioEnabled] = useState(false);
   const [activeVideo, setActiveVideo] = useState<1 | 2>(1);
+
+  const activeVideoRef = useRef<1 | 2>(1);
+  const switchingRef = useRef(false);
+
   const video1Ref = useRef<HTMLVideoElement>(null);
   const video2Ref = useRef<HTMLVideoElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -29,55 +33,130 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
     return () => clearTimeout(timer);
   }, []);
 
-  // Seamless loop using two videos with crossfade
+  // Keep ref in sync
+  useEffect(() => {
+    activeVideoRef.current = activeVideo;
+  }, [activeVideo]);
+
+  // Seamless loop using two videos with crossfade (no visible "end" frame)
   useEffect(() => {
     const video1 = video1Ref.current;
     const video2 = video2Ref.current;
     if (!video1 || !video2) return;
 
-    // Prepare video2 at 8 seconds
-    video2.currentTime = 8;
-    video2.pause();
+    const getVideos = () => {
+      const current = activeVideoRef.current === 1 ? video1 : video2;
+      const next = activeVideoRef.current === 1 ? video2 : video1;
+      return { current, next };
+    };
 
-    const handleTimeUpdate = () => {
-      const currentVideo = activeVideo === 1 ? video1 : video2;
-      const nextVideo = activeVideo === 1 ? video2 : video1;
-      
-      // When near end, switch to the other video
-      if (currentVideo.duration && currentVideo.currentTime >= currentVideo.duration - 0.3) {
-        nextVideo.currentTime = 8;
-        nextVideo.play();
-        setActiveVideo(activeVideo === 1 ? 2 : 1);
-        
-        // Prepare the current video for next loop
-        setTimeout(() => {
-          currentVideo.currentTime = 8;
-          currentVideo.pause();
-        }, 500);
+    const prepareNext = async () => {
+      const { next } = getVideos();
+      try {
+        // Ensure metadata is loaded before seeking
+        if (Number.isNaN(next.duration) || next.duration === 0) {
+          // noop
+        }
+        next.currentTime = 8;
+        next.pause();
+      } catch {
+        // ignore seek errors
       }
     };
+
+    const switchToNext = async () => {
+      if (switchingRef.current) return;
+      switchingRef.current = true;
+
+      const { current, next } = getVideos();
+
+      try {
+        next.currentTime = 8;
+        await next.play();
+      } catch {
+        // If play fails, don't switch (avoids blank frame)
+        switchingRef.current = false;
+        return;
+      }
+
+      setActiveVideo((prev) => (prev === 1 ? 2 : 1));
+
+      // After fade, reset the old one for the next loop
+      window.setTimeout(() => {
+        try {
+          current.pause();
+          current.currentTime = 8;
+        } catch {
+          // ignore
+        }
+        switchingRef.current = false;
+      }, 600);
+    };
+
+    const handleTimeUpdate = () => {
+      const { current } = getVideos();
+      if (!current.duration || Number.isNaN(current.duration)) return;
+
+      // Switch a bit BEFORE the end to avoid showing the last frame / cut
+      if (current.duration - current.currentTime <= 0.45) {
+        switchToNext();
+      }
+    };
+
+    const handleEnded = () => {
+      // Fallback: if a browser still fires ended, immediately swap
+      switchToNext();
+    };
+
+    prepareNext();
 
     video1.addEventListener('timeupdate', handleTimeUpdate);
     video2.addEventListener('timeupdate', handleTimeUpdate);
-    
+    video1.addEventListener('ended', handleEnded);
+    video2.addEventListener('ended', handleEnded);
+
     return () => {
       video1.removeEventListener('timeupdate', handleTimeUpdate);
       video2.removeEventListener('timeupdate', handleTimeUpdate);
+      video1.removeEventListener('ended', handleEnded);
+      video2.removeEventListener('ended', handleEnded);
     };
-  }, [activeVideo]);
+  }, []);
 
   // Toggle audio
-  const toggleAudio = () => {
-    if (audioRef.current) {
-      if (audioEnabled) {
-        audioRef.current.pause();
-      } else {
-        audioRef.current.volume = 0.4;
-        audioRef.current.play().catch(console.error);
-      }
-      setAudioEnabled(!audioEnabled);
+  const toggleAudio = async () => {
+    const audioEl = audioRef.current;
+    if (!audioEl) return;
+
+    if (audioEnabled) {
+      audioEl.pause();
+      setAudioEnabled(false);
+      return;
+    }
+
+    try {
+      audioEl.muted = false;
+      audioEl.volume = 0.9;
+      await audioEl.play();
+      setAudioEnabled(true);
+    } catch (e) {
+      console.error('Audio play failed (autoplay blocked?)', e);
+      setAudioEnabled(false);
     }
   };
+
+  // Best-effort: enable sound on the first user interaction anywhere
+  useEffect(() => {
+    const onFirstPointerDown = () => {
+      if (audioEnabled) return;
+      void toggleAudio();
+      window.removeEventListener('pointerdown', onFirstPointerDown);
+    };
+
+    window.addEventListener('pointerdown', onFirstPointerDown, { once: true });
+    return () => window.removeEventListener('pointerdown', onFirstPointerDown);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [audioEnabled]);
 
   return (
     <div className="relative w-full h-screen overflow-hidden bg-black">
@@ -91,6 +170,7 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
         muted
         autoPlay
         playsInline
+        preload="auto"
       />
       
       {/* Background Video 2 (for seamless loop) */}
@@ -102,6 +182,16 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
         src="/videos/cosmic-intro.mp4"
         muted
         playsInline
+        preload="auto"
+        onLoadedMetadata={(e) => {
+          // Keep the "loop segment" ready on the hidden video
+          try {
+            e.currentTarget.currentTime = 8;
+            e.currentTarget.pause();
+          } catch {
+            // ignore
+          }
+        }}
       />
 
       {/* Space Ambient Audio - using a reliable source */}
