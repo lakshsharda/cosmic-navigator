@@ -24,13 +24,9 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
   // Name letters for hover effect
   const nameLetters = "LAKSH SHARDA".split('');
 
-  // Reveal content at 8 seconds
+  // Show content immediately since we start after the explosion
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowContent(true);
-    }, 8000);
-
-    return () => clearTimeout(timer);
+    setShowContent(true);
   }, []);
 
   // Keep ref in sync
@@ -160,7 +156,7 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
 
   return (
     <div className="relative w-full h-screen overflow-hidden bg-black">
-      {/* Background Video 1 */}
+      {/* Background Video 1 - starts at 8s (after explosion) */}
       <video
         ref={video1Ref}
         className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
@@ -171,6 +167,10 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
         autoPlay
         playsInline
         preload="auto"
+        onLoadedMetadata={(e) => {
+          // Start at 8s (after the explosion)
+          e.currentTarget.currentTime = 8;
+        }}
       />
       
       {/* Background Video 2 (for seamless loop) */}
