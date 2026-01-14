@@ -11,10 +11,20 @@ interface IntroScreenProps {
  */
 const ROLES = [
   ['DEVELOPER', 'DESIGNER', 'CREATOR'],
-  ['ENGINEER', 'ARTIST', 'INNOVATOR'],
-  ['CODER', 'THINKER', 'BUILDER'],
-  ['PROBLEM SOLVER', 'DREAMER', 'MAKER'],
-  ['FULL-STACK DEV', 'UI/UX', 'VISIONARY'],
+  ['THINKER', 'BUILDER', 'CREATOR'],
+  ['CODER', 'DESIGNER', 'INNOVATOR'],
+  ['ENGINEER', 'DESIGNER', 'BUILDER'],
+  ['CREATOR', 'STRATEGIST', 'DEVELOPER'],
+  ['IDEATOR', 'BUILDER', 'MAKER'],
+  ['TECHIE', 'DESIGNER', 'CREATOR'],
+  ['BUILDER', 'LEADER', 'CREATOR'],
+  ['DEVELOPER', 'INNOVATOR', 'LEADER'],
+  ['THINK', 'BUILD', 'CREATE'],
+  ['CODE', 'DESIGN', 'DEPLOY'],
+  ['IDEAS', 'TECH', 'IMPACT'],
+  ['DESIGN', 'DEVELOP', 'DELIVER'],
+  ['BUILD', 'DESIGN', 'SCALE'],
+  ['CREATE', 'CODE', 'LEAD'],
 ];
 
 export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
