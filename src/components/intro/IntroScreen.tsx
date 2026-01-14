@@ -13,6 +13,7 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
   const [showContent, setShowContent] = useState(false);
   const [audioEnabled, setAudioEnabled] = useState(false);
   const [activeVideo, setActiveVideo] = useState<1 | 2>(1);
+  const [isLoopTransition, setIsLoopTransition] = useState(false);
 
   const activeVideoRef = useRef<1 | 2>(1);
   const switchingRef = useRef(false);
@@ -64,6 +65,7 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
     const switchToNext = async () => {
       if (switchingRef.current) return;
       switchingRef.current = true;
+      setIsLoopTransition(true);
 
       const { current, next } = getVideos();
 
@@ -73,6 +75,7 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
       } catch {
         // If play fails, don't switch (avoids blank frame)
         switchingRef.current = false;
+        setIsLoopTransition(false);
         return;
       }
 
@@ -87,7 +90,8 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
           // ignore
         }
         switchingRef.current = false;
-      }, 600);
+        setIsLoopTransition(false);
+      }, 650);
     };
 
     const handleTimeUpdate = () => {
@@ -223,6 +227,14 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
         initial={{ opacity: 0 }}
         animate={{ opacity: showContent ? 0.5 : 0.2 }}
         transition={{ duration: 1 }}
+      />
+
+      {/* Loop-mask overlay: hides the visual discontinuity when we jump back to 8s */}
+      <motion.div
+        className="absolute inset-0 bg-background z-[5] pointer-events-none"
+        initial={false}
+        animate={{ opacity: isLoopTransition ? 0.55 : 0 }}
+        transition={{ duration: 0.28, ease: 'easeInOut' }}
       />
 
       {/* Sound toggle button */}
