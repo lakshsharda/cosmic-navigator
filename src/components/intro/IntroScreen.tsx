@@ -11,42 +11,60 @@ interface IntroScreenProps {
  */
 export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
   const [showContent, setShowContent] = useState(false);
-  const [isSlowMotion, setIsSlowMotion] = useState(false);
   const [audioEnabled, setAudioEnabled] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const [activeVideo, setActiveVideo] = useState<1 | 2>(1);
+  const video1Ref = useRef<HTMLVideoElement>(null);
+  const video2Ref = useRef<HTMLVideoElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
 
   // Name letters for hover effect
   const nameLetters = "LAKSH SHARDA".split('');
 
-  // Reveal content at 8 seconds and slow down video
+  // Reveal content at 8 seconds
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowContent(true);
-      setIsSlowMotion(true);
-      if (videoRef.current) {
-        videoRef.current.playbackRate = 0.25;
-      }
     }, 8000);
 
     return () => clearTimeout(timer);
   }, []);
 
-  // Handle video time update for seamless looping
+  // Seamless loop using two videos with crossfade
   useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
+    const video1 = video1Ref.current;
+    const video2 = video2Ref.current;
+    if (!video1 || !video2) return;
+
+    // Prepare video2 at 8 seconds
+    video2.currentTime = 8;
+    video2.pause();
 
     const handleTimeUpdate = () => {
-      // When video reaches near end, smoothly jump back to 8 seconds
-      if (video.duration && video.currentTime >= video.duration - 0.1) {
-        video.currentTime = 8;
+      const currentVideo = activeVideo === 1 ? video1 : video2;
+      const nextVideo = activeVideo === 1 ? video2 : video1;
+      
+      // When near end, switch to the other video
+      if (currentVideo.duration && currentVideo.currentTime >= currentVideo.duration - 0.3) {
+        nextVideo.currentTime = 8;
+        nextVideo.play();
+        setActiveVideo(activeVideo === 1 ? 2 : 1);
+        
+        // Prepare the current video for next loop
+        setTimeout(() => {
+          currentVideo.currentTime = 8;
+          currentVideo.pause();
+        }, 500);
       }
     };
 
-    video.addEventListener('timeupdate', handleTimeUpdate);
-    return () => video.removeEventListener('timeupdate', handleTimeUpdate);
-  }, []);
+    video1.addEventListener('timeupdate', handleTimeUpdate);
+    video2.addEventListener('timeupdate', handleTimeUpdate);
+    
+    return () => {
+      video1.removeEventListener('timeupdate', handleTimeUpdate);
+      video2.removeEventListener('timeupdate', handleTimeUpdate);
+    };
+  }, [activeVideo]);
 
   // Toggle audio
   const toggleAudio = () => {
@@ -54,8 +72,8 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
       if (audioEnabled) {
         audioRef.current.pause();
       } else {
-        audioRef.current.volume = 0.3;
-        audioRef.current.play();
+        audioRef.current.volume = 0.4;
+        audioRef.current.play().catch(console.error);
       }
       setAudioEnabled(!audioEnabled);
     }
@@ -63,22 +81,35 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
 
   return (
     <div className="relative w-full h-screen overflow-hidden bg-black">
-      {/* Background Video */}
+      {/* Background Video 1 */}
       <video
-        ref={videoRef}
-        className="absolute inset-0 w-full h-full object-cover"
+        ref={video1Ref}
+        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
+          activeVideo === 1 ? 'opacity-100' : 'opacity-0'
+        }`}
         src="/videos/cosmic-intro.mp4"
         muted
         autoPlay
         playsInline
-        loop
+      />
+      
+      {/* Background Video 2 (for seamless loop) */}
+      <video
+        ref={video2Ref}
+        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
+          activeVideo === 2 ? 'opacity-100' : 'opacity-0'
+        }`}
+        src="/videos/cosmic-intro.mp4"
+        muted
+        playsInline
       />
 
-      {/* Space Ambient Audio */}
+      {/* Space Ambient Audio - using a reliable source */}
       <audio
         ref={audioRef}
-        src="https://assets.mixkit.co/sfx/preview/mixkit-space-ambient-atmosphere-2882.mp3"
+        src="https://cdn.pixabay.com/audio/2022/10/25/audio_32de2e3e82.mp3"
         loop
+        preload="auto"
       />
 
       {/* Dark overlay for better text visibility */}
@@ -200,7 +231,7 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
               <span>CREATOR</span>
             </motion.p>
 
-            {/* Scroll indicator - now inside main content for proper centering */}
+            {/* Scroll indicator - centered below content */}
             <motion.div
               className="mt-16 flex flex-col items-center gap-3 cursor-pointer"
               initial={{ opacity: 0, y: 20 }}
@@ -225,7 +256,7 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
         )}
       </AnimatePresence>
 
-      {/* Corner accent - left only, right has sound button */}
+      {/* Corner accent - left only */}
       <AnimatePresence>
         {showContent && (
           <motion.div 
