@@ -9,11 +9,20 @@ interface IntroScreenProps {
 /**
  * Intro screen with cosmic video, timed reveal, and space ambient audio
  */
+const ROLES = [
+  ['DEVELOPER', 'DESIGNER', 'CREATOR'],
+  ['ENGINEER', 'ARTIST', 'INNOVATOR'],
+  ['CODER', 'THINKER', 'BUILDER'],
+  ['PROBLEM SOLVER', 'DREAMER', 'MAKER'],
+  ['FULL-STACK DEV', 'UI/UX', 'VISIONARY'],
+];
+
 export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
   const [showContent, setShowContent] = useState(false);
   const [audioEnabled, setAudioEnabled] = useState(false);
   const [activeVideo, setActiveVideo] = useState<1 | 2>(1);
   const [isLoopTransition, setIsLoopTransition] = useState(false);
+  const [roleIndex, setRoleIndex] = useState(0);
 
   const activeVideoRef = useRef<1 | 2>(1);
   const switchingRef = useRef(false);
@@ -22,6 +31,14 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
   const video2Ref = useRef<HTMLVideoElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
   const initialStartedRef = useRef(false);
+
+  // Cycle through roles every 4 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setRoleIndex((prev) => (prev + 1) % ROLES.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, []);
 
   // Name letters for hover effect
   const nameLetters = "LAKSH SHARDA".split('');
@@ -334,19 +351,29 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-primary rotate-45" />
             </motion.div>
 
-            {/* Role/title */}
-            <motion.p
-              className="mt-8 font-mono text-sm md:text-base tracking-[0.25em] text-white/80"
+            {/* Role/title - cycles every 4s */}
+            <motion.div
+              className="mt-8 font-mono text-sm md:text-base tracking-[0.25em] text-white/80 h-6 overflow-hidden"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 1 }}
             >
-              <span>DEVELOPER</span>
-              <span className="mx-3 text-primary">•</span>
-              <span>DESIGNER</span>
-              <span className="mx-3 text-primary">•</span>
-              <span>CREATOR</span>
-            </motion.p>
+              <AnimatePresence mode="wait">
+                <motion.p
+                  key={roleIndex}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -12 }}
+                  transition={{ duration: 0.4, ease: 'easeInOut' }}
+                >
+                  <span>{ROLES[roleIndex][0]}</span>
+                  <span className="mx-3 text-primary">•</span>
+                  <span>{ROLES[roleIndex][1]}</span>
+                  <span className="mx-3 text-primary">•</span>
+                  <span>{ROLES[roleIndex][2]}</span>
+                </motion.p>
+              </AnimatePresence>
+            </motion.div>
 
             {/* Scroll indicator - centered below content */}
             <motion.div
