@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, Volume2, VolumeX } from 'lucide-react';
 
 interface IntroScreenProps {
   onScrollToPortfolio: () => void;
@@ -11,40 +11,55 @@ interface IntroScreenProps {
  */
 export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
   const [showContent, setShowContent] = useState(false);
-  const [videoEnded, setVideoEnded] = useState(false);
+  const [isSlowMotion, setIsSlowMotion] = useState(false);
+  const [audioEnabled, setAudioEnabled] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
 
   // Name letters for hover effect
   const nameLetters = "LAKSH SHARDA".split('');
 
-  // Reveal content at 8 seconds
+  // Reveal content at 8 seconds and slow down video
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowContent(true);
+      setIsSlowMotion(true);
+      if (videoRef.current) {
+        videoRef.current.playbackRate = 0.25;
+      }
     }, 8000);
 
     return () => clearTimeout(timer);
   }, []);
 
-  // Handle video end - loop from 8 seconds
-  const handleVideoEnded = () => {
-    setVideoEnded(true);
-    if (videoRef.current) {
-      videoRef.current.currentTime = 8;
-      videoRef.current.play();
+  // Handle video time update for seamless looping
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const handleTimeUpdate = () => {
+      // When video reaches near end, smoothly jump back to 8 seconds
+      if (video.duration && video.currentTime >= video.duration - 0.1) {
+        video.currentTime = 8;
+      }
+    };
+
+    video.addEventListener('timeupdate', handleTimeUpdate);
+    return () => video.removeEventListener('timeupdate', handleTimeUpdate);
+  }, []);
+
+  // Toggle audio
+  const toggleAudio = () => {
+    if (audioRef.current) {
+      if (audioEnabled) {
+        audioRef.current.pause();
+      } else {
+        audioRef.current.volume = 0.3;
+        audioRef.current.play();
+      }
+      setAudioEnabled(!audioEnabled);
     }
   };
-
-  // Start audio when component mounts
-  useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.volume = 0.3;
-      audioRef.current.play().catch(() => {
-        // Autoplay blocked, will play on user interaction
-      });
-    }
-  }, []);
 
   return (
     <div className="relative w-full h-screen overflow-hidden bg-black">
@@ -56,7 +71,7 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
         muted
         autoPlay
         playsInline
-        onEnded={handleVideoEnded}
+        loop
       />
 
       {/* Space Ambient Audio */}
@@ -73,6 +88,23 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
         animate={{ opacity: showContent ? 0.5 : 0.2 }}
         transition={{ duration: 1 }}
       />
+
+      {/* Sound toggle button */}
+      <motion.button
+        className="absolute top-6 right-6 z-30 p-3 rounded-full bg-black/30 backdrop-blur-sm border border-primary/30 hover:border-primary/60 transition-colors"
+        onClick={toggleAudio}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.5 }}
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.95 }}
+      >
+        {audioEnabled ? (
+          <Volume2 className="w-5 h-5 text-primary" />
+        ) : (
+          <VolumeX className="w-5 h-5 text-primary/60" />
+        )}
+      </motion.button>
 
       {/* Main Content - appears at 8 seconds */}
       <AnimatePresence>
@@ -167,59 +199,44 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
               <span className="mx-3 text-primary">•</span>
               <span>CREATOR</span>
             </motion.p>
+
+            {/* Scroll indicator - now inside main content for proper centering */}
+            <motion.div
+              className="mt-16 flex flex-col items-center gap-3 cursor-pointer"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 1.5 }}
+              onClick={onScrollToPortfolio}
+            >
+              <span className="font-mono text-[10px] md:text-xs tracking-[0.4em] text-primary text-center">
+                SCROLL TO EXPLORE
+              </span>
+              
+              <motion.div 
+                className="flex flex-col items-center"
+                animate={{ y: [0, 5, 0] }}
+                transition={{ duration: 1.5, repeat: Infinity }}
+              >
+                <ChevronDown className="w-5 h-5 text-primary/80" />
+                <ChevronDown className="w-5 h-5 text-primary/50 -mt-3" />
+              </motion.div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Scroll indicator - appears after content */}
+      {/* Corner accent - left only, right has sound button */}
       <AnimatePresence>
         {showContent && (
-          <motion.div
-            className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 cursor-pointer z-20"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 1.5 }}
-            onClick={onScrollToPortfolio}
+          <motion.div 
+            className="absolute top-6 left-6 flex items-center gap-2 z-20"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 1.2 }}
           >
-            <span className="font-mono text-[10px] md:text-xs tracking-[0.4em] text-primary">
-              SCROLL TO EXPLORE
-            </span>
-            
-            <motion.div 
-              className="flex flex-col items-center"
-              animate={{ y: [0, 5, 0] }}
-              transition={{ duration: 1.5, repeat: Infinity }}
-            >
-              <ChevronDown className="w-5 h-5 text-primary/80" />
-              <ChevronDown className="w-5 h-5 text-primary/50 -mt-3" />
-            </motion.div>
+            <div className="w-2 h-2 rounded-full bg-primary/70" />
+            <div className="w-12 h-px bg-gradient-to-r from-primary/60 to-transparent" />
           </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Corner accents - appear with content */}
-      <AnimatePresence>
-        {showContent && (
-          <>
-            <motion.div 
-              className="absolute top-6 left-6 flex items-center gap-2 z-20"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 1.2 }}
-            >
-              <div className="w-2 h-2 rounded-full bg-primary/70" />
-              <div className="w-12 h-px bg-gradient-to-r from-primary/60 to-transparent" />
-            </motion.div>
-            <motion.div 
-              className="absolute top-6 right-6 flex items-center gap-2 z-20"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 1.2 }}
-            >
-              <div className="w-12 h-px bg-gradient-to-l from-primary/60 to-transparent" />
-              <div className="w-2 h-2 rounded-full bg-primary/70" />
-            </motion.div>
-          </>
         )}
       </AnimatePresence>
     </div>
