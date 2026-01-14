@@ -84,17 +84,13 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
         {/* Subtitle above name */}
         <motion.div
           className="mb-8"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.3 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8, delay: 0.3 }}
         >
-          <motion.p
-            className="font-mono text-xs md:text-sm tracking-[0.5em] text-primary/70"
-            animate={{ opacity: [0.5, 1, 0.5] }}
-            transition={{ duration: 3, repeat: Infinity }}
-          >
-            ✦ WELCOME TO MY UNIVERSE ✦
-          </motion.p>
+          <p className="font-mono text-xs md:text-sm tracking-[0.5em] text-primary/70">
+            ✦ WELCOME TO MY PORTFOLIO ✦
+          </p>
         </motion.div>
 
         {/* Name */}
@@ -171,75 +167,34 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
         {/* Role/title */}
         <motion.p
           className="mt-8 font-mono text-sm md:text-base tracking-[0.25em] text-muted-foreground"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 2 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8, delay: 0.6 }}
         >
-          <motion.span
-            animate={{ opacity: [0.6, 1, 0.6] }}
-            transition={{ duration: 2, repeat: Infinity, delay: 0 }}
-          >
-            DEVELOPER
-          </motion.span>
+          <span>DEVELOPER</span>
           <span className="mx-3 text-primary">•</span>
-          <motion.span
-            animate={{ opacity: [0.6, 1, 0.6] }}
-            transition={{ duration: 2, repeat: Infinity, delay: 0.3 }}
-          >
-            DESIGNER
-          </motion.span>
+          <span>DESIGNER</span>
           <span className="mx-3 text-primary">•</span>
-          <motion.span
-            animate={{ opacity: [0.6, 1, 0.6] }}
-            transition={{ duration: 2, repeat: Infinity, delay: 0.6 }}
-          >
-            CREATOR
-          </motion.span>
+          <span>CREATOR</span>
         </motion.p>
       </div>
 
       {/* Scroll indicator - positioned at very bottom */}
       <motion.div
-        className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 cursor-pointer z-20"
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1, delay: 2.5 }}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 cursor-pointer z-20"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8, delay: 0.8 }}
         onClick={onScrollToPortfolio}
       >
-        <motion.span
-          className="font-mono text-[10px] md:text-xs tracking-[0.4em] text-primary"
-          animate={{ 
-            opacity: [0.5, 1, 0.5],
-            textShadow: ['0 0 10px hsl(195 85% 55% / 0)', '0 0 20px hsl(195 85% 55% / 0.5)', '0 0 10px hsl(195 85% 55% / 0)'],
-          }}
-          transition={{ duration: 2, repeat: Infinity }}
-        >
+        <span className="font-mono text-[10px] md:text-xs tracking-[0.4em] text-primary">
           SCROLL TO EXPLORE
-        </motion.span>
+        </span>
         
-        <motion.div
-          className="relative w-5 h-8 rounded-full border-2 border-primary/50 flex items-start justify-center pt-1.5"
-          animate={{ 
-            borderColor: ['hsl(195 85% 55% / 0.3)', 'hsl(195 85% 55% / 0.7)', 'hsl(195 85% 55% / 0.3)'],
-            boxShadow: ['0 0 10px hsl(195 85% 55% / 0)', '0 0 15px hsl(195 85% 55% / 0.3)', '0 0 10px hsl(195 85% 55% / 0)'],
-          }}
-          transition={{ duration: 2, repeat: Infinity }}
-        >
-          <motion.div
-            className="w-1 h-2 rounded-full bg-primary"
-            animate={{ y: [0, 10, 0], opacity: [1, 0.5, 1] }}
-            transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
-          />
-        </motion.div>
-
-        <motion.div
-          className="flex flex-col items-center"
-          animate={{ y: [0, 4, 0] }}
-          transition={{ duration: 1.2, repeat: Infinity }}
-        >
-          <ChevronDown className="w-4 h-4 text-primary/60" />
-          <ChevronDown className="w-4 h-4 text-primary/30 -mt-2" />
-        </motion.div>
+        <div className="flex flex-col items-center">
+          <ChevronDown className="w-5 h-5 text-primary/70" />
+          <ChevronDown className="w-5 h-5 text-primary/40 -mt-3" />
+        </div>
       </motion.div>
 
       {/* Corner accents */}
