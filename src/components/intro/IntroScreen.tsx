@@ -33,9 +33,11 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
   const [activeVideo, setActiveVideo] = useState<1 | 2>(1);
   const [isLoopTransition, setIsLoopTransition] = useState(false);
   const [roleIndex, setRoleIndex] = useState(0);
+  const [videoReady, setVideoReady] = useState(false);
 
   const activeVideoRef = useRef<1 | 2>(1);
   const switchingRef = useRef(false);
+  const videoReadyRef = useRef(false);
 
   const video1Ref = useRef<HTMLVideoElement>(null);
   const video2Ref = useRef<HTMLVideoElement>(null);
@@ -192,14 +194,15 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
       <video
         ref={video1Ref}
         className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
-          activeVideo === 1 ? 'opacity-100' : 'opacity-0'
+          activeVideo === 1 && videoReady ? 'opacity-100' : 'opacity-0'
         }`}
         src="/videos/cosmic-intro.mp4"
         muted
         playsInline
         preload="auto"
         onLoadedMetadata={(e) => {
-          // Seek before first play so we never show the explosion
+          // Some browsers briefly paint frame 0 before the seek applies.
+          // We keep the video hidden until we confirm a seek >= 8s.
           try {
             e.currentTarget.currentTime = 8;
             e.currentTarget.pause();
@@ -208,6 +211,12 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
           }
         }}
         onSeeked={async (e) => {
+          // Mark ready once we have *actually* landed on (or past) 8s.
+          if (!videoReadyRef.current && e.currentTarget.currentTime >= 7.9) {
+            videoReadyRef.current = true;
+            setVideoReady(true);
+          }
+
           // Start playback only after the seek to 8s has completed
           if (initialStartedRef.current) return;
           initialStartedRef.current = true;
@@ -218,12 +227,12 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
           }
         }}
       />
-      
+
       {/* Background Video 2 (for seamless loop) */}
       <video
         ref={video2Ref}
         className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
-          activeVideo === 2 ? 'opacity-100' : 'opacity-0'
+          activeVideo === 2 && videoReady ? 'opacity-100' : 'opacity-0'
         }`}
         src="/videos/cosmic-intro.mp4"
         muted
@@ -239,6 +248,9 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
           }
         }}
       />
+
+      {/* Covers any frame-0 flash until we confirm the initial seek */}
+      {!videoReady && <div className="absolute inset-0 bg-black z-[1]" />}
 
       {/* Epic Space Ambient Audio - using Soundhelix (free reliable CDN) */}
       <audio
