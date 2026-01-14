@@ -19,54 +19,7 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
     { type: 'nebula' as const, size: 200, initialX: 65, initialY: 75, duration: 25, delay: 0.2 },
   ];
 
-  // Letter animation variants
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.06,
-        delayChildren: 0.8,
-      },
-    },
-  };
-
-  const letterVariants = {
-    hidden: { 
-      opacity: 0, 
-      y: 80,
-      scale: 0.5,
-      filter: 'blur(10px)',
-    },
-    visible: { 
-      opacity: 1, 
-      y: 0,
-      scale: 1,
-      filter: 'blur(0px)',
-      transition: {
-        type: 'spring',
-        damping: 15,
-        stiffness: 100,
-      },
-    },
-  };
-
-  const glowVariants = {
-    initial: { opacity: 0.5 },
-    animate: {
-      opacity: [0.5, 1, 0.5],
-      textShadow: [
-        '0 0 20px hsl(195 85% 55% / 0.3), 0 0 40px hsl(195 85% 55% / 0.2)',
-        '0 0 40px hsl(195 85% 55% / 0.6), 0 0 80px hsl(195 85% 55% / 0.4), 0 0 120px hsl(250 60% 55% / 0.2)',
-        '0 0 20px hsl(195 85% 55% / 0.3), 0 0 40px hsl(195 85% 55% / 0.2)',
-      ],
-      transition: {
-        duration: 3,
-        repeat: Infinity,
-        ease: 'easeInOut',
-      },
-    },
-  };
+  // Name letters
 
   const nameLetters = "LAKSH SHARDA".split('');
 
@@ -144,12 +97,12 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
           </motion.p>
         </motion.div>
 
-        {/* Animated Name */}
+        {/* Name */}
         <motion.div
           className="relative"
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8, delay: 0.5 }}
         >
           {/* Background glow for name */}
           <motion.div
@@ -161,19 +114,13 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
             transition={{ duration: 4, repeat: Infinity }}
           />
           
-          <motion.h1
-            className="relative flex flex-wrap justify-center"
-            variants={glowVariants}
-            initial="initial"
-            animate="animate"
-          >
+          <h1 className="relative flex flex-wrap justify-center">
             {nameLetters.map((letter, index) => (
               <motion.span
                 key={index}
-                className={`font-mono text-5xl md:text-7xl lg:text-8xl xl:text-9xl font-bold ${
+                className={`font-mono text-5xl md:text-7xl lg:text-8xl xl:text-9xl font-bold cursor-default ${
                   letter === ' ' ? 'mx-3 md:mx-6' : 'mx-0.5 md:mx-1'
                 }`}
-                variants={letterVariants}
                 style={{
                   color: 'hsl(var(--foreground))',
                   textShadow: `
@@ -183,15 +130,16 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
                   `,
                 }}
                 whileHover={{
-                  scale: 1.1,
-                  textShadow: '0 0 50px hsl(195 85% 55% / 0.8), 0 0 100px hsl(195 85% 55% / 0.5)',
-                  transition: { duration: 0.2 },
+                  scale: 1.2,
+                  y: -8,
+                  textShadow: '0 0 60px hsl(195 85% 55% / 0.9), 0 0 120px hsl(195 85% 55% / 0.6)',
+                  transition: { type: 'spring', stiffness: 400, damping: 15 },
                 }}
               >
                 {letter === ' ' ? '' : letter}
               </motion.span>
             ))}
-          </motion.h1>
+          </h1>
         </motion.div>
 
         {/* Decorative animated line */}
