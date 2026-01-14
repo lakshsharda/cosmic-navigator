@@ -1,127 +1,49 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Volume2, VolumeX } from 'lucide-react';
+import { CosmicExplosion } from './CosmicExplosion';
 
 interface IntroScreenProps {
   onScrollToPortfolio: () => void;
 }
 
 /**
- * Intro screen with cosmic video, timed reveal, and space ambient audio
+ * Intro screen with real-time Three.js cosmic explosion and space ambient audio
  */
 export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
   const [showContent, setShowContent] = useState(false);
   const [audioEnabled, setAudioEnabled] = useState(false);
-  const [activeVideo, setActiveVideo] = useState<1 | 2>(1);
-
-  const activeVideoRef = useRef<1 | 2>(1);
-  const switchingRef = useRef(false);
-
-  const video1Ref = useRef<HTMLVideoElement>(null);
-  const video2Ref = useRef<HTMLVideoElement>(null);
+  const [explosionProgress, setExplosionProgress] = useState(0);
   const audioRef = useRef<HTMLAudioElement>(null);
+  const startTimeRef = useRef<number>(Date.now());
 
   // Name letters for hover effect
   const nameLetters = "LAKSH SHARDA".split('');
 
-  // Reveal content at 8 seconds
+  // Animate explosion progress over 8 seconds
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowContent(true);
-    }, 8000);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  // Keep ref in sync
-  useEffect(() => {
-    activeVideoRef.current = activeVideo;
-  }, [activeVideo]);
-
-  // Seamless loop using two videos with crossfade (no visible "end" frame)
-  useEffect(() => {
-    const video1 = video1Ref.current;
-    const video2 = video2Ref.current;
-    if (!video1 || !video2) return;
-
-    const getVideos = () => {
-      const current = activeVideoRef.current === 1 ? video1 : video2;
-      const next = activeVideoRef.current === 1 ? video2 : video1;
-      return { current, next };
-    };
-
-    const prepareNext = async () => {
-      const { next } = getVideos();
-      try {
-        // Ensure metadata is loaded before seeking
-        if (Number.isNaN(next.duration) || next.duration === 0) {
-          // noop
-        }
-        next.currentTime = 8;
-        next.pause();
-      } catch {
-        // ignore seek errors
+    startTimeRef.current = Date.now();
+    
+    const animate = () => {
+      const elapsed = Date.now() - startTimeRef.current;
+      const duration = 8000; // 8 seconds for explosion
+      
+      // Progress with easing
+      const rawProgress = Math.min(elapsed / duration, 1);
+      setExplosionProgress(rawProgress);
+      
+      // Show content at the end
+      if (rawProgress >= 1 && !showContent) {
+        setShowContent(true);
       }
+      
+      // Continue animation for subtle drift after explosion
+      requestAnimationFrame(animate);
     };
-
-    const switchToNext = async () => {
-      if (switchingRef.current) return;
-      switchingRef.current = true;
-
-      const { current, next } = getVideos();
-
-      try {
-        next.currentTime = 8;
-        await next.play();
-      } catch {
-        // If play fails, don't switch (avoids blank frame)
-        switchingRef.current = false;
-        return;
-      }
-
-      setActiveVideo((prev) => (prev === 1 ? 2 : 1));
-
-      // After fade, reset the old one for the next loop
-      window.setTimeout(() => {
-        try {
-          current.pause();
-          current.currentTime = 8;
-        } catch {
-          // ignore
-        }
-        switchingRef.current = false;
-      }, 600);
-    };
-
-    const handleTimeUpdate = () => {
-      const { current } = getVideos();
-      if (!current.duration || Number.isNaN(current.duration)) return;
-
-      // Switch a bit BEFORE the end to avoid showing the last frame / cut
-      if (current.duration - current.currentTime <= 0.45) {
-        switchToNext();
-      }
-    };
-
-    const handleEnded = () => {
-      // Fallback: if a browser still fires ended, immediately swap
-      switchToNext();
-    };
-
-    prepareNext();
-
-    video1.addEventListener('timeupdate', handleTimeUpdate);
-    video2.addEventListener('timeupdate', handleTimeUpdate);
-    video1.addEventListener('ended', handleEnded);
-    video2.addEventListener('ended', handleEnded);
-
-    return () => {
-      video1.removeEventListener('timeupdate', handleTimeUpdate);
-      video2.removeEventListener('timeupdate', handleTimeUpdate);
-      video1.removeEventListener('ended', handleEnded);
-      video2.removeEventListener('ended', handleEnded);
-    };
-  }, []);
+    
+    const animationId = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(animationId);
+  }, [showContent]);
 
   // Toggle audio
   const toggleAudio = async () => {
@@ -136,7 +58,7 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
 
     try {
       audioEl.muted = false;
-      audioEl.volume = 0.9;
+      audioEl.volume = 0.5;
       await audioEl.play();
       setAudioEnabled(true);
     } catch (e) {
@@ -160,41 +82,12 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
 
   return (
     <div className="relative w-full h-screen overflow-hidden bg-black">
-      {/* Background Video 1 */}
-      <video
-        ref={video1Ref}
-        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
-          activeVideo === 1 ? 'opacity-100' : 'opacity-0'
-        }`}
-        src="/videos/cosmic-intro.mp4"
-        muted
-        autoPlay
-        playsInline
-        preload="auto"
-      />
-      
-      {/* Background Video 2 (for seamless loop) */}
-      <video
-        ref={video2Ref}
-        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
-          activeVideo === 2 ? 'opacity-100' : 'opacity-0'
-        }`}
-        src="/videos/cosmic-intro.mp4"
-        muted
-        playsInline
-        preload="auto"
-        onLoadedMetadata={(e) => {
-          // Keep the "loop segment" ready on the hidden video
-          try {
-            e.currentTarget.currentTime = 8;
-            e.currentTarget.pause();
-          } catch {
-            // ignore
-          }
-        }}
-      />
+      {/* Three.js Cosmic Explosion */}
+      <div className="absolute inset-0">
+        <CosmicExplosion explosionProgress={explosionProgress} />
+      </div>
 
-      {/* Space Ambient Audio - using a reliable source */}
+      {/* Space Ambient Audio */}
       <audio
         ref={audioRef}
         src="https://cdn.pixabay.com/audio/2022/10/25/audio_32de2e3e82.mp3"
@@ -202,12 +95,12 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
         preload="auto"
       />
 
-      {/* Dark overlay for better text visibility */}
+      {/* Dark overlay for better text visibility - fades in as explosion completes */}
       <motion.div
-        className="absolute inset-0 bg-black/40"
+        className="absolute inset-0 bg-black/30 pointer-events-none"
         initial={{ opacity: 0 }}
-        animate={{ opacity: showContent ? 0.5 : 0.2 }}
-        transition={{ duration: 1 }}
+        animate={{ opacity: showContent ? 0.4 : 0 }}
+        transition={{ duration: 1.5 }}
       />
 
       {/* Sound toggle button */}
@@ -227,7 +120,7 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
         )}
       </motion.button>
 
-      {/* Main Content - appears at 8 seconds */}
+      {/* Main Content - appears after explosion */}
       <AnimatePresence>
         {showContent && (
           <motion.div
