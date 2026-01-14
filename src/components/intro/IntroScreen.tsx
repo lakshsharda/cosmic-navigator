@@ -194,10 +194,10 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
         }}
       />
 
-      {/* Space Ambient Audio - using a reliable source */}
+      {/* Epic Space Ambient Audio - using Soundhelix (free reliable CDN) */}
       <audio
         ref={audioRef}
-        src="https://cdn.pixabay.com/audio/2022/10/25/audio_32de2e3e82.mp3"
+        src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3"
         loop
         preload="auto"
       />
