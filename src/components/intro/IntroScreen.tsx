@@ -13,6 +13,7 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
   const [showContent, setShowContent] = useState(false);
   const [audioEnabled, setAudioEnabled] = useState(false);
   const [activeVideo, setActiveVideo] = useState<1 | 2>(1);
+  const [videoReady, setVideoReady] = useState(false);
 
   const activeVideoRef = useRef<1 | 2>(1);
   const switchingRef = useRef(false);
@@ -20,6 +21,8 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
   const video1Ref = useRef<HTMLVideoElement>(null);
   const video2Ref = useRef<HTMLVideoElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
+
+  const hasSeekedInitialRef = useRef(false);
 
   // Name letters for hover effect
   const nameLetters = "LAKSH SHARDA".split('');
@@ -160,16 +163,31 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
       <video
         ref={video1Ref}
         className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
-          activeVideo === 1 ? 'opacity-100' : 'opacity-0'
+          videoReady ? (activeVideo === 1 ? 'opacity-100' : 'opacity-0') : 'opacity-0'
         }`}
         src="/videos/cosmic-intro.mp4"
         muted
-        autoPlay
         playsInline
         preload="auto"
         onLoadedMetadata={(e) => {
-          // Start at 8s (after the explosion)
-          e.currentTarget.currentTime = 8;
+          // Seek immediately before first renderable frame to avoid flashing the explosion
+          try {
+            e.currentTarget.currentTime = 8;
+          } catch {
+            // ignore
+          }
+        }}
+        onSeeked={async (e) => {
+          // Only run once for the initial mount
+          if (hasSeekedInitialRef.current) return;
+          hasSeekedInitialRef.current = true;
+
+          setVideoReady(true);
+          try {
+            await e.currentTarget.play();
+          } catch {
+            // autoplay can fail in some browsers; video still shows
+          }
         }}
       />
       
