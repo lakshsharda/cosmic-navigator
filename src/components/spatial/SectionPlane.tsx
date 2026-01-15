@@ -3,7 +3,7 @@ import { useFrame } from '@react-three/fiber';
 import { Html } from '@react-three/drei';
 import * as THREE from 'three';
 import { ProjectsSection } from '@/components/projects/ProjectsSection';
-
+import { SkillsSection } from '@/components/skills/SkillsSection';
 // Experience data type
 interface ExperienceItem {
   company: string;
@@ -44,6 +44,7 @@ const SECTION_CONTENT: Record<string, {
   hasImage?: boolean;
   isExperience?: boolean;
   isProjects?: boolean;
+  isSkills?: boolean;
 }> = {
   about: {
     title: 'LAKSH SHARDA',
@@ -64,6 +65,7 @@ const SECTION_CONTENT: Record<string, {
   skills: {
     title: 'SKILLS',
     subtitle: 'Technical Expertise',
+    isSkills: true,
   },
   achievements: {
     title: 'ACHIEVEMENTS',
@@ -281,6 +283,8 @@ export function SectionPlane({
               {/* Projects Section Layout */}
               {content.isProjects ? (
                 <ProjectsSection focusWeight={focusWeight} />
+              ) : content.isSkills ? (
+                <SkillsSection focusWeight={focusWeight} />
               ) : (
                 <div
                   style={{
