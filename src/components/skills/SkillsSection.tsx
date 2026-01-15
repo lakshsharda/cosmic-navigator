@@ -23,7 +23,6 @@ const SKILL_CATEGORIES: SkillCategory[] = [
       { name: 'CSS', descriptor: 'Styling Language', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg' },
       { name: 'Tailwind CSS', descriptor: 'Utility Framework', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg' },
       { name: 'Node.js', descriptor: 'Runtime Environment', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg' },
-      { name: 'Express', descriptor: 'Backend Framework', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/express/express-original.svg' },
       { name: 'MongoDB', descriptor: 'NoSQL Database', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg' },
       { name: 'Firebase', descriptor: 'Cloud Platform', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/firebase/firebase-plain.svg' },
     ],
@@ -52,7 +51,7 @@ const SKILL_CATEGORIES: SkillCategory[] = [
     name: 'TOOLS',
     skills: [
       { name: 'Git', descriptor: 'Version Control', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg' },
-      { name: 'GitHub', descriptor: 'Code Hosting', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg' },
+      { name: 'GitHub', descriptor: 'Code Hosting', icon: 'https://cdn.simpleicons.org/github/ffffff' },
       { name: 'Firebase', descriptor: 'Backend Services', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/firebase/firebase-plain.svg' },
       { name: 'Figma', descriptor: 'Design Tool', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/figma/figma-original.svg' },
       { name: 'Canva', descriptor: 'Graphics Editor', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/canva/canva-original.svg' },
@@ -238,7 +237,7 @@ export function SkillsSection({ focusWeight }: SkillsSectionProps) {
               style={{
                 minWidth: '100px',
                 flexShrink: 0,
-                borderLeft: '2px solid rgba(34, 197, 94, 0.6)',
+                borderLeft: '2px solid rgba(34, 211, 238, 0.6)',
                 paddingLeft: '10px',
               }}
             >
@@ -247,7 +246,7 @@ export function SkillsSection({ focusWeight }: SkillsSectionProps) {
                   fontFamily: 'JetBrains Mono, monospace',
                   fontSize: '9px',
                   fontWeight: 600,
-                  color: '#4ade80',
+                  color: '#22d3ee',
                   letterSpacing: '0.08em',
                   lineHeight: 1.4,
                   textShadow: '0 1px 4px rgba(0,0,0,0.8)',

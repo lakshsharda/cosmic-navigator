@@ -49,11 +49,11 @@ const Index = () => {
   const endZ = -75;
   const cameraZ = startZ + (endZ - startZ) * smoothProgress;
 
-  // Focus detection for UI
+  // Focus detection for UI - using smaller threshold for precise detection
   const { activeSection, activeSectionIndex } = useFocusDetection(
     SECTION_CONFIGS,
     cameraZ,
-    8
+    6
   );
 
   // Handle transition from intro to portfolio with cosmic loader
