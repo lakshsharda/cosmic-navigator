@@ -503,50 +503,6 @@ export function SectionPlane({
         </div>
       </Html>
 
-      {/* Scroll to navigate indicator - below the box */}
-      <Html
-        center
-        position={[0, -4.2, 0.1]}
-        style={{
-          pointerEvents: 'none',
-          userSelect: 'none',
-        }}
-        transform
-        occlude={false}
-        distanceFactor={8}
-      >
-        <div
-          style={{
-            opacity: focusWeight > 0.5 ? Math.min((focusWeight - 0.3) / 0.5, 1) * 0.7 : 0,
-            transition: 'opacity 0.3s ease',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '8px',
-          }}
-        >
-          <span
-            style={{
-              fontFamily: 'JetBrains Mono, monospace',
-              fontSize: '9px',
-              color: '#67e8f9',
-              letterSpacing: '0.12em',
-              textShadow: '0 1px 6px rgba(0,0,0,0.8)',
-            }}
-          >
-            SCROLL TO NAVIGATE
-          </span>
-          <span 
-            style={{ 
-              color: '#67e8f9', 
-              fontSize: '12px',
-              animation: 'pulse 2s ease-in-out infinite',
-            }}
-          >
-            ↓
-          </span>
-        </div>
-      </Html>
 
       {/* Corner accents */}
       <mesh position={[-7.55, -3.55, 0.01]}>
