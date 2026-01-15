@@ -3,12 +3,45 @@ import { useFrame } from '@react-three/fiber';
 import { Html } from '@react-three/drei';
 import * as THREE from 'three';
 
+// Experience data type
+interface ExperienceItem {
+  company: string;
+  role: string;
+  duration: string;
+  description: string[];
+}
+
+// Experience entries
+const EXPERIENCE_DATA: ExperienceItem[] = [
+  {
+    company: 'THINKINGLABS AI',
+    role: 'Lead Intern Scientist – ThinkVisual Assist Project',
+    duration: 'Dec 2025 – Present',
+    description: [
+      'Leading end-to-end development of an AI-driven visual assistance pipeline.',
+      'Working on scene understanding, object detection, and real-time inference.',
+      'Focused on assistive technologies and real-world deployment.',
+    ],
+  },
+  {
+    company: 'U2CA Consultants',
+    role: 'Full Stack Developer Intern',
+    duration: 'Jun 2025 – Aug 2025',
+    description: [
+      'Built a scalable full-stack web application "The Thursday Thing".',
+      'Used React, Node.js, and Firebase.',
+      'Delivered secure, responsive, production-ready systems in agile teams.',
+    ],
+  },
+];
+
 // Section content data
 const SECTION_CONTENT: Record<string, {
   title: string;
   subtitle?: string;
   description?: string;
   hasImage?: boolean;
+  isExperience?: boolean;
 }> = {
   about: {
     title: 'LAKSH SHARDA',
@@ -19,6 +52,7 @@ const SECTION_CONTENT: Record<string, {
   experience: {
     title: 'EXPERIENCE',
     subtitle: 'Professional Journey',
+    isExperience: true,
   },
   projects: {
     title: 'PROJECTS',
@@ -243,91 +277,224 @@ export function SectionPlane({
             <div
               style={{
                 display: 'flex',
-                alignItems: 'center',
-                gap: '28px',
+                flexDirection: content.isExperience ? 'column' : 'row',
+                alignItems: content.isExperience ? 'flex-start' : 'center',
+                gap: content.isExperience ? '16px' : '28px',
                 padding: '24px 28px',
                 boxSizing: 'border-box',
+                background: content.isExperience ? 'rgba(2, 4, 8, 0.85)' : 'transparent',
+                borderRadius: '8px',
               }}
             >
-              {/* Text Content */}
-              <div style={{ textAlign: 'left', flex: 1, minWidth: 0 }}>
-                {/* Main heading - bright white */}
-                <h2
-                  style={{
-                    fontFamily: 'JetBrains Mono, monospace',
-                    fontSize: '24px',
-                    fontWeight: 700,
-                    color: '#ffffff',
-                    margin: '0 0 6px 0',
-                    letterSpacing: '0.02em',
-                    lineHeight: 1.2,
-                    textShadow: '0 2px 12px rgba(0,0,0,0.8)',
-                  }}
-                >
-                  {content.title}
-                </h2>
+              {/* Experience Section Layout */}
+              {content.isExperience ? (
+                <>
+                  {/* Header */}
+                  <div style={{ marginBottom: '8px' }}>
+                    <h2
+                      style={{
+                        fontFamily: 'JetBrains Mono, monospace',
+                        fontSize: '22px',
+                        fontWeight: 700,
+                        color: '#ffffff',
+                        margin: '0 0 4px 0',
+                        letterSpacing: '0.02em',
+                        lineHeight: 1.2,
+                        textShadow: '0 2px 12px rgba(0,0,0,0.8)',
+                      }}
+                    >
+                      {content.title}
+                    </h2>
+                    <p
+                      style={{
+                        fontFamily: 'JetBrains Mono, monospace',
+                        fontSize: '11px',
+                        fontWeight: 600,
+                        color: '#a5f3fc',
+                        margin: 0,
+                        letterSpacing: '0.15em',
+                        textShadow: '0 1px 6px rgba(0,0,0,0.6)',
+                      }}
+                    >
+                      {content.subtitle}
+                    </p>
+                  </div>
 
-                {/* Subtitle */}
-                {content.subtitle && (
-                  <p
+                  {/* Experience Items */}
+                  <div
                     style={{
-                      fontFamily: 'JetBrains Mono, monospace',
-                      fontSize: '12px',
-                      fontWeight: 600,
-                      color: '#a5f3fc',
-                      margin: '0 0 14px 0',
-                      letterSpacing: '0.15em',
-                      textShadow: '0 1px 6px rgba(0,0,0,0.6)',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '18px',
+                      width: '100%',
                     }}
                   >
-                    {content.subtitle}
-                  </p>
-                )}
+                    {EXPERIENCE_DATA.map((exp, idx) => (
+                      <div
+                        key={idx}
+                        style={{
+                          borderLeft: '2px solid rgba(103, 232, 249, 0.5)',
+                          paddingLeft: '14px',
+                        }}
+                      >
+                        {/* Company Name */}
+                        <h3
+                          style={{
+                            fontFamily: 'JetBrains Mono, monospace',
+                            fontSize: '14px',
+                            fontWeight: 700,
+                            color: '#F5FAFF',
+                            margin: '0 0 3px 0',
+                            letterSpacing: '0.02em',
+                            lineHeight: 1.3,
+                          }}
+                        >
+                          {exp.company}
+                        </h3>
+                        {/* Role */}
+                        <p
+                          style={{
+                            fontFamily: 'Inter, system-ui, sans-serif',
+                            fontSize: '12px',
+                            fontWeight: 500,
+                            color: '#e2e8f0',
+                            margin: '0 0 2px 0',
+                            lineHeight: 1.4,
+                          }}
+                        >
+                          {exp.role}
+                        </p>
+                        {/* Duration */}
+                        <p
+                          style={{
+                            fontFamily: 'JetBrains Mono, monospace',
+                            fontSize: '10px',
+                            fontWeight: 400,
+                            color: '#94a3b8',
+                            margin: '0 0 8px 0',
+                            letterSpacing: '0.05em',
+                          }}
+                        >
+                          {exp.duration}
+                        </p>
+                        {/* Description bullets */}
+                        <ul
+                          style={{
+                            margin: 0,
+                            padding: 0,
+                            listStyle: 'none',
+                          }}
+                        >
+                          {exp.description.map((bullet, bIdx) => (
+                            <li
+                              key={bIdx}
+                              style={{
+                                fontFamily: 'Inter, system-ui, sans-serif',
+                                fontSize: '11px',
+                                fontWeight: 400,
+                                color: '#DDE7EE',
+                                lineHeight: 1.7,
+                                marginBottom: '2px',
+                                paddingLeft: '12px',
+                                position: 'relative',
+                              }}
+                            >
+                              <span
+                                style={{
+                                  position: 'absolute',
+                                  left: 0,
+                                  color: '#67e8f9',
+                                }}
+                              >
+                                •
+                              </span>
+                              {bullet}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <>
+                  {/* Default Section Layout (About, etc.) */}
+                  <div style={{ textAlign: 'left', flex: 1, minWidth: 0 }}>
+                    <h2
+                      style={{
+                        fontFamily: 'JetBrains Mono, monospace',
+                        fontSize: '24px',
+                        fontWeight: 700,
+                        color: '#ffffff',
+                        margin: '0 0 6px 0',
+                        letterSpacing: '0.02em',
+                        lineHeight: 1.2,
+                        textShadow: '0 2px 12px rgba(0,0,0,0.8)',
+                      }}
+                    >
+                      {content.title}
+                    </h2>
 
-                {/* Description - bright white, readable */}
-                {content.description && (
-                  <p
-                    style={{
-                      fontFamily: 'Inter, system-ui, sans-serif',
-                      fontSize: '13px',
-                      fontWeight: 500,
-                      color: '#ffffff',
-                      margin: 0,
-                      lineHeight: 1.75,
-                      maxWidth: '420px',
-                      textShadow: '0 1px 8px rgba(0,0,0,0.8)',
-                    }}
-                  >
-                    {content.description}
-                  </p>
-                )}
-              </div>
+                    {content.subtitle && (
+                      <p
+                        style={{
+                          fontFamily: 'JetBrains Mono, monospace',
+                          fontSize: '12px',
+                          fontWeight: 600,
+                          color: '#a5f3fc',
+                          margin: '0 0 14px 0',
+                          letterSpacing: '0.15em',
+                          textShadow: '0 1px 6px rgba(0,0,0,0.6)',
+                        }}
+                      >
+                        {content.subtitle}
+                      </p>
+                    )}
 
-              {/* Image placeholder */}
-              {content.hasImage && (
-                <div
-                  style={{
-                    width: '160px',
-                    height: '160px',
-                    borderRadius: '12px',
-                    backgroundColor: 'rgba(8, 15, 30, 0.6)',
-                    border: '1px solid rgba(103, 232, 249, 0.4)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexShrink: 0,
-                  }}
-                >
-                  <span
-                    style={{
-                      fontFamily: 'JetBrains Mono, monospace',
-                      fontSize: '10px',
-                      color: '#94a3b8',
-                    }}
-                  >
-                    Image
-                  </span>
-                </div>
+                    {content.description && (
+                      <p
+                        style={{
+                          fontFamily: 'Inter, system-ui, sans-serif',
+                          fontSize: '13px',
+                          fontWeight: 500,
+                          color: '#ffffff',
+                          margin: 0,
+                          lineHeight: 1.75,
+                          maxWidth: '420px',
+                          textShadow: '0 1px 8px rgba(0,0,0,0.8)',
+                        }}
+                      >
+                        {content.description}
+                      </p>
+                    )}
+                  </div>
+
+                  {content.hasImage && (
+                    <div
+                      style={{
+                        width: '160px',
+                        height: '160px',
+                        borderRadius: '12px',
+                        backgroundColor: 'rgba(8, 15, 30, 0.6)',
+                        border: '1px solid rgba(103, 232, 249, 0.4)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexShrink: 0,
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontFamily: 'JetBrains Mono, monospace',
+                          fontSize: '10px',
+                          color: '#94a3b8',
+                        }}
+                      >
+                        Image
+                      </span>
+                    </div>
+                  )}
+                </>
               )}
             </div>
           )}
