@@ -13,12 +13,9 @@ export function AboutSection() {
         >
           {/* Text Content */}
           <div className="flex-1 text-center md:text-left">
-            <h2 className="font-mono text-3xl sm:text-4xl font-bold text-foreground mb-2 tracking-tight">
-              LAKSH SHARDA
+            <h2 className="font-mono text-3xl sm:text-4xl font-bold text-foreground mb-6 tracking-tight">
+              About Me
             </h2>
-            <p className="font-mono text-sm text-primary mb-6 tracking-widest">
-              Developer • Designer • Creator
-            </p>
             <p className="text-foreground/90 text-base sm:text-lg leading-relaxed max-w-xl">
               I'm a full-stack developer with expertise in building scalable, production-ready applications. 
               My technical focus includes React, TypeScript, Node.js, and cloud-native architectures. 
