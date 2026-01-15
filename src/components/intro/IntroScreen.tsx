@@ -7,7 +7,7 @@ interface IntroScreenProps {
 }
 
 /**
- * Intro screen with cosmic video, timed reveal, and space ambient audio
+ * Intro screen with full background video (with audio) and mute toggle
  */
 const ROLES = [
   ['DEVELOPER', 'DESIGNER', 'CREATOR'],
@@ -28,24 +28,18 @@ const ROLES = [
 ];
 
 export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
-  const LOOP_START = 8; // seconds (skip the explosion segment)
-  // Use a media fragment (#t=...) so the browser starts fetching/playing from after the explosion.
-  // This avoids any “t=0” flash in production when supported.
-  const VIDEO_SRC = `${import.meta.env.BASE_URL}videos/cosmic-intro.mp4#t=${LOOP_START}`;
+  const VIDEO_SRC = `${import.meta.env.BASE_URL}videos/intro-bg.mp4`;
 
   const [showContent, setShowContent] = useState(false);
-  const [audioEnabled, setAudioEnabled] = useState(false);
-  const [isLoopTransition, setIsLoopTransition] = useState(false);
+  const [isMuted, setIsMuted] = useState(true); // Start muted for autoplay
   const [roleIndex, setRoleIndex] = useState(0);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
-  // Show a still frame (captured from the video at LOOP_START) while we seek,
-  // so there is no black screen and no explosion flash.
-  const [posterDataUrl, setPosterDataUrl] = useState<string | null>(null);
-  const [videoReady, setVideoReady] = useState(false);
-  const [videoVisible, setVideoVisible] = useState(false);
-
-  const video1Ref = useRef<HTMLVideoElement>(null);
-  const audioRef = useRef<HTMLAudioElement>(null);
+  // Show content after a brief delay
+  useEffect(() => {
+    const timer = setTimeout(() => setShowContent(true), 300);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Cycle through roles every 4 seconds
   useEffect(() => {
@@ -58,230 +52,56 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
   // Name letters for hover effect
   const nameLetters = "LAKSH SHARDA".split('');
 
-  // Show content immediately since we start after the explosion
-  useEffect(() => {
-    setShowContent(true);
-  }, []);
-
-  // Single-video loop (prevents visible "video changing" crossfade)
-  useEffect(() => {
-    const video = video1Ref.current;
-    if (!video) return;
-
-    const handleTimeUpdate = () => {
-      if (!video.duration || Number.isNaN(video.duration)) return;
-
-      // Just before the natural end, jump back to LOOP_START.
-      if (video.duration - video.currentTime <= 0.35) {
-        setIsLoopTransition(true);
-        try {
-          video.currentTime = LOOP_START;
-        } catch {
-          // ignore
-        }
-      }
-    };
-
-    const handleSeeked = () => {
-      // Remove mask shortly after the jump is completed.
-      window.setTimeout(() => setIsLoopTransition(false), 120);
-    };
-
-    const handleEnded = () => {
-      // Fallback in case ended still fires
-      setIsLoopTransition(true);
-      try {
-        video.currentTime = LOOP_START;
-        void video.play();
-      } catch {
-        // ignore
-      }
-    };
-
-    video.addEventListener('timeupdate', handleTimeUpdate);
-    video.addEventListener('seeked', handleSeeked);
-    video.addEventListener('ended', handleEnded);
-
-    return () => {
-      video.removeEventListener('timeupdate', handleTimeUpdate);
-      video.removeEventListener('seeked', handleSeeked);
-      video.removeEventListener('ended', handleEnded);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // Toggle audio
-  const toggleAudio = async () => {
-    const audioEl = audioRef.current;
-    if (!audioEl) return;
-
-    if (audioEnabled) {
-      audioEl.pause();
-      setAudioEnabled(false);
-      return;
-    }
-
-    try {
-      audioEl.muted = false;
-      audioEl.volume = 0.9;
-      await audioEl.play();
-      setAudioEnabled(true);
-    } catch (e) {
-      console.error('Audio play failed (autoplay blocked?)', e);
-      setAudioEnabled(false);
+  // Toggle mute
+  const toggleMute = () => {
+    const video = videoRef.current;
+    if (video) {
+      video.muted = !video.muted;
+      setIsMuted(video.muted);
     }
   };
 
-  // Best-effort: enable sound on the first user interaction anywhere
-  useEffect(() => {
-    const onFirstPointerDown = () => {
-      if (audioEnabled) return;
-      void toggleAudio();
-      window.removeEventListener('pointerdown', onFirstPointerDown);
-    };
-
-    window.addEventListener('pointerdown', onFirstPointerDown, { once: true });
-    return () => window.removeEventListener('pointerdown', onFirstPointerDown);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [audioEnabled]);
-
   return (
     <div className="relative w-full h-screen overflow-hidden bg-black">
-      {/* Poster frame shown while we seek to LOOP_START (no black screen, no explosion flash) */}
-      <AnimatePresence initial={false}>
-        {!videoReady && (
-          <motion.div
-            className="absolute inset-0 z-[1]"
-            initial={{ opacity: 1 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.35, ease: 'easeInOut' }}
-          >
-            {posterDataUrl ? (
-              <img
-                src={posterDataUrl}
-                alt="Cosmic background"
-                className="h-full w-full object-cover"
-                loading="eager"
-                draggable={false}
-              />
-            ) : (
-              <div className="h-full w-full bg-background" />
-            )}
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Background Video - starts after explosion */}
+      {/* Background Video with audio */}
       <video
-        ref={video1Ref}
-        className={`absolute inset-0 z-[0] w-full h-full object-cover ${videoReady ? 'opacity-100' : 'opacity-0'} ${videoVisible ? 'visible' : 'invisible'} transition-opacity duration-500`}
+        ref={videoRef}
+        className="absolute inset-0 z-0 w-full h-full object-cover"
         src={VIDEO_SRC}
+        autoPlay
+        loop
         muted
         playsInline
-        preload="auto"
-        // IMPORTANT: do not use the autoplay attribute; some browsers will start at t=0
-        // before our seek runs, causing the explosion to flash in production.
-        onLoadedMetadata={(e) => {
-          const v = e.currentTarget;
-
-          // If the browser honored #t=LOOP_START, currentTime will already be ~LOOP_START.
-          // In that case: reveal + play immediately.
-          if (v.currentTime >= LOOP_START - 0.2) {
-            if (!videoReady) setVideoReady(true);
-            if (!videoVisible) setVideoVisible(true);
-            v.play().catch(() => {});
-            return;
-          }
-
-          // Fallback: keep hidden, then seek to LOOP_START and reveal only once seek succeeded.
-          setVideoVisible(false);
-          try {
-            v.pause();
-            v.currentTime = LOOP_START;
-          } catch {
-            // ignore
-          }
-        }}
-        onSeeked={(e) => {
-          const v = e.currentTarget;
-
-          // If the seek didn't actually land at LOOP_START (some browsers block programmatic seeking
-          // before user interaction), do NOT reveal/play the video (prevents explosion flash).
-          if (v.currentTime < LOOP_START - 0.2) return;
-
-          // Capture poster once we're at LOOP_START
-          if (!posterDataUrl) {
-            try {
-              const canvas = document.createElement('canvas');
-              canvas.width = v.videoWidth || 1920;
-              canvas.height = v.videoHeight || 1080;
-              const ctx = canvas.getContext('2d');
-              if (ctx) {
-                ctx.drawImage(v, 0, 0, canvas.width, canvas.height);
-                setPosterDataUrl(canvas.toDataURL('image/jpeg', 0.85));
-              }
-            } catch {
-              // ignore
-            }
-          }
-
-          if (!videoReady) setVideoReady(true);
-          if (!videoVisible) setVideoVisible(true);
-
-          // Start playback after the seek (avoids explosion flash)
-          v.play().catch(() => {
-            // autoplay can still be blocked; poster will remain visible
-          });
-        }}
-        onError={() => {
-          // If video fails to load, still show the UI without video
-          console.warn('Video failed to load');
-          setVideoReady(true);
-        }}
-      />
-      {/* Epic Space Ambient Audio - using Soundhelix (free reliable CDN) */}
-      <audio
-        ref={audioRef}
-        src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3"
-        loop
         preload="auto"
       />
 
       {/* Dark overlay for better text visibility */}
       <motion.div
-        className="absolute inset-0 bg-black/40"
+        className="absolute inset-0 bg-black/40 z-[1]"
         initial={{ opacity: 0 }}
         animate={{ opacity: showContent ? 0.5 : 0.2 }}
         transition={{ duration: 1 }}
       />
 
-      {/* Loop-mask overlay: subtle fade to hide visual discontinuity when we jump back to 8s */}
-      <motion.div
-        className="absolute inset-0 bg-black z-[5] pointer-events-none"
-        initial={false}
-        animate={{ opacity: isLoopTransition ? 0.25 : 0 }}
-        transition={{ duration: 0.4, ease: 'easeInOut' }}
-      />
-
-      {/* Sound toggle button */}
+      {/* Mute toggle button - top right */}
       <motion.button
         className="absolute top-6 right-6 z-30 p-3 rounded-full bg-black/30 backdrop-blur-sm border border-primary/30 hover:border-primary/60 transition-colors"
-        onClick={toggleAudio}
+        onClick={toggleMute}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.5 }}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
+        aria-label={isMuted ? 'Unmute video' : 'Mute video'}
       >
-        {audioEnabled ? (
-          <Volume2 className="w-5 h-5 text-primary" />
-        ) : (
+        {isMuted ? (
           <VolumeX className="w-5 h-5 text-primary/60" />
+        ) : (
+          <Volume2 className="w-5 h-5 text-primary" />
         )}
       </motion.button>
 
-      {/* Main Content - appears at 8 seconds */}
+      {/* Main Content */}
       <AnimatePresence>
         {showContent && (
           <motion.div
