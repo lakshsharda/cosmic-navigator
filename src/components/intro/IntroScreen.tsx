@@ -175,22 +175,25 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
         className={`absolute inset-0 z-[0] w-full h-full object-cover ${videoReady ? 'opacity-100' : 'opacity-0'} transition-opacity duration-500`}
         src={VIDEO_SRC}
         muted
-        autoPlay
         playsInline
         preload="auto"
-        onLoadedData={(e) => {
-          // Seek to skip explosion once video data is loaded
+        // IMPORTANT: do not use the autoplay attribute; some browsers will start at t=0
+        // before our seek runs, causing the explosion to flash in production.
+        onLoadedMetadata={(e) => {
+          const v = e.currentTarget;
           try {
-            e.currentTarget.currentTime = LOOP_START;
+            v.pause();
+            v.currentTime = LOOP_START;
           } catch {
             // ignore
           }
         }}
-        onCanPlay={(e) => {
-          // Capture poster and mark ready
+        onSeeked={(e) => {
+          const v = e.currentTarget;
+
+          // Capture poster once we're at LOOP_START
           if (!posterDataUrl) {
             try {
-              const v = e.currentTarget;
               const canvas = document.createElement('canvas');
               canvas.width = v.videoWidth || 1920;
               canvas.height = v.videoHeight || 1080;
@@ -203,11 +206,13 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
               // ignore
             }
           }
-          
-          if (!videoReady) {
-            setVideoReady(true);
-            e.currentTarget.play().catch(() => {});
-          }
+
+          if (!videoReady) setVideoReady(true);
+
+          // Start playback after the seek (avoids explosion flash)
+          v.play().catch(() => {
+            // autoplay can still be blocked; poster will remain visible
+          });
         }}
         onError={() => {
           // If video fails to load, still show the UI without video
@@ -265,18 +270,6 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
             animate={{ opacity: 1 }}
             transition={{ duration: 1.5, ease: 'easeOut' }}
           >
-            {/* Subtitle above name */}
-            <motion.div
-              className="mb-8"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 0.3 }}
-            >
-              <p className="font-mono text-xs md:text-sm tracking-[0.5em] text-primary/90">
-                ✦ WELCOME TO MY PORTFOLIO ✦
-              </p>
-            </motion.div>
-
             {/* Name with glow */}
             <motion.div
               className="relative"
