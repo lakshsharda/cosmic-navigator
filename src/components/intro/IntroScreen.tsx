@@ -32,7 +32,6 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
 
   const [showContent, setShowContent] = useState(false);
   const [audioEnabled, setAudioEnabled] = useState(false);
-  const [activeVideo, setActiveVideo] = useState<1 | 2>(1);
   const [isLoopTransition, setIsLoopTransition] = useState(false);
   const [roleIndex, setRoleIndex] = useState(0);
 
@@ -41,11 +40,7 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
   const [posterDataUrl, setPosterDataUrl] = useState<string | null>(null);
   const [videoReady, setVideoReady] = useState(false);
 
-  const activeVideoRef = useRef<1 | 2>(1);
-  const switchingRef = useRef(false);
-
   const video1Ref = useRef<HTMLVideoElement>(null);
-  const video2Ref = useRef<HTMLVideoElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
 
   // Cycle through roles every 4 seconds
@@ -64,95 +59,50 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
     setShowContent(true);
   }, []);
 
-  // Keep ref in sync
+  // Single-video loop (prevents visible "video changing" crossfade)
   useEffect(() => {
-    activeVideoRef.current = activeVideo;
-  }, [activeVideo]);
+    const video = video1Ref.current;
+    if (!video) return;
 
-  // Seamless loop using two videos with crossfade (no visible "end" frame)
-  useEffect(() => {
-    const video1 = video1Ref.current;
-    const video2 = video2Ref.current;
-    if (!video1 || !video2) return;
+    const handleTimeUpdate = () => {
+      if (!video.duration || Number.isNaN(video.duration)) return;
 
-    const getVideos = () => {
-      const current = activeVideoRef.current === 1 ? video1 : video2;
-      const next = activeVideoRef.current === 1 ? video2 : video1;
-      return { current, next };
-    };
-
-    const prepareNext = () => {
-      const { next } = getVideos();
-      try {
-        // Keep the hidden video parked at LOOP_START so the swap never shows the explosion.
-        next.currentTime = LOOP_START;
-        next.pause();
-      } catch {
-        // ignore seek errors
-      }
-    };
-
-    const switchToNext = async () => {
-      if (switchingRef.current) return;
-      switchingRef.current = true;
-      setIsLoopTransition(true);
-
-      const { current, next } = getVideos();
-
-      try {
-        next.currentTime = LOOP_START;
-        await next.play();
-      } catch {
-        // If play fails, don't switch (avoids blank frame)
-        switchingRef.current = false;
-        setIsLoopTransition(false);
-        return;
-      }
-
-      setActiveVideo((prev) => (prev === 1 ? 2 : 1));
-
-      // After fade completes, reset the old video for the next loop
-      window.setTimeout(() => {
+      // Just before the natural end, jump back to LOOP_START.
+      if (video.duration - video.currentTime <= 0.35) {
+        setIsLoopTransition(true);
         try {
-          current.pause();
-          current.currentTime = LOOP_START;
+          video.currentTime = LOOP_START;
         } catch {
           // ignore
         }
-        switchingRef.current = false;
-        setIsLoopTransition(false);
-      }, 500);
-    };
-
-    const handleTimeUpdate = () => {
-      const { current } = getVideos();
-      if (!current.duration || Number.isNaN(current.duration)) return;
-
-      // Switch a bit BEFORE the end to avoid showing the last frame / cut
-      if (current.duration - current.currentTime <= 0.45) {
-        switchToNext();
       }
     };
 
-    const handleEnded = () => {
-      // Fallback: if a browser still fires ended, immediately swap
-      switchToNext();
+    const handleSeeked = () => {
+      // Remove mask shortly after the jump is completed.
+      window.setTimeout(() => setIsLoopTransition(false), 120);
     };
 
-    prepareNext();
+    const handleEnded = () => {
+      // Fallback in case ended still fires
+      setIsLoopTransition(true);
+      try {
+        video.currentTime = LOOP_START;
+        void video.play();
+      } catch {
+        // ignore
+      }
+    };
 
-    video1.addEventListener('timeupdate', handleTimeUpdate);
-    video2.addEventListener('timeupdate', handleTimeUpdate);
-    video1.addEventListener('ended', handleEnded);
-    video2.addEventListener('ended', handleEnded);
+    video.addEventListener('timeupdate', handleTimeUpdate);
+    video.addEventListener('seeked', handleSeeked);
+    video.addEventListener('ended', handleEnded);
 
     return () => {
-      video1.removeEventListener('timeupdate', handleTimeUpdate);
-      video2.removeEventListener('timeupdate', handleTimeUpdate);
-      video1.removeEventListener('ended', handleEnded);
-      video2.removeEventListener('ended', handleEnded);
+      video.removeEventListener('timeupdate', handleTimeUpdate);
+      video.removeEventListener('seeked', handleSeeked);
+      video.removeEventListener('ended', handleEnded);
     };
-    // We intentionally rely on stable refs; LOOP_START is constant per render.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -218,12 +168,10 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
         )}
       </AnimatePresence>
 
-      {/* Background Video 1 - starts after explosion */}
+      {/* Background Video - starts after explosion */}
       <video
         ref={video1Ref}
-        className={`absolute inset-0 z-[0] w-full h-full object-cover transition-opacity duration-500 ${
-          activeVideo === 1 && videoReady ? 'opacity-100' : 'opacity-0'
-        }`}
+        className={`absolute inset-0 z-[0] w-full h-full object-cover ${videoReady ? 'opacity-100' : 'opacity-0'} transition-opacity duration-500`}
         src="/videos/cosmic-intro.mp4"
         muted
         playsInline
@@ -237,7 +185,7 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
           }
         }}
         onSeeked={async (e) => {
-          // Capture a still so we can show it instantly on future loads/seeks.
+          // Capture a still so we can show it instantly (no black screen, no explosion flash)
           if (!posterDataUrl) {
             try {
               const v = e.currentTarget;
@@ -254,59 +202,12 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
             }
           }
 
-          // Only "start" once the active video has landed at LOOP_START.
-          if (activeVideoRef.current === 1 && !videoReady && e.currentTarget.currentTime >= LOOP_START - 0.05) {
+          if (!videoReady && e.currentTarget.currentTime >= LOOP_START - 0.05) {
             setVideoReady(true);
             try {
               await e.currentTarget.play();
             } catch {
               // autoplay can be blocked; poster will remain visible until playback starts
-            }
-          }
-        }}
-      />
-
-      {/* Background Video 2 (for seamless loop) */}
-      <video
-        ref={video2Ref}
-        className={`absolute inset-0 z-[0] w-full h-full object-cover transition-opacity duration-500 ${
-          activeVideo === 2 && videoReady ? 'opacity-100' : 'opacity-0'
-        }`}
-        src="/videos/cosmic-intro.mp4"
-        muted
-        playsInline
-        preload="auto"
-        onLoadedMetadata={(e) => {
-          try {
-            e.currentTarget.currentTime = LOOP_START;
-            e.currentTarget.pause();
-          } catch {
-            // ignore
-          }
-        }}
-        onSeeked={async (e) => {
-          if (!posterDataUrl) {
-            try {
-              const v = e.currentTarget;
-              const canvas = document.createElement('canvas');
-              canvas.width = v.videoWidth || 1920;
-              canvas.height = v.videoHeight || 1080;
-              const ctx = canvas.getContext('2d');
-              if (ctx) {
-                ctx.drawImage(v, 0, 0, canvas.width, canvas.height);
-                setPosterDataUrl(canvas.toDataURL('image/jpeg', 0.85));
-              }
-            } catch {
-              // ignore
-            }
-          }
-
-          if (activeVideoRef.current === 2 && !videoReady && e.currentTarget.currentTime >= LOOP_START - 0.05) {
-            setVideoReady(true);
-            try {
-              await e.currentTarget.play();
-            } catch {
-              // ignore
             }
           }
         }}
