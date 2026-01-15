@@ -251,7 +251,7 @@ export function SectionPlane({
             >
               {/* Text Content */}
               <div style={{ textAlign: 'left', flex: 1, minWidth: 0 }}>
-                {/* Main heading - pure white */}
+                {/* Main heading - bright white */}
                 <h2
                   style={{
                     fontFamily: 'JetBrains Mono, monospace',
@@ -261,7 +261,7 @@ export function SectionPlane({
                     margin: '0 0 6px 0',
                     letterSpacing: '0.02em',
                     lineHeight: 1.2,
-                    textShadow: '0 2px 8px rgba(0,0,0,0.6)',
+                    textShadow: '0 2px 12px rgba(0,0,0,0.8)',
                   }}
                 >
                   {content.title}
@@ -273,29 +273,29 @@ export function SectionPlane({
                     style={{
                       fontFamily: 'JetBrains Mono, monospace',
                       fontSize: '12px',
-                      fontWeight: 500,
-                      color: '#67e8f9',
+                      fontWeight: 600,
+                      color: '#a5f3fc',
                       margin: '0 0 14px 0',
                       letterSpacing: '0.15em',
-                      textShadow: '0 1px 4px rgba(0,0,0,0.5)',
+                      textShadow: '0 1px 6px rgba(0,0,0,0.6)',
                     }}
                   >
                     {content.subtitle}
                   </p>
                 )}
 
-                {/* Description - pure white, readable */}
+                {/* Description - bright white, readable */}
                 {content.description && (
                   <p
                     style={{
                       fontFamily: 'Inter, system-ui, sans-serif',
                       fontSize: '13px',
-                      fontWeight: 400,
+                      fontWeight: 500,
                       color: '#ffffff',
                       margin: 0,
                       lineHeight: 1.75,
                       maxWidth: '420px',
-                      textShadow: '0 1px 6px rgba(0,0,0,0.7)',
+                      textShadow: '0 1px 8px rgba(0,0,0,0.8)',
                     }}
                   >
                     {content.description}
