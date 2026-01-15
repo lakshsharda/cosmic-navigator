@@ -4,11 +4,13 @@ import IntroScreen from '@/components/intro/IntroScreen';
 import CosmicLoader from '@/components/ui/CosmicLoader';
 import ScrollNavbar from '@/components/sections/ScrollNavbar';
 import StarBackground from '@/components/sections/StarBackground';
+import HeroSection from '@/components/sections/HeroSection';
 import AboutSection from '@/components/sections/AboutSection';
 import ExperienceSection from '@/components/sections/ExperienceSection';
 import ProjectsSection from '@/components/sections/ProjectsSection';
 import SkillsSection from '@/components/sections/SkillsSection';
 import AchievementsSection from '@/components/sections/AchievementsSection';
+import EducationSection from '@/components/sections/EducationSection';
 import ContactSection from '@/components/sections/ContactSection';
 import { ProjectModal, Project } from '@/components/projects/ProjectModal';
 
@@ -48,7 +50,7 @@ const Index = () => {
   useEffect(() => {
     if (!showPortfolio) return;
 
-    const sections = ['about', 'experience', 'projects', 'skills', 'achievements', 'contact'];
+    const sections = ['hero', 'about', 'experience', 'projects', 'skills', 'achievements', 'education', 'contact'];
     
     const handleScroll = () => {
       const scrollPosition = window.scrollY + window.innerHeight / 3;
@@ -115,11 +117,13 @@ const Index = () => {
 
             {/* Sections */}
             <main className="relative z-10">
+              <HeroSection />
               <AboutSection />
               <ExperienceSection />
               <ProjectsSection onProjectClick={handleProjectClick} />
               <SkillsSection />
               <AchievementsSection />
+              <EducationSection />
               <ContactSection />
             </main>
           </motion.div>
