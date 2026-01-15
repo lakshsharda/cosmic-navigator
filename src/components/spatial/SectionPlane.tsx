@@ -318,11 +318,12 @@ export function SectionPlane({
                     </p>
                   </div>
 
-                  {/* Experience Items - Two columns */}
+                  {/* Experience Items - Vertical stack */}
                   <div
                     style={{
                       display: 'flex',
-                      gap: '24px',
+                      flexDirection: 'column',
+                      gap: '14px',
                       width: '100%',
                     }}
                   >
@@ -330,7 +331,6 @@ export function SectionPlane({
                       <div
                         key={idx}
                         style={{
-                          flex: 1,
                           borderLeft: '2px solid rgba(103, 232, 249, 0.5)',
                           paddingLeft: '12px',
                         }}
@@ -339,7 +339,7 @@ export function SectionPlane({
                         <h3
                           style={{
                             fontFamily: 'JetBrains Mono, monospace',
-                            fontSize: '12px',
+                            fontSize: '13px',
                             fontWeight: 700,
                             color: '#F5FAFF',
                             margin: '0 0 2px 0',
@@ -354,7 +354,7 @@ export function SectionPlane({
                         <p
                           style={{
                             fontFamily: 'Inter, system-ui, sans-serif',
-                            fontSize: '10px',
+                            fontSize: '11px',
                             fontWeight: 500,
                             color: '#e2e8f0',
                             margin: '0 0 1px 0',
@@ -371,7 +371,7 @@ export function SectionPlane({
                             fontSize: '9px',
                             fontWeight: 400,
                             color: '#94a3b8',
-                            margin: '0 0 6px 0',
+                            margin: '0 0 5px 0',
                             letterSpacing: '0.05em',
                             textShadow: '0 1px 4px rgba(0,0,0,0.7)',
                           }}
@@ -391,7 +391,7 @@ export function SectionPlane({
                               key={bIdx}
                               style={{
                                 fontFamily: 'Inter, system-ui, sans-serif',
-                                fontSize: '9px',
+                                fontSize: '10px',
                                 fontWeight: 400,
                                 color: '#DDE7EE',
                                 lineHeight: 1.6,
@@ -416,30 +416,6 @@ export function SectionPlane({
                         </ul>
                       </div>
                     ))}
-                  </div>
-
-                  {/* Scroll indicator */}
-                  <div
-                    style={{
-                      marginTop: '8px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '6px',
-                      opacity: 0.6,
-                    }}
-                  >
-                    <span
-                      style={{
-                        fontFamily: 'JetBrains Mono, monospace',
-                        fontSize: '8px',
-                        color: '#67e8f9',
-                        letterSpacing: '0.1em',
-                        textShadow: '0 1px 4px rgba(0,0,0,0.6)',
-                      }}
-                    >
-                      SCROLL TO NAVIGATE
-                    </span>
-                    <span style={{ color: '#67e8f9', fontSize: '10px' }}>↓</span>
                   </div>
                 </>
               ) : (
@@ -524,6 +500,51 @@ export function SectionPlane({
               )}
             </div>
           )}
+        </div>
+      </Html>
+
+      {/* Scroll to navigate indicator - below the box */}
+      <Html
+        center
+        position={[0, -4.2, 0.1]}
+        style={{
+          pointerEvents: 'none',
+          userSelect: 'none',
+        }}
+        transform
+        occlude={false}
+        distanceFactor={8}
+      >
+        <div
+          style={{
+            opacity: focusWeight > 0.5 ? Math.min((focusWeight - 0.3) / 0.5, 1) * 0.7 : 0,
+            transition: 'opacity 0.3s ease',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '8px',
+          }}
+        >
+          <span
+            style={{
+              fontFamily: 'JetBrains Mono, monospace',
+              fontSize: '9px',
+              color: '#67e8f9',
+              letterSpacing: '0.12em',
+              textShadow: '0 1px 6px rgba(0,0,0,0.8)',
+            }}
+          >
+            SCROLL TO NAVIGATE
+          </span>
+          <span 
+            style={{ 
+              color: '#67e8f9', 
+              fontSize: '12px',
+              animation: 'pulse 2s ease-in-out infinite',
+            }}
+          >
+            ↓
+          </span>
         </div>
       </Html>
 
