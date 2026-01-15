@@ -92,6 +92,18 @@ export const PROJECTS_DATA: Project[] = [
     techStack: ['IoT', 'Sensors', 'Cloud Integration'],
     image: projectBreathguard,
   },
+  {
+    id: 7,
+    title: 'The Thursday Thing',
+    year: '2025',
+    shortDescription: 'Scalable full-stack web platform built for real-world production use.',
+    fullDescription: [
+      'Built "The Thursday Thing", a scalable full-stack web application using React, Node.js, and Firebase.',
+      'Designed and implemented secure authentication, responsive UI, and backend services.',
+      'Developed within agile teams with a focus on production-ready architecture and performance.',
+    ],
+    techStack: ['React', 'Node.js', 'Firebase', 'Full Stack Development'],
+  },
 ];
 
 interface ProjectModalProps {
@@ -225,10 +237,10 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
             <div
               style={{
                 width: '100%',
-                maxHeight: '300px',
-                borderRadius: '12px',
+                maxHeight: '200px',
+                borderRadius: '10px',
                 overflow: 'hidden',
-                marginBottom: '24px',
+                marginBottom: '20px',
                 backgroundColor: 'rgba(0, 0, 0, 0.4)',
               }}
             >

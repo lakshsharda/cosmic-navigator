@@ -58,12 +58,12 @@ export function ProjectsSection({ focusWeight }: ProjectsSectionProps) {
         </p>
       </div>
 
-      {/* Projects Grid - 2 per row */}
+      {/* Projects Grid - compact for 7 projects */}
       <div
         style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(2, 1fr)',
-          gap: '10px',
+          gap: '6px',
           width: '100%',
         }}
       >
@@ -71,25 +71,25 @@ export function ProjectsSection({ focusWeight }: ProjectsSectionProps) {
           <div
             key={project.id}
             style={{
-              padding: '12px 14px',
+              padding: '8px 10px',
               backgroundColor: 'rgba(8, 15, 30, 0.4)',
               border: '1px solid rgba(103, 232, 249, 0.25)',
-              borderRadius: '10px',
+              borderRadius: '8px',
               display: 'flex',
               flexDirection: 'column',
-              gap: '6px',
+              gap: '4px',
             }}
           >
             {/* Title & Year */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '6px' }}>
               <h3
                 style={{
                   fontFamily: 'JetBrains Mono, monospace',
-                  fontSize: '11px',
+                  fontSize: '9px',
                   fontWeight: 700,
                   color: '#F5FAFF',
                   margin: 0,
-                  lineHeight: 1.3,
+                  lineHeight: 1.2,
                   textShadow: '0 1px 6px rgba(0,0,0,0.8)',
                 }}
               >
@@ -98,7 +98,7 @@ export function ProjectsSection({ focusWeight }: ProjectsSectionProps) {
               <span
                 style={{
                   fontFamily: 'JetBrains Mono, monospace',
-                  fontSize: '9px',
+                  fontSize: '8px',
                   color: '#94a3b8',
                   flexShrink: 0,
                 }}
@@ -111,64 +111,30 @@ export function ProjectsSection({ focusWeight }: ProjectsSectionProps) {
             <p
               style={{
                 fontFamily: 'Inter, system-ui, sans-serif',
-                fontSize: '9px',
+                fontSize: '8px',
                 fontWeight: 400,
                 color: '#DDE7EE',
                 margin: 0,
-                lineHeight: 1.5,
+                lineHeight: 1.4,
                 textShadow: '0 1px 4px rgba(0,0,0,0.7)',
               }}
             >
               {project.shortDescription}
             </p>
 
-            {/* Tech Stack Badges */}
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginTop: '2px' }}>
-              {project.techStack.slice(0, 4).map((tech, idx) => (
-                <span
-                  key={idx}
-                  style={{
-                    fontFamily: 'JetBrains Mono, monospace',
-                    fontSize: '7px',
-                    fontWeight: 500,
-                    color: '#a5f3fc',
-                    padding: '3px 6px',
-                    backgroundColor: 'rgba(8, 15, 30, 0.6)',
-                    borderRadius: '10px',
-                    border: '1px solid rgba(103, 232, 249, 0.35)',
-                  }}
-                >
-                  {tech}
-                </span>
-              ))}
-              {project.techStack.length > 4 && (
-                <span
-                  style={{
-                    fontFamily: 'JetBrains Mono, monospace',
-                    fontSize: '7px',
-                    fontWeight: 500,
-                    color: '#67e8f9',
-                    padding: '3px 6px',
-                  }}
-                >
-                  +{project.techStack.length - 4}
-                </span>
-              )}
-            </div>
-
             {/* View Details Button */}
             <button
               onClick={() => handleViewDetails(project)}
               style={{
-                marginTop: '4px',
-                padding: '5px 10px',
+                marginTop: '2px',
+                padding: '4px 8px',
                 fontFamily: 'JetBrains Mono, monospace',
-                fontSize: '8px',
+                fontSize: '7px',
                 fontWeight: 600,
                 color: '#67e8f9',
                 backgroundColor: 'rgba(103, 232, 249, 0.1)',
                 border: '1px solid rgba(103, 232, 249, 0.4)',
-                borderRadius: '6px',
+                borderRadius: '5px',
                 cursor: 'pointer',
                 transition: 'all 0.2s ease',
                 alignSelf: 'flex-start',
@@ -183,7 +149,7 @@ export function ProjectsSection({ focusWeight }: ProjectsSectionProps) {
                 e.currentTarget.style.transform = 'translateY(0)';
               }}
             >
-              View More Details
+              View Details
             </button>
           </div>
         ))}
