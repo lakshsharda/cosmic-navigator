@@ -175,18 +175,19 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
         className={`absolute inset-0 z-[0] w-full h-full object-cover ${videoReady ? 'opacity-100' : 'opacity-0'} transition-opacity duration-500`}
         src={VIDEO_SRC}
         muted
+        autoPlay
         playsInline
         preload="auto"
-        onLoadedMetadata={(e) => {
+        onLoadedData={(e) => {
+          // Seek to skip explosion once video data is loaded
           try {
             e.currentTarget.currentTime = LOOP_START;
-            e.currentTarget.pause();
           } catch {
             // ignore
           }
         }}
-        onSeeked={async (e) => {
-          // Capture a still so we can show it instantly (no black screen, no explosion flash)
+        onCanPlay={(e) => {
+          // Capture poster and mark ready
           if (!posterDataUrl) {
             try {
               const v = e.currentTarget;
@@ -202,15 +203,16 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
               // ignore
             }
           }
-
-          if (!videoReady && e.currentTarget.currentTime >= LOOP_START - 0.05) {
+          
+          if (!videoReady) {
             setVideoReady(true);
-            try {
-              await e.currentTarget.play();
-            } catch {
-              // autoplay can be blocked; poster will remain visible until playback starts
-            }
+            e.currentTarget.play().catch(() => {});
           }
+        }}
+        onError={() => {
+          // If video fails to load, still show the UI without video
+          console.warn('Video failed to load');
+          setVideoReady(true);
         }}
       />
       {/* Epic Space Ambient Audio - using Soundhelix (free reliable CDN) */}
