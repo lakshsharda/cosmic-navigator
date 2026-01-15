@@ -1,13 +1,13 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, Volume2, VolumeX } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 
 interface IntroScreenProps {
   onScrollToPortfolio: () => void;
 }
 
 /**
- * Intro screen with full background video (with audio) and mute toggle
+ * Intro screen with full background video (muted) and seamless loop mask
  */
 const ROLES = [
   ['DEVELOPER', 'DESIGNER', 'CREATOR'],
@@ -31,7 +31,7 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
   const VIDEO_SRC = `${import.meta.env.BASE_URL}videos/intro-bg.mp4`;
 
   const [showContent, setShowContent] = useState(false);
-  const [isMuted, setIsMuted] = useState(true); // Start muted for autoplay
+  const [isLoopTransition, setIsLoopTransition] = useState(false);
   const [roleIndex, setRoleIndex] = useState(0);
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -49,17 +49,61 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
     return () => clearInterval(interval);
   }, []);
 
+  // Enforce muted video (per request)
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v) return;
+    v.muted = true;
+    v.volume = 0;
+  }, []);
+
+  // Seamless loop: jump back to 0 with a subtle fade mask to hide the cut.
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v) return;
+
+    const handleTimeUpdate = () => {
+      if (!v.duration || Number.isNaN(v.duration)) return;
+
+      // Trigger slightly earlier so the fade fully covers the jump on all devices.
+      if (v.duration - v.currentTime <= 0.9) {
+        setIsLoopTransition(true);
+        try {
+          v.currentTime = 0;
+          void v.play();
+        } catch {
+          // ignore
+        }
+      }
+    };
+
+    const handleSeeked = () => {
+      window.setTimeout(() => setIsLoopTransition(false), 120);
+    };
+
+    const handleEnded = () => {
+      setIsLoopTransition(true);
+      try {
+        v.currentTime = 0;
+        void v.play();
+      } catch {
+        // ignore
+      }
+    };
+
+    v.addEventListener('timeupdate', handleTimeUpdate);
+    v.addEventListener('seeked', handleSeeked);
+    v.addEventListener('ended', handleEnded);
+
+    return () => {
+      v.removeEventListener('timeupdate', handleTimeUpdate);
+      v.removeEventListener('seeked', handleSeeked);
+      v.removeEventListener('ended', handleEnded);
+    };
+  }, []);
+
   // Name letters for hover effect
   const nameLetters = "LAKSH SHARDA".split('');
-
-  // Toggle mute
-  const toggleMute = () => {
-    const video = videoRef.current;
-    if (video) {
-      video.muted = !video.muted;
-      setIsMuted(video.muted);
-    }
-  };
 
   return (
     <div className="relative w-full h-screen overflow-hidden bg-black">
@@ -69,7 +113,6 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
         className="absolute inset-0 z-0 w-full h-full object-cover"
         src={VIDEO_SRC}
         autoPlay
-        loop
         muted
         playsInline
         preload="auto"
@@ -83,23 +126,13 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
         transition={{ duration: 1 }}
       />
 
-      {/* Mute toggle button - top right */}
-      <motion.button
-        className="absolute top-6 right-6 z-30 p-3 rounded-full bg-black/30 backdrop-blur-sm border border-primary/30 hover:border-primary/60 transition-colors"
-        onClick={toggleMute}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.5 }}
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.95 }}
-        aria-label={isMuted ? 'Unmute video' : 'Mute video'}
-      >
-        {isMuted ? (
-          <VolumeX className="w-5 h-5 text-primary/60" />
-        ) : (
-          <Volume2 className="w-5 h-5 text-primary" />
-        )}
-      </motion.button>
+      {/* Loop-mask overlay: fade to hide the end→start jump */}
+      <motion.div
+        className="absolute inset-0 bg-black z-[50] pointer-events-none"
+        initial={false}
+        animate={{ opacity: isLoopTransition ? 0.6 : 0 }}
+        transition={{ duration: 0.18, ease: 'easeOut' }}
+      />
 
       {/* Main Content */}
       <AnimatePresence>
