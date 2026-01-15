@@ -28,42 +28,27 @@ export function ProjectsSection({ focusWeight }: ProjectsSectionProps) {
       }}
     >
       {/* Header */}
-      <div style={{ marginBottom: '4px' }}>
-        <h2
-          style={{
-            fontFamily: 'JetBrains Mono, monospace',
-            fontSize: '20px',
-            fontWeight: 700,
-            color: '#ffffff',
-            margin: '0 0 4px 0',
-            letterSpacing: '0.02em',
-            lineHeight: 1.2,
-            textShadow: '0 2px 12px rgba(0,0,0,0.9)',
-          }}
-        >
-          PROJECTS
-        </h2>
-        <p
-          style={{
-            fontFamily: 'JetBrains Mono, monospace',
-            fontSize: '10px',
-            fontWeight: 600,
-            color: '#a5f3fc',
-            margin: 0,
-            letterSpacing: '0.15em',
-            textShadow: '0 1px 6px rgba(0,0,0,0.7)',
-          }}
-        >
-          Featured Work
-        </p>
-      </div>
+      <h2
+        style={{
+          fontFamily: 'JetBrains Mono, monospace',
+          fontSize: '18px',
+          fontWeight: 700,
+          color: '#ffffff',
+          margin: '0 0 8px 0',
+          letterSpacing: '0.02em',
+          lineHeight: 1.2,
+          textShadow: '0 2px 12px rgba(0,0,0,0.9)',
+        }}
+      >
+        PROJECTS
+      </h2>
 
       {/* Projects Grid - compact for 7 projects */}
       <div
         style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(2, 1fr)',
-          gap: '6px',
+          gap: '5px',
           width: '100%',
         }}
       >
@@ -71,26 +56,29 @@ export function ProjectsSection({ focusWeight }: ProjectsSectionProps) {
           <div
             key={project.id}
             style={{
-              padding: '8px 10px',
+              padding: '6px 8px',
               backgroundColor: 'rgba(8, 15, 30, 0.4)',
               border: '1px solid rgba(103, 232, 249, 0.25)',
-              borderRadius: '8px',
+              borderRadius: '6px',
               display: 'flex',
               flexDirection: 'column',
-              gap: '4px',
+              gap: '3px',
             }}
           >
             {/* Title & Year */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '6px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '4px' }}>
               <h3
                 style={{
                   fontFamily: 'JetBrains Mono, monospace',
-                  fontSize: '9px',
+                  fontSize: '8px',
                   fontWeight: 700,
                   color: '#F5FAFF',
                   margin: 0,
                   lineHeight: 1.2,
                   textShadow: '0 1px 6px rgba(0,0,0,0.8)',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
                 }}
               >
                 {project.title}
@@ -98,7 +86,7 @@ export function ProjectsSection({ focusWeight }: ProjectsSectionProps) {
               <span
                 style={{
                   fontFamily: 'JetBrains Mono, monospace',
-                  fontSize: '8px',
+                  fontSize: '7px',
                   color: '#94a3b8',
                   flexShrink: 0,
                 }}
@@ -111,12 +99,16 @@ export function ProjectsSection({ focusWeight }: ProjectsSectionProps) {
             <p
               style={{
                 fontFamily: 'Inter, system-ui, sans-serif',
-                fontSize: '8px',
+                fontSize: '7px',
                 fontWeight: 400,
                 color: '#DDE7EE',
                 margin: 0,
-                lineHeight: 1.4,
+                lineHeight: 1.3,
                 textShadow: '0 1px 4px rgba(0,0,0,0.7)',
+                display: '-webkit-box',
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: 'vertical',
+                overflow: 'hidden',
               }}
             >
               {project.shortDescription}
@@ -126,15 +118,15 @@ export function ProjectsSection({ focusWeight }: ProjectsSectionProps) {
             <button
               onClick={() => handleViewDetails(project)}
               style={{
-                marginTop: '2px',
-                padding: '4px 8px',
+                marginTop: 'auto',
+                padding: '3px 6px',
                 fontFamily: 'JetBrains Mono, monospace',
-                fontSize: '7px',
+                fontSize: '6px',
                 fontWeight: 600,
                 color: '#67e8f9',
                 backgroundColor: 'rgba(103, 232, 249, 0.1)',
                 border: '1px solid rgba(103, 232, 249, 0.4)',
-                borderRadius: '5px',
+                borderRadius: '4px',
                 cursor: 'pointer',
                 transition: 'all 0.2s ease',
                 alignSelf: 'flex-start',
