@@ -28,11 +28,19 @@ const ROLES = [
 ];
 
 export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
+  const LOOP_START = 8; // seconds (skip the explosion segment)
+
   const [showContent, setShowContent] = useState(false);
   const [audioEnabled, setAudioEnabled] = useState(false);
   const [activeVideo, setActiveVideo] = useState<1 | 2>(1);
   const [isLoopTransition, setIsLoopTransition] = useState(false);
   const [roleIndex, setRoleIndex] = useState(0);
+
+  // Show a still frame (captured from the video at LOOP_START) while we seek,
+  // so there is no black screen and no explosion flash.
+  const [posterDataUrl, setPosterDataUrl] = useState<string | null>(null);
+  const [videoReady, setVideoReady] = useState(false);
+
   const activeVideoRef = useRef<1 | 2>(1);
   const switchingRef = useRef(false);
 
@@ -73,11 +81,11 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
       return { current, next };
     };
 
-    const prepareNext = async () => {
+    const prepareNext = () => {
       const { next } = getVideos();
       try {
-        // Prepare next video at start for seamless loop
-        next.currentTime = 0;
+        // Keep the hidden video parked at LOOP_START so the swap never shows the explosion.
+        next.currentTime = LOOP_START;
         next.pause();
       } catch {
         // ignore seek errors
@@ -92,7 +100,7 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
       const { current, next } = getVideos();
 
       try {
-        next.currentTime = 0;
+        next.currentTime = LOOP_START;
         await next.play();
       } catch {
         // If play fails, don't switch (avoids blank frame)
@@ -107,7 +115,7 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
       window.setTimeout(() => {
         try {
           current.pause();
-          current.currentTime = 0;
+          current.currentTime = LOOP_START;
         } catch {
           // ignore
         }
@@ -144,6 +152,8 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
       video1.removeEventListener('ended', handleEnded);
       video2.removeEventListener('ended', handleEnded);
     };
+    // We intentionally rely on stable refs; LOOP_START is constant per render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Toggle audio
@@ -183,32 +193,124 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
 
   return (
     <div className="relative w-full h-screen overflow-hidden bg-black">
-      {/* Background Video 1 - plays from start including explosion */}
+      {/* Poster frame shown while we seek to LOOP_START (no black screen, no explosion flash) */}
+      <AnimatePresence initial={false}>
+        {!videoReady && (
+          <motion.div
+            className="absolute inset-0 z-[1]"
+            initial={{ opacity: 1 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.35, ease: 'easeInOut' }}
+          >
+            {posterDataUrl ? (
+              <img
+                src={posterDataUrl}
+                alt="Cosmic background"
+                className="h-full w-full object-cover"
+                loading="eager"
+                draggable={false}
+              />
+            ) : (
+              <div className="h-full w-full bg-background" />
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Background Video 1 - starts after explosion */}
       <video
         ref={video1Ref}
-        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
-          activeVideo === 1 ? 'opacity-100' : 'opacity-0'
+        className={`absolute inset-0 z-[0] w-full h-full object-cover transition-opacity duration-500 ${
+          activeVideo === 1 && videoReady ? 'opacity-100' : 'opacity-0'
         }`}
         src="/videos/cosmic-intro.mp4"
         muted
         playsInline
         preload="auto"
-        autoPlay
+        onLoadedMetadata={(e) => {
+          try {
+            e.currentTarget.currentTime = LOOP_START;
+            e.currentTarget.pause();
+          } catch {
+            // ignore
+          }
+        }}
+        onSeeked={async (e) => {
+          // Capture a still so we can show it instantly on future loads/seeks.
+          if (!posterDataUrl) {
+            try {
+              const v = e.currentTarget;
+              const canvas = document.createElement('canvas');
+              canvas.width = v.videoWidth || 1920;
+              canvas.height = v.videoHeight || 1080;
+              const ctx = canvas.getContext('2d');
+              if (ctx) {
+                ctx.drawImage(v, 0, 0, canvas.width, canvas.height);
+                setPosterDataUrl(canvas.toDataURL('image/jpeg', 0.85));
+              }
+            } catch {
+              // ignore
+            }
+          }
+
+          // Only "start" once the active video has landed at LOOP_START.
+          if (activeVideoRef.current === 1 && !videoReady && e.currentTarget.currentTime >= LOOP_START - 0.05) {
+            setVideoReady(true);
+            try {
+              await e.currentTarget.play();
+            } catch {
+              // autoplay can be blocked; poster will remain visible until playback starts
+            }
+          }
+        }}
       />
 
       {/* Background Video 2 (for seamless loop) */}
       <video
         ref={video2Ref}
-        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
-          activeVideo === 2 ? 'opacity-100' : 'opacity-0'
+        className={`absolute inset-0 z-[0] w-full h-full object-cover transition-opacity duration-500 ${
+          activeVideo === 2 && videoReady ? 'opacity-100' : 'opacity-0'
         }`}
         src="/videos/cosmic-intro.mp4"
         muted
         playsInline
         preload="auto"
+        onLoadedMetadata={(e) => {
+          try {
+            e.currentTarget.currentTime = LOOP_START;
+            e.currentTarget.pause();
+          } catch {
+            // ignore
+          }
+        }}
+        onSeeked={async (e) => {
+          if (!posterDataUrl) {
+            try {
+              const v = e.currentTarget;
+              const canvas = document.createElement('canvas');
+              canvas.width = v.videoWidth || 1920;
+              canvas.height = v.videoHeight || 1080;
+              const ctx = canvas.getContext('2d');
+              if (ctx) {
+                ctx.drawImage(v, 0, 0, canvas.width, canvas.height);
+                setPosterDataUrl(canvas.toDataURL('image/jpeg', 0.85));
+              }
+            } catch {
+              // ignore
+            }
+          }
+
+          if (activeVideoRef.current === 2 && !videoReady && e.currentTarget.currentTime >= LOOP_START - 0.05) {
+            setVideoReady(true);
+            try {
+              await e.currentTarget.play();
+            } catch {
+              // ignore
+            }
+          }
+        }}
       />
-
-
       {/* Epic Space Ambient Audio - using Soundhelix (free reliable CDN) */}
       <audio
         ref={audioRef}
