@@ -39,7 +39,7 @@ export function Navbar({ activeSectionId, onNavigate }: NavbarProps) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.3 }}
       >
-        <div className="glass-panel mx-4 lg:mx-8 mt-4 lg:mt-6 rounded-full px-4 lg:px-6 py-2.5 lg:py-3">
+        <div className="mx-4 lg:mx-8 mt-4 lg:mt-6 rounded-full px-4 lg:px-6 py-2.5 lg:py-3 bg-background/10 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.1)]">
           <div className="flex items-center justify-between">
             {/* Logo / Name */}
             <div className="flex items-center gap-2 lg:gap-3">
@@ -90,7 +90,7 @@ export function Navbar({ activeSectionId, onNavigate }: NavbarProps) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.3 }}
       >
-        <div className="glass-panel mx-3 sm:mx-4 mt-3 sm:mt-4 rounded-2xl px-3 sm:px-4 py-2.5 sm:py-3">
+        <div className="mx-3 sm:mx-4 mt-3 sm:mt-4 rounded-2xl px-3 sm:px-4 py-2.5 sm:py-3 bg-background/10 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.1)]">
           <div className="flex items-center justify-between">
             <span className="font-mono text-xs sm:text-sm font-semibold text-foreground tracking-widest">
               LAKSH
@@ -143,7 +143,7 @@ export function Navbar({ activeSectionId, onNavigate }: NavbarProps) {
         <AnimatePresence>
           {isMobileMenuOpen && (
             <motion.div
-              className="glass-panel mx-3 sm:mx-4 mt-2 rounded-2xl overflow-hidden"
+              className="mx-3 sm:mx-4 mt-2 rounded-2xl overflow-hidden bg-background/10 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.1)]"
               initial={{ opacity: 0, y: -10, height: 0 }}
               animate={{ opacity: 1, y: 0, height: 'auto' }}
               exit={{ opacity: 0, y: -10, height: 0 }}

@@ -1,4 +1,4 @@
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { SECTION_CONFIGS } from '@/hooks/useFocusDetection';
 
 interface SectionIndicatorProps {
@@ -16,8 +16,6 @@ export function SectionIndicator({
   activeSectionId,
   activeSectionIndex,
 }: SectionIndicatorProps) {
-  const activeSection = SECTION_CONFIGS.find(s => s.id === activeSectionId);
-
   return (
     <>
       {/* Left side dot navigation */}
@@ -31,11 +29,11 @@ export function SectionIndicator({
         ))}
       </div>
 
-      {/* Scroll hint at the start - positioned at bottom */}
+      {/* Scroll hint - visible on all sections */}
       <motion.div
         className="fixed bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
         initial={{ opacity: 0 }}
-        animate={{ opacity: activeSectionIndex === 0 ? 1 : 0 }}
+        animate={{ opacity: 1 }}
         transition={{ duration: 0.5, delay: 1 }}
       >
         <motion.div
