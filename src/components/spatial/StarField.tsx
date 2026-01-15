@@ -16,9 +16,9 @@ interface StarFieldProps {
  * Extremely subtle - just enough to convey infinite space
  */
 export function StarField({
-  count = 5000,
+  count = 3000,
   radius = 250,
-  size = 0.55,
+  size = 0.25,
 }: StarFieldProps) {
   const pointsRef = useRef<THREE.Points>(null);
 
@@ -39,8 +39,8 @@ export function StarField({
       // Distribute along Z from +20 to -100 (along camera path)
       positions[i * 3 + 2] = 20 - Math.random() * 120;
 
-      // Varied sizes - mostly small
-      sizes[i] = size * (0.2 + Math.random() * 0.8) * (Math.random() > 0.97 ? 1.8 : 1);
+      // All small stars - no big squares
+      sizes[i] = size * (0.3 + Math.random() * 0.7);
     }
 
     return { positions, sizes };
@@ -68,11 +68,11 @@ export function StarField({
         />
       </bufferGeometry>
       <pointsMaterial
-        size={size}
+        size={0.2}
         sizeAttenuation
         color="#e0f0ff"
         transparent
-        opacity={0.85}
+        opacity={0.7}
         blending={THREE.AdditiveBlending}
         depthWrite={false}
       />
@@ -84,7 +84,7 @@ export function StarField({
  * Ambient dust particles for extra depth
  */
 export function DustParticles({
-  count = 200,
+  count = 100,
 }: {
   count?: number;
 }) {
@@ -115,11 +115,11 @@ export function DustParticles({
         />
       </bufferGeometry>
       <pointsMaterial
-        size={0.15}
+        size={0.1}
         sizeAttenuation
         color="#38bdf8"
         transparent
-        opacity={0.2}
+        opacity={0.15}
         blending={THREE.AdditiveBlending}
         depthWrite={false}
       />
