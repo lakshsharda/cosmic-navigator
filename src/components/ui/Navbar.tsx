@@ -39,33 +39,41 @@ export function Navbar({ activeSectionId, onNavigate }: NavbarProps) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.3 }}
       >
-        <div className="mx-4 lg:mx-8 mt-4 lg:mt-6 rounded-full px-4 lg:px-6 py-2.5 lg:py-3 bg-background/10 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.1)]">
+        <div className="mx-4 lg:mx-8 mt-4 lg:mt-6 rounded-full px-5 lg:px-8 py-3 lg:py-4 bg-gradient-to-r from-background/20 via-background/30 to-background/20 backdrop-blur-2xl border border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.15),inset_0_-1px_0_rgba(255,255,255,0.05)]">
           <div className="flex items-center justify-between">
             {/* Logo / Name */}
-            <div className="flex items-center gap-2 lg:gap-3">
-              <span className="font-mono text-xs lg:text-sm font-semibold text-foreground tracking-widest">
-                LS
+            <motion.div 
+              className="flex items-center"
+              whileHover={{ scale: 1.02 }}
+            >
+              <span className="font-mono text-sm lg:text-base font-bold text-foreground tracking-wide bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent">
+                Laksh Sharda
               </span>
-              <div className="h-3 lg:h-4 w-px bg-border" />
-              <span className="font-mono text-[10px] lg:text-xs text-muted-foreground tracking-wider">
-                PORTFOLIO
-              </span>
-            </div>
+            </motion.div>
 
             {/* Navigation Links */}
-            <div className="flex items-center gap-0.5 lg:gap-1">
+            <div className="flex items-center gap-1 lg:gap-2">
               {SECTION_CONFIGS.map((section) => (
-                <button
+                <motion.button
                   key={section.id}
                   onClick={() => handleNavClick(section.id)}
-                  className={`px-2.5 lg:px-4 py-1.5 lg:py-2 rounded-full font-mono text-[10px] lg:text-xs tracking-wider transition-all duration-300 ${
+                  className={`px-3 lg:px-5 py-2 rounded-full font-mono text-[10px] lg:text-xs tracking-wider transition-all duration-300 relative overflow-hidden ${
                     activeSectionId === section.id
-                      ? 'bg-primary/20 text-primary'
-                      : 'text-foreground/70 hover:text-foreground hover:bg-secondary/50'
+                      ? 'bg-primary/30 text-primary border border-primary/40'
+                      : 'text-foreground/80 hover:text-foreground hover:bg-white/10'
                   }`}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                 >
-                  {section.label.toUpperCase()}
-                </button>
+                  {activeSectionId === section.id && (
+                    <motion.div
+                      className="absolute inset-0 bg-gradient-to-r from-primary/20 to-transparent"
+                      layoutId="activeSection"
+                      transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
+                    />
+                  )}
+                  <span className="relative z-10">{section.label.toUpperCase()}</span>
+                </motion.button>
               ))}
             </div>
 
@@ -74,11 +82,11 @@ export function Navbar({ activeSectionId, onNavigate }: NavbarProps) {
               href="/resume.pdf"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1.5 lg:gap-2 px-3 lg:px-4 py-1.5 lg:py-2 rounded-full bg-primary/10 border border-primary/30 text-primary font-mono text-[10px] lg:text-xs tracking-wider hover:bg-primary/20 hover:border-primary/50 transition-all duration-300"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+              className="flex items-center gap-2 px-4 lg:px-5 py-2 lg:py-2.5 rounded-full bg-gradient-to-r from-primary/20 to-primary/10 border border-primary/40 text-primary font-mono text-[10px] lg:text-xs tracking-wider hover:from-primary/30 hover:to-primary/20 hover:border-primary/60 transition-all duration-300 shadow-[0_0_15px_rgba(var(--primary),0.2)]"
+              whileHover={{ scale: 1.05, boxShadow: '0 0 25px rgba(var(--primary),0.4)' }}
+              whileTap={{ scale: 0.95 }}
             >
-              <FileText className="w-3 h-3 lg:w-3.5 lg:h-3.5" />
+              <FileText className="w-3.5 h-3.5 lg:w-4 lg:h-4" />
               RESUME
             </motion.a>
           </div>
@@ -92,27 +100,27 @@ export function Navbar({ activeSectionId, onNavigate }: NavbarProps) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.3 }}
       >
-        <div className="mx-3 sm:mx-4 mt-3 sm:mt-4 rounded-2xl px-3 sm:px-4 py-2.5 sm:py-3 bg-background/10 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.1)]">
+        <div className="mx-3 sm:mx-4 mt-3 sm:mt-4 rounded-2xl px-4 py-3 bg-gradient-to-r from-background/20 via-background/30 to-background/20 backdrop-blur-2xl border border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.15)]">
           <div className="flex items-center justify-between">
-            <span className="font-mono text-xs sm:text-sm font-semibold text-foreground tracking-widest">
-              LAKSH
+            <span className="font-mono text-sm font-bold text-foreground tracking-wide bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent">
+              Laksh Sharda
             </span>
 
-            <div className="flex items-center gap-2 sm:gap-3">
+            <div className="flex items-center gap-3">
               <motion.a
                 href="/resume.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full bg-primary/10 border border-primary/30 text-primary font-mono text-[10px] sm:text-xs"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/20 border border-primary/40 text-primary font-mono text-[10px]"
                 whileTap={{ scale: 0.95 }}
               >
-                <FileText className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+                <FileText className="w-3 h-3" />
                 RESUME
               </motion.a>
 
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="p-2 text-foreground rounded-lg hover:bg-secondary/50 transition-colors"
+                className="p-2 text-foreground rounded-lg hover:bg-white/10 transition-colors"
                 aria-label="Toggle menu"
               >
                 <AnimatePresence mode="wait">
@@ -147,21 +155,21 @@ export function Navbar({ activeSectionId, onNavigate }: NavbarProps) {
         <AnimatePresence>
           {isMobileMenuOpen && (
             <motion.div
-              className="mx-3 sm:mx-4 mt-2 rounded-2xl overflow-hidden bg-background/10 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.1)]"
+              className="mx-3 sm:mx-4 mt-2 rounded-2xl overflow-hidden bg-gradient-to-b from-background/30 to-background/20 backdrop-blur-2xl border border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.5)]"
               initial={{ opacity: 0, y: -10, height: 0 }}
               animate={{ opacity: 1, y: 0, height: 'auto' }}
               exit={{ opacity: 0, y: -10, height: 0 }}
               transition={{ duration: 0.3, ease: 'easeInOut' }}
             >
-              <div className="p-3 sm:p-4 space-y-1.5 sm:space-y-2">
+              <div className="p-4 space-y-2">
                 {SECTION_CONFIGS.map((section, index) => (
                   <motion.button
                     key={section.id}
                     onClick={() => handleNavClick(section.id)}
-                    className={`w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl font-mono text-xs sm:text-sm tracking-wider text-left transition-all ${
+                    className={`w-full px-4 py-3 rounded-xl font-mono text-sm tracking-wider text-left transition-all ${
                       activeSectionId === section.id
-                        ? 'bg-primary/20 text-primary'
-                        : 'text-foreground/70 hover:bg-secondary/50 active:bg-secondary/70'
+                        ? 'bg-primary/20 text-primary border border-primary/30'
+                        : 'text-foreground/80 hover:bg-white/10 active:bg-white/20'
                     }`}
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
@@ -180,7 +188,7 @@ export function Navbar({ activeSectionId, onNavigate }: NavbarProps) {
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
-            className="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm md:hidden"
+            className="fixed inset-0 z-40 bg-black/30 backdrop-blur-sm md:hidden"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
