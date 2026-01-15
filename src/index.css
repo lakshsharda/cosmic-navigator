@@ -100,7 +100,7 @@
   }
 
   html {
-    scroll-behavior: auto;
+    scroll-behavior: smooth;
   }
 
   body {

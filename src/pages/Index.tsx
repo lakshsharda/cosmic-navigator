@@ -1,78 +1,32 @@
-import { useState, useEffect, useRef, Suspense } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import IntroScreen from '@/components/intro/IntroScreen';
-import SpatialScene from '@/components/spatial/SpatialScene';
-import SectionIndicator from '@/components/ui/SectionIndicator';
-import Navbar from '@/components/ui/Navbar';
 import CosmicLoader from '@/components/ui/CosmicLoader';
-import { useScrollProgress } from '@/hooks/useScrollProgress';
-import { useFocusDetection, SECTION_CONFIGS } from '@/hooks/useFocusDetection';
+import ScrollNavbar from '@/components/sections/ScrollNavbar';
+import StarBackground from '@/components/sections/StarBackground';
+import AboutSection from '@/components/sections/AboutSection';
+import ExperienceSection from '@/components/sections/ExperienceSection';
+import ProjectsSection from '@/components/sections/ProjectsSection';
+import SkillsSection from '@/components/sections/SkillsSection';
+import AchievementsSection from '@/components/sections/AchievementsSection';
+import ContactSection from '@/components/sections/ContactSection';
 import { ProjectModal, Project } from '@/components/projects/ProjectModal';
 
-/**
- * Main portfolio index page
- * Shows intro screen first, then transitions to 3D spatial experience
- */
 const Index = () => {
   const [showIntro, setShowIntro] = useState(true);
   const [showCosmicLoader, setShowCosmicLoader] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [showPortfolio, setShowPortfolio] = useState(false);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  // Listen for project modal events
-  useEffect(() => {
-    const handleOpenModal = (e: CustomEvent<Project>) => {
-      setSelectedProject(e.detail);
-      setIsModalOpen(true);
-    };
-
-    window.addEventListener('openProjectModal', handleOpenModal as EventListener);
-    return () => window.removeEventListener('openProjectModal', handleOpenModal as EventListener);
-  }, []);
-
-  // Simulate brief loading for smooth entry
-  useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 800);
-    return () => clearTimeout(timer);
-  }, []);
-
-  // Get scroll progress for UI sync
-  const { smoothProgress, scrollToProgress } = useScrollProgress({
-    scrollDistance: 4000,
-    smoothing: 0.06,
-  });
-
-  // Calculate camera Z for focus detection
-  const startZ = 8;
-  const endZ = -75;
-  const cameraZ = startZ + (endZ - startZ) * smoothProgress;
-
-  // Focus detection for UI - using smaller threshold for precise detection
-  const { activeSection, activeSectionIndex } = useFocusDetection(
-    SECTION_CONFIGS,
-    cameraZ,
-    6
-  );
-
-  // Handle navigation to a specific section
-  const handleNavigate = (sectionId: string) => {
-    const section = SECTION_CONFIGS.find(s => s.id === sectionId);
-    if (section) {
-      // Calculate target progress: progress = (zPosition - startZ) / (endZ - startZ)
-      const targetProgress = (section.zPosition - startZ) / (endZ - startZ);
-      scrollToProgress(targetProgress);
-    }
-  };
+  const [activeSection, setActiveSection] = useState<string | null>('about');
 
   // Handle transition from intro to portfolio with cosmic loader
   const handleScrollToPortfolio = () => {
     setShowIntro(false);
     setShowCosmicLoader(true);
-    // Hide cosmic loader after 2.5 seconds
     setTimeout(() => {
       setShowCosmicLoader(false);
+      setShowPortfolio(true);
     }, 2500);
   };
 
@@ -90,15 +44,43 @@ const Index = () => {
     return () => window.removeEventListener('wheel', handleWheel);
   }, [showIntro]);
 
+  // Track active section based on scroll position
+  useEffect(() => {
+    if (!showPortfolio) return;
+
+    const sections = ['about', 'experience', 'projects', 'skills', 'achievements', 'contact'];
+    
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY + window.innerHeight / 3;
+      
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const element = document.getElementById(sections[i]);
+        if (element && element.offsetTop <= scrollPosition) {
+          setActiveSection(sections[i]);
+          break;
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Initial check
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [showPortfolio]);
+
+  const handleProjectClick = (project: Project) => {
+    setSelectedProject(project);
+    setIsModalOpen(true);
+  };
+
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setSelectedProject(null);
   };
 
   return (
-    <div ref={containerRef} className="relative w-full h-screen overflow-hidden bg-background">
+    <div className="relative w-full min-h-screen bg-background">
       <AnimatePresence mode="wait">
-        {showIntro ? (
+        {showIntro && (
           <motion.div
             key="intro"
             initial={{ opacity: 1 }}
@@ -107,88 +89,44 @@ const Index = () => {
           >
             <IntroScreen onScrollToPortfolio={handleScrollToPortfolio} />
           </motion.div>
-        ) : (
-          <motion.div
-            key="portfolio"
-            className="w-full h-full"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          >
-            {/* Loading overlay for 3D scene */}
-            <motion.div
-              className="fixed inset-0 z-50 flex items-center justify-center bg-background"
-              initial={{ opacity: 1 }}
-              animate={{ opacity: isLoading ? 1 : 0 }}
-              transition={{ duration: 0.6, ease: 'easeOut' }}
-              style={{ pointerEvents: isLoading ? 'auto' : 'none' }}
-            >
-              <motion.div
-                className="flex flex-col items-center gap-4"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-              >
-                <div className="w-12 h-12 rounded-full border-2 border-primary/30 border-t-primary animate-spin" />
-                <span className="spatial-label text-muted-foreground">
-                  Entering Space
-                </span>
-              </motion.div>
-            </motion.div>
-
-            {/* 3D Spatial Scene */}
-            <Suspense fallback={null}>
-              <SpatialScene />
-            </Suspense>
-
-            {/* UI Overlay - Only navbar and indicators */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.6, delay: 0.5 }}
-            >
-              {/* Navbar */}
-              <Navbar activeSectionId={activeSection?.id || null} onNavigate={handleNavigate} />
-
-              <SectionIndicator
-                activeSectionId={activeSection?.id || null}
-                activeSectionIndex={activeSectionIndex}
-              />
-
-              {/* Top-right progress indicator */}
-              <div className="fixed top-24 md:top-8 right-8 z-40 flex items-center gap-3">
-                <motion.span
-                  className="spatial-label text-muted-foreground/60"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.8 }}
-                >
-                  {Math.round(smoothProgress * 100)}%
-                </motion.span>
-                <motion.div
-                  className="w-24 h-0.5 bg-muted rounded-full overflow-hidden"
-                  initial={{ opacity: 0, scaleX: 0 }}
-                  animate={{ opacity: 1, scaleX: 1 }}
-                  transition={{ delay: 0.8, duration: 0.4 }}
-                >
-                  <motion.div
-                    className="h-full bg-primary/60 rounded-full origin-left"
-                    style={{ scaleX: smoothProgress }}
-                    transition={{ type: 'spring', stiffness: 100, damping: 20 }}
-                  />
-                </motion.div>
-              </div>
-            </motion.div>
-          </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Cosmic Loader - shown during transition */}
+      {/* Cosmic Loader */}
       <AnimatePresence>
         {showCosmicLoader && <CosmicLoader isVisible={showCosmicLoader} />}
       </AnimatePresence>
 
-      {/* Project Modal - Outside of AnimatePresence for proper z-index */}
+      {/* Main Portfolio */}
+      <AnimatePresence>
+        {showPortfolio && (
+          <motion.div
+            key="portfolio"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8 }}
+            className="relative"
+          >
+            {/* Star Background */}
+            <StarBackground />
+
+            {/* Navbar */}
+            <ScrollNavbar activeSection={activeSection} />
+
+            {/* Sections */}
+            <main className="relative z-10">
+              <AboutSection />
+              <ExperienceSection />
+              <ProjectsSection onProjectClick={handleProjectClick} />
+              <SkillsSection />
+              <AchievementsSection />
+              <ContactSection />
+            </main>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Project Modal */}
       <ProjectModal
         project={selectedProject}
         isOpen={isModalOpen}
