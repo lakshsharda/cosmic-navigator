@@ -28,13 +28,15 @@ export function ProjectsSection({ focusWeight }: ProjectsSectionProps) {
         display: 'flex',
         flexDirection: 'column',
         gap: '8px',
-        padding: '16px 20px',
+        padding: '12px 16px',
         boxSizing: 'border-box',
         width: '100%',
         height: '100%',
         opacity,
         transition: 'opacity 0.3s ease',
         overflow: 'hidden',
+        alignItems: 'center',
+        justifyContent: 'flex-start',
       }}
     >
       {/* Header */}
@@ -58,25 +60,29 @@ export function ProjectsSection({ focusWeight }: ProjectsSectionProps) {
         style={{
           display: 'grid',
           gridTemplateColumns: gridColumns,
-          gap: isVerticalLayout ? '6px' : '8px',
+          gap: isVerticalLayout ? '5px' : '6px',
           width: '100%',
+          maxWidth: '100%',
           flex: 1,
           overflowY: isVerticalLayout ? 'auto' : 'hidden',
           transition: 'all 0.3s ease',
+          justifyContent: 'center',
+          alignContent: 'start',
         }}
       >
         {PROJECTS_DATA.map((project) => (
           <div
             key={project.id}
             style={{
-              padding: isVerticalLayout ? '10px 12px' : '10px 12px',
-              backgroundColor: 'rgba(8, 15, 30, 0.7)',
-              border: '1px solid rgba(103, 232, 249, 0.35)',
-              borderRadius: '8px',
+              padding: isVerticalLayout ? '8px 10px' : '8px 10px',
+              backgroundColor: 'rgba(8, 15, 30, 0.85)',
+              border: '1px solid rgba(103, 232, 249, 0.4)',
+              borderRadius: '6px',
               display: 'flex',
               flexDirection: 'column',
-              gap: '6px',
-              minHeight: isVerticalLayout ? 'auto' : '70px',
+              gap: '4px',
+              minHeight: isVerticalLayout ? 'auto' : '60px',
+              maxHeight: isVerticalLayout ? '90px' : '75px',
               transition: 'all 0.3s ease',
             }}
           >

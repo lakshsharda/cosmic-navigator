@@ -4,6 +4,7 @@ import IntroScreen from '@/components/intro/IntroScreen';
 import SpatialScene from '@/components/spatial/SpatialScene';
 import SectionIndicator from '@/components/ui/SectionIndicator';
 import Navbar from '@/components/ui/Navbar';
+import CosmicLoader from '@/components/ui/CosmicLoader';
 import { useScrollProgress } from '@/hooks/useScrollProgress';
 import { useFocusDetection, SECTION_CONFIGS } from '@/hooks/useFocusDetection';
 import { ProjectModal, Project } from '@/components/projects/ProjectModal';
@@ -14,6 +15,7 @@ import { ProjectModal, Project } from '@/components/projects/ProjectModal';
  */
 const Index = () => {
   const [showIntro, setShowIntro] = useState(true);
+  const [showCosmicLoader, setShowCosmicLoader] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -54,9 +56,14 @@ const Index = () => {
     8
   );
 
-  // Handle transition from intro to portfolio
+  // Handle transition from intro to portfolio with cosmic loader
   const handleScrollToPortfolio = () => {
     setShowIntro(false);
+    setShowCosmicLoader(true);
+    // Hide cosmic loader after 2.5 seconds
+    setTimeout(() => {
+      setShowCosmicLoader(false);
+    }, 2500);
   };
 
   // Listen for scroll on intro screen
@@ -65,7 +72,7 @@ const Index = () => {
 
     const handleWheel = (e: WheelEvent) => {
       if (e.deltaY > 50) {
-        setShowIntro(false);
+        handleScrollToPortfolio();
       }
     };
 
@@ -164,6 +171,11 @@ const Index = () => {
             </motion.div>
           </motion.div>
         )}
+      </AnimatePresence>
+
+      {/* Cosmic Loader - shown during transition */}
+      <AnimatePresence>
+        {showCosmicLoader && <CosmicLoader isVisible={showCosmicLoader} />}
       </AnimatePresence>
 
       {/* Project Modal - Outside of AnimatePresence for proper z-index */}
