@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
-import { X } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { X, ZoomIn } from 'lucide-react';
 
 // Project images
 import projectVisionAi from '@/assets/project-vision-ai.png';
@@ -113,6 +113,8 @@ interface ProjectModalProps {
 }
 
 export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
+  const [imagePopupOpen, setImagePopupOpen] = useState(false);
+
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -126,238 +128,346 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') {
+        if (imagePopupOpen) {
+          setImagePopupOpen(false);
+        } else {
+          onClose();
+        }
+      }
     };
     window.addEventListener('keydown', handleEscape);
     return () => window.removeEventListener('keydown', handleEscape);
-  }, [onClose]);
+  }, [onClose, imagePopupOpen]);
 
   if (!isOpen || !project) return null;
 
   return (
-    <div
-      style={{
-        position: 'fixed',
-        inset: 0,
-        zIndex: 9999,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '20px',
-      }}
-      onClick={onClose}
-    >
-      {/* Backdrop */}
+    <>
+      {/* Main Modal */}
       <div
         style={{
-          position: 'absolute',
+          position: 'fixed',
           inset: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.85)',
-          backdropFilter: 'blur(8px)',
-        }}
-      />
-
-      {/* Modal Content */}
-      <div
-        style={{
-          position: 'relative',
-          width: '100%',
-          maxWidth: '700px',
-          maxHeight: '85vh',
-          backgroundColor: 'rgba(8, 15, 30, 0.98)',
-          border: '1px solid rgba(103, 232, 249, 0.4)',
-          borderRadius: '16px',
-          overflow: 'hidden',
+          zIndex: 9999,
           display: 'flex',
-          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '20px',
         }}
-        onClick={(e) => e.stopPropagation()}
+        onClick={onClose}
       >
-        {/* Close Button */}
-        <button
-          onClick={onClose}
-          style={{
-            position: 'absolute',
-            top: '16px',
-            right: '16px',
-            zIndex: 10,
-            width: '36px',
-            height: '36px',
-            borderRadius: '50%',
-            backgroundColor: 'rgba(0, 0, 0, 0.6)',
-            border: '1px solid rgba(103, 232, 249, 0.4)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer',
-            transition: 'all 0.2s ease',
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = 'rgba(103, 232, 249, 0.2)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.6)';
-          }}
-        >
-          <X size={18} color="#67e8f9" />
-        </button>
-
-        {/* Scrollable Content */}
+        {/* Backdrop */}
         <div
           style={{
-            overflowY: 'auto',
-            padding: '24px',
+            position: 'absolute',
+            inset: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.85)',
+            backdropFilter: 'blur(8px)',
           }}
+        />
+
+        {/* Modal Content */}
+        <div
+          style={{
+            position: 'relative',
+            width: '100%',
+            maxWidth: '600px',
+            maxHeight: '80vh',
+            backgroundColor: 'rgba(8, 15, 30, 0.98)',
+            border: '1px solid rgba(103, 232, 249, 0.4)',
+            borderRadius: '16px',
+            overflow: 'hidden',
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+          onClick={(e) => e.stopPropagation()}
         >
-          {/* Media Section */}
-          {project.youtubeUrl ? (
-            <div
-              style={{
-                width: '100%',
-                aspectRatio: '16/9',
-                borderRadius: '12px',
-                overflow: 'hidden',
-                marginBottom: '24px',
-                backgroundColor: 'rgba(0, 0, 0, 0.4)',
-              }}
-            >
-              <iframe
-                src={project.youtubeUrl}
-                title={project.title}
+          {/* Close Button */}
+          <button
+            onClick={onClose}
+            style={{
+              position: 'absolute',
+              top: '12px',
+              right: '12px',
+              zIndex: 10,
+              width: '32px',
+              height: '32px',
+              borderRadius: '50%',
+              backgroundColor: 'rgba(0, 0, 0, 0.7)',
+              border: '1px solid rgba(103, 232, 249, 0.4)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = 'rgba(103, 232, 249, 0.2)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+            }}
+          >
+            <X size={16} color="#67e8f9" />
+          </button>
+
+          {/* Scrollable Content */}
+          <div
+            style={{
+              overflowY: 'auto',
+              padding: '20px',
+            }}
+          >
+            {/* Media Section */}
+            {project.youtubeUrl ? (
+              <div
                 style={{
                   width: '100%',
-                  height: '100%',
-                  border: 'none',
-                }}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
-            </div>
-          ) : project.image ? (
-            <div
-              style={{
-                width: '100%',
-                maxHeight: '200px',
-                borderRadius: '10px',
-                overflow: 'hidden',
-                marginBottom: '20px',
-                backgroundColor: 'rgba(0, 0, 0, 0.4)',
-              }}
-            >
-              <img
-                src={project.image}
-                alt={project.title}
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'contain',
-                }}
-              />
-            </div>
-          ) : null}
-
-          {/* Header */}
-          <div style={{ marginBottom: '20px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-              <h2
-                style={{
-                  fontFamily: 'JetBrains Mono, monospace',
-                  fontSize: '22px',
-                  fontWeight: 700,
-                  color: '#F5FAFF',
-                  margin: 0,
+                  aspectRatio: '16/9',
+                  borderRadius: '10px',
+                  overflow: 'hidden',
+                  marginBottom: '20px',
+                  backgroundColor: 'rgba(0, 0, 0, 0.4)',
                 }}
               >
-                {project.title}
-              </h2>
-              <span
-                style={{
-                  fontFamily: 'JetBrains Mono, monospace',
-                  fontSize: '12px',
-                  color: '#94a3b8',
-                  padding: '4px 10px',
-                  backgroundColor: 'rgba(103, 232, 249, 0.1)',
-                  borderRadius: '6px',
-                  border: '1px solid rgba(103, 232, 249, 0.3)',
-                }}
-              >
-                {project.year}
-              </span>
-            </div>
-          </div>
-
-          {/* Tech Stack Badges */}
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '24px' }}>
-            {project.techStack.map((tech, idx) => (
-              <span
-                key={idx}
-                style={{
-                  fontFamily: 'JetBrains Mono, monospace',
-                  fontSize: '11px',
-                  fontWeight: 500,
-                  color: '#a5f3fc',
-                  padding: '6px 12px',
-                  backgroundColor: 'rgba(8, 15, 30, 0.8)',
-                  borderRadius: '20px',
-                  border: '1px solid rgba(103, 232, 249, 0.4)',
-                }}
-              >
-                {tech}
-              </span>
-            ))}
-          </div>
-
-          {/* Full Description */}
-          <div>
-            <h3
-              style={{
-                fontFamily: 'JetBrains Mono, monospace',
-                fontSize: '13px',
-                fontWeight: 600,
-                color: '#67e8f9',
-                margin: '0 0 12px 0',
-                letterSpacing: '0.08em',
-              }}
-            >
-              PROJECT DETAILS
-            </h3>
-            <ul
-              style={{
-                margin: 0,
-                padding: 0,
-                listStyle: 'none',
-              }}
-            >
-              {project.fullDescription.map((desc, idx) => (
-                <li
-                  key={idx}
+                <iframe
+                  src={project.youtubeUrl}
+                  title={project.title}
                   style={{
-                    fontFamily: 'Inter, system-ui, sans-serif',
-                    fontSize: '14px',
-                    color: '#DDE7EE',
-                    lineHeight: 1.7,
-                    marginBottom: '10px',
-                    paddingLeft: '16px',
-                    position: 'relative',
+                    width: '100%',
+                    height: '100%',
+                    border: 'none',
+                  }}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+              </div>
+            ) : project.image ? (
+              <div
+                style={{
+                  width: '100%',
+                  maxHeight: '180px',
+                  borderRadius: '10px',
+                  overflow: 'hidden',
+                  marginBottom: '16px',
+                  backgroundColor: 'rgba(0, 0, 0, 0.4)',
+                  position: 'relative',
+                  cursor: 'pointer',
+                }}
+                onClick={() => setImagePopupOpen(true)}
+              >
+                <img
+                  src={project.image}
+                  alt={project.title}
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'contain',
+                  }}
+                />
+                {/* Zoom Indicator */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    bottom: '8px',
+                    right: '8px',
+                    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                    borderRadius: '6px',
+                    padding: '6px 10px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '4px',
+                    border: '1px solid rgba(103, 232, 249, 0.4)',
                   }}
                 >
+                  <ZoomIn size={12} color="#67e8f9" />
                   <span
                     style={{
-                      position: 'absolute',
-                      left: 0,
+                      fontFamily: 'JetBrains Mono, monospace',
+                      fontSize: '9px',
                       color: '#67e8f9',
                     }}
                   >
-                    •
+                    Click to expand
                   </span>
-                  {desc}
-                </li>
+                </div>
+              </div>
+            ) : null}
+
+            {/* Header */}
+            <div style={{ marginBottom: '16px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '6px' }}>
+                <h2
+                  style={{
+                    fontFamily: 'JetBrains Mono, monospace',
+                    fontSize: '18px',
+                    fontWeight: 700,
+                    color: '#F5FAFF',
+                    margin: 0,
+                  }}
+                >
+                  {project.title}
+                </h2>
+                <span
+                  style={{
+                    fontFamily: 'JetBrains Mono, monospace',
+                    fontSize: '10px',
+                    color: '#94a3b8',
+                    padding: '3px 8px',
+                    backgroundColor: 'rgba(103, 232, 249, 0.1)',
+                    borderRadius: '5px',
+                    border: '1px solid rgba(103, 232, 249, 0.3)',
+                  }}
+                >
+                  {project.year}
+                </span>
+              </div>
+            </div>
+
+            {/* Tech Stack Badges */}
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '20px' }}>
+              {project.techStack.map((tech, idx) => (
+                <span
+                  key={idx}
+                  style={{
+                    fontFamily: 'JetBrains Mono, monospace',
+                    fontSize: '10px',
+                    fontWeight: 500,
+                    color: '#a5f3fc',
+                    padding: '5px 10px',
+                    backgroundColor: 'rgba(8, 15, 30, 0.8)',
+                    borderRadius: '16px',
+                    border: '1px solid rgba(103, 232, 249, 0.4)',
+                  }}
+                >
+                  {tech}
+                </span>
               ))}
-            </ul>
+            </div>
+
+            {/* Full Description */}
+            <div>
+              <h3
+                style={{
+                  fontFamily: 'JetBrains Mono, monospace',
+                  fontSize: '11px',
+                  fontWeight: 600,
+                  color: '#67e8f9',
+                  margin: '0 0 10px 0',
+                  letterSpacing: '0.08em',
+                }}
+              >
+                PROJECT DETAILS
+              </h3>
+              <ul
+                style={{
+                  margin: 0,
+                  padding: 0,
+                  listStyle: 'none',
+                }}
+              >
+                {project.fullDescription.map((desc, idx) => (
+                  <li
+                    key={idx}
+                    style={{
+                      fontFamily: 'Inter, system-ui, sans-serif',
+                      fontSize: '13px',
+                      color: '#DDE7EE',
+                      lineHeight: 1.6,
+                      marginBottom: '8px',
+                      paddingLeft: '14px',
+                      position: 'relative',
+                    }}
+                  >
+                    <span
+                      style={{
+                        position: 'absolute',
+                        left: 0,
+                        color: '#67e8f9',
+                      }}
+                    >
+                      •
+                    </span>
+                    {desc}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+
+      {/* Image Popup Overlay */}
+      {imagePopupOpen && project.image && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 10000,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '40px',
+            backgroundColor: 'rgba(0, 0, 0, 0.95)',
+            cursor: 'pointer',
+          }}
+          onClick={() => setImagePopupOpen(false)}
+        >
+          {/* Close hint */}
+          <div
+            style={{
+              position: 'absolute',
+              top: '20px',
+              right: '20px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+            }}
+          >
+            <span
+              style={{
+                fontFamily: 'JetBrains Mono, monospace',
+                fontSize: '12px',
+                color: '#94a3b8',
+              }}
+            >
+              Press ESC or click anywhere to close
+            </span>
+            <button
+              onClick={() => setImagePopupOpen(false)}
+              style={{
+                width: '36px',
+                height: '36px',
+                borderRadius: '50%',
+                backgroundColor: 'rgba(103, 232, 249, 0.1)',
+                border: '1px solid rgba(103, 232, 249, 0.4)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+              }}
+            >
+              <X size={18} color="#67e8f9" />
+            </button>
+          </div>
+
+          {/* Full-size image */}
+          <img
+            src={project.image}
+            alt={project.title}
+            style={{
+              maxWidth: '90vw',
+              maxHeight: '85vh',
+              objectFit: 'contain',
+              borderRadius: '12px',
+              boxShadow: '0 20px 60px rgba(0, 0, 0, 0.5)',
+            }}
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
+    </>
   );
 }
 

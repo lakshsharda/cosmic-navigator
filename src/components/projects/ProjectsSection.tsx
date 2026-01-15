@@ -14,27 +14,37 @@ export function ProjectsSection({ focusWeight }: ProjectsSectionProps) {
     window.dispatchEvent(new CustomEvent('openProjectModal', { detail: project }));
   };
 
+  // Calculate responsive layout based on focus weight
+  // As user zooms in (higher focus), transition from 2 columns to 1 column
+  const isVerticalLayout = focusWeight > 0.75;
+  const gridColumns = isVerticalLayout ? '1fr' : 'repeat(2, 1fr)';
+  
+  // Calculate opacity - visible from the start when focusWeight > 0.3
+  const opacity = focusWeight > 0.3 ? 1 : 0;
+
   return (
     <div
       style={{
         display: 'flex',
         flexDirection: 'column',
-        gap: '12px',
-        padding: '20px 24px',
+        gap: '8px',
+        padding: '16px 20px',
         boxSizing: 'border-box',
         width: '100%',
-        opacity: focusWeight > 0.3 ? Math.min((focusWeight - 0.3) / 0.5, 1) : 0,
-        transition: 'opacity 0.2s ease',
+        height: '100%',
+        opacity,
+        transition: 'opacity 0.3s ease',
+        overflow: 'hidden',
       }}
     >
       {/* Header */}
       <h2
         style={{
           fontFamily: 'JetBrains Mono, monospace',
-          fontSize: '18px',
+          fontSize: '16px',
           fontWeight: 700,
           color: '#ffffff',
-          margin: '0 0 8px 0',
+          margin: '0 0 4px 0',
           letterSpacing: '0.02em',
           lineHeight: 1.2,
           textShadow: '0 2px 12px rgba(0,0,0,0.9)',
@@ -43,42 +53,46 @@ export function ProjectsSection({ focusWeight }: ProjectsSectionProps) {
         PROJECTS
       </h2>
 
-      {/* Projects Grid - compact for 7 projects */}
+      {/* Projects Grid - responsive based on focus */}
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(2, 1fr)',
-          gap: '5px',
+          gridTemplateColumns: gridColumns,
+          gap: isVerticalLayout ? '6px' : '8px',
           width: '100%',
+          flex: 1,
+          overflowY: isVerticalLayout ? 'auto' : 'hidden',
+          transition: 'all 0.3s ease',
         }}
       >
         {PROJECTS_DATA.map((project) => (
           <div
             key={project.id}
             style={{
-              padding: '6px 8px',
-              backgroundColor: 'rgba(8, 15, 30, 0.4)',
-              border: '1px solid rgba(103, 232, 249, 0.25)',
-              borderRadius: '6px',
+              padding: isVerticalLayout ? '10px 12px' : '10px 12px',
+              backgroundColor: 'rgba(8, 15, 30, 0.7)',
+              border: '1px solid rgba(103, 232, 249, 0.35)',
+              borderRadius: '8px',
               display: 'flex',
               flexDirection: 'column',
-              gap: '3px',
+              gap: '6px',
+              minHeight: isVerticalLayout ? 'auto' : '70px',
+              transition: 'all 0.3s ease',
             }}
           >
             {/* Title & Year */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '4px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
               <h3
                 style={{
                   fontFamily: 'JetBrains Mono, monospace',
-                  fontSize: '8px',
+                  fontSize: isVerticalLayout ? '11px' : '10px',
                   fontWeight: 700,
                   color: '#F5FAFF',
                   margin: 0,
-                  lineHeight: 1.2,
-                  textShadow: '0 1px 6px rgba(0,0,0,0.8)',
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
+                  lineHeight: 1.3,
+                  textShadow: '0 2px 8px rgba(0,0,0,0.9)',
+                  flex: 1,
+                  transition: 'font-size 0.3s ease',
                 }}
               >
                 {project.title}
@@ -86,9 +100,10 @@ export function ProjectsSection({ focusWeight }: ProjectsSectionProps) {
               <span
                 style={{
                   fontFamily: 'JetBrains Mono, monospace',
-                  fontSize: '7px',
-                  color: '#94a3b8',
+                  fontSize: isVerticalLayout ? '9px' : '8px',
+                  color: '#a5f3fc',
                   flexShrink: 0,
+                  fontWeight: 500,
                 }}
               >
                 {project.year}
@@ -99,16 +114,17 @@ export function ProjectsSection({ focusWeight }: ProjectsSectionProps) {
             <p
               style={{
                 fontFamily: 'Inter, system-ui, sans-serif',
-                fontSize: '7px',
+                fontSize: isVerticalLayout ? '9px' : '8px',
                 fontWeight: 400,
                 color: '#DDE7EE',
                 margin: 0,
-                lineHeight: 1.3,
-                textShadow: '0 1px 4px rgba(0,0,0,0.7)',
+                lineHeight: 1.4,
+                textShadow: '0 2px 6px rgba(0,0,0,0.8)',
                 display: '-webkit-box',
-                WebkitLineClamp: 2,
+                WebkitLineClamp: isVerticalLayout ? 3 : 2,
                 WebkitBoxOrient: 'vertical',
                 overflow: 'hidden',
+                transition: 'font-size 0.3s ease',
               }}
             >
               {project.shortDescription}
@@ -119,25 +135,25 @@ export function ProjectsSection({ focusWeight }: ProjectsSectionProps) {
               onClick={() => handleViewDetails(project)}
               style={{
                 marginTop: 'auto',
-                padding: '3px 6px',
+                padding: '5px 10px',
                 fontFamily: 'JetBrains Mono, monospace',
-                fontSize: '6px',
+                fontSize: isVerticalLayout ? '8px' : '7px',
                 fontWeight: 600,
                 color: '#67e8f9',
-                backgroundColor: 'rgba(103, 232, 249, 0.1)',
-                border: '1px solid rgba(103, 232, 249, 0.4)',
-                borderRadius: '4px',
+                backgroundColor: 'rgba(103, 232, 249, 0.15)',
+                border: '1px solid rgba(103, 232, 249, 0.5)',
+                borderRadius: '5px',
                 cursor: 'pointer',
                 transition: 'all 0.2s ease',
                 alignSelf: 'flex-start',
                 pointerEvents: 'auto',
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = 'rgba(103, 232, 249, 0.25)';
+                e.currentTarget.style.backgroundColor = 'rgba(103, 232, 249, 0.3)';
                 e.currentTarget.style.transform = 'translateY(-1px)';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'rgba(103, 232, 249, 0.1)';
+                e.currentTarget.style.backgroundColor = 'rgba(103, 232, 249, 0.15)';
                 e.currentTarget.style.transform = 'translateY(0)';
               }}
             >
