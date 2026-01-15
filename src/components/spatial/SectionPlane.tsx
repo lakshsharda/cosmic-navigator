@@ -79,27 +79,28 @@ export function SectionPlane({
   // Animated values
   const animatedValues = useRef({
     scale: 1,
-    opacity: 0.3,
+    opacity: 0,
     glowOpacity: 0,
     rotationY: 0,
   });
 
-  // Calculate target values based on focus and hover state
+  // Calculate target values - ONLY visible when focused
   const targets = useMemo(() => {
-    const baseOpacity = 0.6 + focusWeight * 0.3; // Higher base opacity for better text backdrop
-    const baseScale = 0.85 + focusWeight * 0.2;
+    // Only show when focus weight is significant
+    const visibility = focusWeight > 0.3 ? (focusWeight - 0.3) / 0.7 : 0;
+    const baseScale = 0.9 + focusWeight * 0.15;
     
     return {
-      scale: isActive ? baseScale * 1.05 : baseScale,
-      opacity: hovered ? Math.min(baseOpacity + 0.1, 0.9) : baseOpacity,
-      glowOpacity: isActive ? 0.3 + focusWeight * 0.2 : focusWeight * 0.15,
-      rotationY: hovered ? 0.015 : 0,
+      scale: isActive ? baseScale * 1.02 : baseScale,
+      opacity: visibility * 0.95, // Fade in only when close
+      glowOpacity: isActive ? visibility * 0.25 : visibility * 0.1,
+      rotationY: hovered ? 0.01 : 0,
     };
   }, [focusWeight, isActive, hovered]);
 
-  // Create geometry - larger plane for content
-  const planeGeometry = useMemo(() => new THREE.PlaneGeometry(14, 9), []);
-  const glowGeometry = useMemo(() => new THREE.PlaneGeometry(16, 11), []);
+  // Smaller plane geometry - reduced width
+  const planeGeometry = useMemo(() => new THREE.PlaneGeometry(11, 7), []);
+  const glowGeometry = useMemo(() => new THREE.PlaneGeometry(12.5, 8), []);
   const edgesGeometry = useMemo(() => new THREE.EdgesGeometry(planeGeometry), [planeGeometry]);
 
   // Smooth animation
@@ -110,7 +111,7 @@ export function SectionPlane({
       current + (target - current) * Math.min(speed * delta * 60, 1);
 
     animatedValues.current.scale = lerp(animatedValues.current.scale, targets.scale, 0.08);
-    animatedValues.current.opacity = lerp(animatedValues.current.opacity, targets.opacity, 0.1);
+    animatedValues.current.opacity = lerp(animatedValues.current.opacity, targets.opacity, 0.12);
     animatedValues.current.glowOpacity = lerp(animatedValues.current.glowOpacity, targets.glowOpacity, 0.08);
     animatedValues.current.rotationY = lerp(animatedValues.current.rotationY, targets.rotationY, 0.1);
 
@@ -130,7 +131,7 @@ export function SectionPlane({
 
     if (borderRef.current) {
       const borderMaterial = borderRef.current.material as THREE.LineBasicMaterial;
-      borderMaterial.opacity = isActive ? 0.7 : 0.4;
+      borderMaterial.opacity = animatedValues.current.opacity * 0.8;
     }
   });
 
@@ -150,14 +151,13 @@ export function SectionPlane({
     }
   };
 
-  // Darker base for better text contrast
-  const baseColor = '#050a12';
+  // Solid dark background
+  const baseColor = '#030712';
   const glowColor = '#0ea5e9';
-  const borderColor = isActive ? '#38bdf8' : '#1e40af';
+  const borderColor = isActive ? '#22d3ee' : '#0891b2';
 
-  // Calculate content visibility based on focus weight
-  const showFullContent = focusWeight > 0.5;
-  const contentOpacity = Math.max(0, (focusWeight - 0.3) / 0.7);
+  // Show full content only when very focused
+  const showFullContent = focusWeight > 0.6;
 
   return (
     <group ref={groupRef} position={position}>
@@ -174,7 +174,7 @@ export function SectionPlane({
         />
       </mesh>
 
-      {/* Main glass plane - solid dark for text readability */}
+      {/* Main plane - solid dark background */}
       <mesh
         ref={meshRef}
         onPointerEnter={handlePointerEnter}
@@ -184,7 +184,7 @@ export function SectionPlane({
         <meshBasicMaterial
           color={baseColor}
           transparent
-          opacity={0.85}
+          opacity={0.95}
           side={THREE.DoubleSide}
         />
       </mesh>
@@ -195,122 +195,119 @@ export function SectionPlane({
         <lineBasicMaterial
           color={borderColor}
           transparent
-          opacity={0.6}
+          opacity={0.7}
         />
       </lineSegments>
 
-      {/* HTML overlay for content */}
+      {/* HTML content - sized to fit inside the plane */}
       <Html
         center
         position={[0, 0, 0.1]}
         style={{
           pointerEvents: 'none',
           userSelect: 'none',
-          width: '820px',
+          width: '620px', // Smaller to fit inside border
         }}
         transform
         occlude={false}
         distanceFactor={8}
       >
-        <div 
-          style={{
-            opacity: 0.4 + focusWeight * 0.6,
-            transition: 'opacity 0.3s ease',
-          }}
-        >
-          {/* Simple label when far away */}
+        <div style={{
+          opacity: focusWeight > 0.3 ? Math.min((focusWeight - 0.3) / 0.5, 1) : 0,
+          transition: 'opacity 0.2s ease',
+        }}>
+          {/* Simple label when approaching */}
           {!showFullContent && (
             <div style={{ 
               display: 'flex', 
               flexDirection: 'column', 
               alignItems: 'center', 
-              gap: '12px' 
+              gap: '10px',
+              padding: '20px',
             }}>
               <span style={{ 
                 fontFamily: 'JetBrains Mono, monospace',
-                fontSize: '16px',
+                fontSize: '14px',
                 letterSpacing: '0.3em',
-                color: '#67e8f9', // Bright cyan
-                fontWeight: 500,
+                color: '#22d3ee',
+                fontWeight: 600,
               }}>
                 {`0${index + 1}`}
               </span>
               <span style={{ 
                 fontFamily: 'JetBrains Mono, monospace',
-                fontSize: '36px',
-                letterSpacing: '0.12em',
+                fontSize: '28px',
+                letterSpacing: '0.1em',
                 fontWeight: 700,
-                color: '#EAF6FF', // Bright off-white
+                color: '#ffffff',
               }}>
                 {label.toUpperCase()}
               </span>
             </div>
           )}
 
-          {/* Full content when focused */}
+          {/* Full content when very focused */}
           {showFullContent && content && (
             <div style={{
               display: 'grid',
-              gridTemplateColumns: '3fr 2fr',
-              gap: '48px',
+              gridTemplateColumns: content.hasImage ? '1fr auto' : '1fr',
+              gap: '32px',
               alignItems: 'center',
-              padding: '24px 32px',
-              opacity: contentOpacity,
+              padding: '20px 28px',
             }}>
-              {/* Left: Text Content */}
+              {/* Text Content */}
               <div style={{ textAlign: 'left' }}>
                 {/* Section label */}
                 <span style={{
                   fontFamily: 'JetBrains Mono, monospace',
-                  fontSize: '12px',
+                  fontSize: '11px',
                   letterSpacing: '0.2em',
-                  color: '#67e8f9', // Bright cyan
-                  fontWeight: 500,
+                  color: '#22d3ee',
+                  fontWeight: 600,
                   display: 'block',
-                  marginBottom: '8px',
+                  marginBottom: '6px',
                 }}>
                   0{index + 1} / {label.toUpperCase()}
                 </span>
 
-                {/* Main heading - bright and bold */}
+                {/* Main heading - maximum contrast */}
                 <h2 style={{
                   fontFamily: 'JetBrains Mono, monospace',
-                  fontSize: '32px',
+                  fontSize: '26px',
                   fontWeight: 700,
-                  color: '#CFF4FF', // Light cyan as specified
-                  margin: '0 0 6px 0',
+                  color: '#ffffff',
+                  margin: '0 0 4px 0',
                   letterSpacing: '0.02em',
                   lineHeight: 1.2,
                 }}>
                   {content.title}
                 </h2>
 
-                {/* Subtitle - medium weight, spaced */}
+                {/* Subtitle */}
                 {content.subtitle && (
                   <p style={{
                     fontFamily: 'JetBrains Mono, monospace',
-                    fontSize: '14px',
+                    fontSize: '13px',
                     fontWeight: 500,
-                    color: '#38bdf8', // Cyan accent
-                    margin: '0 0 20px 0',
-                    letterSpacing: '0.15em',
+                    color: '#22d3ee',
+                    margin: '0 0 16px 0',
+                    letterSpacing: '0.12em',
                   }}>
                     {content.subtitle}
                   </p>
                 )}
 
-                {/* Description paragraphs - clean, readable */}
+                {/* Description - high contrast */}
                 {content.description && (
-                  <div style={{ marginBottom: '20px' }}>
+                  <div style={{ marginBottom: '16px' }}>
                     {content.description.map((para, i) => (
                       <p key={i} style={{
                         fontFamily: 'Inter, system-ui, sans-serif',
-                        fontSize: '14px',
+                        fontSize: '13px',
                         fontWeight: 400,
-                        color: '#e2e8f0', // Strong contrast - slate-200
-                        margin: '0 0 12px 0',
-                        lineHeight: 1.65, // Good readability
-                        letterSpacing: '0.01em',
+                        color: '#f1f5f9', // Very high contrast
+                        margin: '0 0 10px 0',
+                        lineHeight: 1.6,
                       }}>
                         {para}
                       </p>
@@ -322,22 +319,21 @@ export function SectionPlane({
                 {content.tags && (
                   <div style={{ 
                     display: 'flex', 
-                    gap: '10px', 
+                    gap: '8px', 
                     flexWrap: 'wrap',
-                    marginTop: '8px',
                   }}>
                     {content.tags.map((tag) => (
                       <span
                         key={tag}
                         style={{
                           fontFamily: 'JetBrains Mono, monospace',
-                          fontSize: '11px',
-                          fontWeight: 500,
-                          color: '#67e8f9',
-                          padding: '6px 14px',
-                          borderRadius: '6px',
-                          backgroundColor: 'rgba(56, 189, 248, 0.12)',
-                          border: '1px solid rgba(103, 232, 249, 0.3)',
+                          fontSize: '10px',
+                          fontWeight: 600,
+                          color: '#22d3ee',
+                          padding: '5px 12px',
+                          borderRadius: '4px',
+                          backgroundColor: 'rgba(34, 211, 238, 0.1)',
+                          border: '1px solid rgba(34, 211, 238, 0.35)',
                         }}
                       >
                         {tag}
@@ -347,39 +343,26 @@ export function SectionPlane({
                 )}
               </div>
 
-              {/* Right: Image placeholder - visually separated */}
+              {/* Image placeholder */}
               {content.hasImage && (
-                <div style={{ 
-                  display: 'flex', 
+                <div style={{
+                  width: '120px',
+                  height: '120px',
+                  borderRadius: '10px',
+                  backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                  border: '2px solid rgba(34, 211, 238, 0.4)',
+                  display: 'flex',
+                  alignItems: 'center',
                   justifyContent: 'center',
-                  paddingLeft: '24px',
-                  borderLeft: '1px solid rgba(56, 189, 248, 0.2)',
+                  flexShrink: 0,
                 }}>
-                  <div style={{
-                    position: 'relative',
-                    width: '160px',
-                    height: '160px',
-                    borderRadius: '12px',
-                    overflow: 'hidden',
-                    backgroundColor: 'rgba(15, 23, 42, 0.9)',
-                    border: '2px solid rgba(56, 189, 248, 0.35)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
+                  <span style={{
+                    fontFamily: 'JetBrains Mono, monospace',
+                    fontSize: '10px',
+                    color: '#475569',
                   }}>
-                    <span style={{
-                      fontFamily: 'JetBrains Mono, monospace',
-                      fontSize: '12px',
-                      color: '#64748b',
-                    }}>
-                      Your Image
-                    </span>
-                    {/* Corner accents */}
-                    <div style={{ position: 'absolute', top: 0, left: 0, width: '16px', height: '16px', borderTop: '2px solid #38bdf8', borderLeft: '2px solid #38bdf8' }} />
-                    <div style={{ position: 'absolute', top: 0, right: 0, width: '16px', height: '16px', borderTop: '2px solid #38bdf8', borderRight: '2px solid #38bdf8' }} />
-                    <div style={{ position: 'absolute', bottom: 0, left: 0, width: '16px', height: '16px', borderBottom: '2px solid #38bdf8', borderLeft: '2px solid #38bdf8' }} />
-                    <div style={{ position: 'absolute', bottom: 0, right: 0, width: '16px', height: '16px', borderBottom: '2px solid #38bdf8', borderRight: '2px solid #38bdf8' }} />
-                  </div>
+                    Your Image
+                  </span>
                 </div>
               )}
             </div>
@@ -387,37 +370,37 @@ export function SectionPlane({
         </div>
       </Html>
 
-      {/* Corner dots for frame effect */}
-      <mesh position={[-6.8, -4.3, 0.01]}>
-        <circleGeometry args={[0.1, 16]} />
+      {/* Corner accents */}
+      <mesh position={[-5.3, -3.3, 0.01]}>
+        <circleGeometry args={[0.08, 16]} />
         <meshBasicMaterial 
-          color={isActive ? '#38bdf8' : '#1e40af'} 
+          color={borderColor} 
           transparent 
-          opacity={isActive ? 0.9 : 0.5} 
+          opacity={targets.opacity * 0.9} 
         />
       </mesh>
-      <mesh position={[6.8, -4.3, 0.01]}>
-        <circleGeometry args={[0.1, 16]} />
+      <mesh position={[5.3, -3.3, 0.01]}>
+        <circleGeometry args={[0.08, 16]} />
         <meshBasicMaterial 
-          color={isActive ? '#38bdf8' : '#1e40af'} 
+          color={borderColor} 
           transparent 
-          opacity={isActive ? 0.9 : 0.5} 
+          opacity={targets.opacity * 0.9} 
         />
       </mesh>
-      <mesh position={[-6.8, 4.3, 0.01]}>
-        <circleGeometry args={[0.1, 16]} />
+      <mesh position={[-5.3, 3.3, 0.01]}>
+        <circleGeometry args={[0.08, 16]} />
         <meshBasicMaterial 
-          color={isActive ? '#38bdf8' : '#1e40af'} 
+          color={borderColor} 
           transparent 
-          opacity={isActive ? 0.9 : 0.5} 
+          opacity={targets.opacity * 0.9} 
         />
       </mesh>
-      <mesh position={[6.8, 4.3, 0.01]}>
-        <circleGeometry args={[0.1, 16]} />
+      <mesh position={[5.3, 3.3, 0.01]}>
+        <circleGeometry args={[0.08, 16]} />
         <meshBasicMaterial 
-          color={isActive ? '#38bdf8' : '#1e40af'} 
+          color={borderColor} 
           transparent 
-          opacity={isActive ? 0.9 : 0.5} 
+          opacity={targets.opacity * 0.9} 
         />
       </mesh>
     </group>
