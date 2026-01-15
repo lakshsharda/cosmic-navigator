@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import IntroScreen from '@/components/intro/IntroScreen';
 import SpatialScene from '@/components/spatial/SpatialScene';
 import SectionIndicator from '@/components/ui/SectionIndicator';
+import Navbar from '@/components/ui/Navbar';
+import AboutSection from '@/components/sections/AboutSection';
 import { useScrollProgress } from '@/hooks/useScrollProgress';
 import { useFocusDetection, SECTION_CONFIGS } from '@/hooks/useFocusDetection';
 
@@ -110,33 +112,34 @@ const Index = () => {
               animate={{ opacity: 1 }}
               transition={{ duration: 0.6, delay: 0.5 }}
             >
+              {/* Navbar */}
+              <Navbar activeSectionId={activeSection?.id || null} />
+
               <SectionIndicator
                 activeSectionId={activeSection?.id || null}
                 activeSectionIndex={activeSectionIndex}
               />
 
-              {/* Top-left branding */}
-              <div className="fixed top-8 left-8 z-40">
-                <motion.h1
-                  className="font-mono text-sm font-medium text-foreground/80 tracking-widest"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.6, delay: 0.5 }}
-                >
-                  LAKSH SHARDA
-                </motion.h1>
-                <motion.p
-                  className="font-mono text-[10px] text-muted-foreground mt-1 tracking-wider"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.6, delay: 0.7 }}
-                >
-                  SPATIAL PORTFOLIO
-                </motion.p>
-              </div>
+              {/* Section Content Overlay */}
+              <AnimatePresence mode="wait">
+                {activeSection?.id === 'about' && (
+                  <motion.div
+                    key="about-content"
+                    className="fixed inset-0 z-30 flex items-center justify-center pointer-events-none"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.4 }}
+                  >
+                    <div className="pointer-events-auto">
+                      <AboutSection isActive={activeSection?.id === 'about'} />
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
 
               {/* Top-right progress indicator */}
-              <div className="fixed top-8 right-8 z-40 flex items-center gap-3">
+              <div className="fixed top-24 md:top-8 right-8 z-40 flex items-center gap-3">
                 <motion.span
                   className="spatial-label text-muted-foreground/60"
                   initial={{ opacity: 0 }}
