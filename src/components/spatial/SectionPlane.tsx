@@ -7,17 +7,13 @@ import * as THREE from 'three';
 const SECTION_CONTENT: Record<string, {
   title: string;
   subtitle?: string;
-  description?: string[];
+  description?: string;
   hasImage?: boolean;
 }> = {
   about: {
     title: 'LAKSH SHARDA',
     subtitle: 'Developer • Designer • Creator',
-    description: [
-      "I'm a tech-focused developer with a strong interest in building scalable, well-structured applications.",
-      "My experience includes web development, frontend frameworks, and backend services.",
-      "I focus on writing clean, maintainable code and understanding how systems work end-to-end."
-    ],
+    description: "I'm a tech-focused developer passionate about building scalable, well-structured applications. My experience spans web development, frontend frameworks, and backend services. I focus on writing clean, maintainable code and understanding systems end-to-end.",
     hasImage: true,
   },
   experience: {
@@ -96,9 +92,9 @@ export function SectionPlane({
     };
   }, [focusWeight, isActive, hovered]);
 
-  // Wider plane geometry to fit content
-  const planeGeometry = useMemo(() => new THREE.PlaneGeometry(13, 7), []);
-  const glowGeometry = useMemo(() => new THREE.PlaneGeometry(14.5, 8), []);
+  // Plane geometry sized to fit content compactly
+  const planeGeometry = useMemo(() => new THREE.PlaneGeometry(12, 5.5), []);
+  const glowGeometry = useMemo(() => new THREE.PlaneGeometry(13.5, 6.5), []);
   const edgesGeometry = useMemo(() => new THREE.EdgesGeometry(planeGeometry), [planeGeometry]);
 
   // Smooth animation
@@ -204,7 +200,7 @@ export function SectionPlane({
         style={{
           pointerEvents: 'none',
           userSelect: 'none',
-          width: '740px',
+          width: '680px',
         }}
         transform
         occlude={false}
@@ -225,7 +221,7 @@ export function SectionPlane({
             }}>
               <span style={{ 
                 fontFamily: 'JetBrains Mono, monospace',
-                fontSize: '28px',
+                fontSize: '26px',
                 letterSpacing: '0.1em',
                 fontWeight: 700,
                 color: '#ffffff',
@@ -238,21 +234,20 @@ export function SectionPlane({
           {/* Full content when very focused */}
           {showFullContent && content && (
             <div style={{
-              display: 'grid',
-              gridTemplateColumns: content.hasImage ? '1fr auto' : '1fr',
-              gap: '40px',
+              display: 'flex',
               alignItems: 'center',
-              padding: '24px 36px',
+              gap: '28px',
+              padding: '18px 28px',
             }}>
               {/* Text Content */}
-              <div style={{ textAlign: 'left' }}>
+              <div style={{ textAlign: 'left', flex: 1 }}>
                 {/* Main heading - maximum contrast */}
                 <h2 style={{
                   fontFamily: 'JetBrains Mono, monospace',
-                  fontSize: '28px',
+                  fontSize: '24px',
                   fontWeight: 700,
                   color: '#ffffff',
-                  margin: '0 0 6px 0',
+                  margin: '0 0 4px 0',
                   letterSpacing: '0.02em',
                   lineHeight: 1.2,
                 }}>
@@ -263,41 +258,37 @@ export function SectionPlane({
                 {content.subtitle && (
                   <p style={{
                     fontFamily: 'JetBrains Mono, monospace',
-                    fontSize: '13px',
+                    fontSize: '12px',
                     fontWeight: 500,
                     color: '#22d3ee',
-                    margin: '0 0 18px 0',
+                    margin: '0 0 12px 0',
                     letterSpacing: '0.12em',
                   }}>
                     {content.subtitle}
                   </p>
                 )}
 
-                {/* Description - maximum white contrast */}
+                {/* Description - single paragraph, pure white */}
                 {content.description && (
-                  <div>
-                    {content.description.map((para, i) => (
-                      <p key={i} style={{
-                        fontFamily: 'Inter, system-ui, sans-serif',
-                        fontSize: '14px',
-                        fontWeight: 400,
-                        color: '#ffffff',
-                        margin: '0 0 12px 0',
-                        lineHeight: 1.7,
-                      }}>
-                        {para}
-                      </p>
-                    ))}
-                  </div>
+                  <p style={{
+                    fontFamily: 'Inter, system-ui, sans-serif',
+                    fontSize: '13px',
+                    fontWeight: 400,
+                    color: '#ffffff',
+                    margin: 0,
+                    lineHeight: 1.65,
+                  }}>
+                    {content.description}
+                  </p>
                 )}
               </div>
 
               {/* Image placeholder */}
               {content.hasImage && (
                 <div style={{
-                  width: '130px',
-                  height: '130px',
-                  borderRadius: '10px',
+                  width: '100px',
+                  height: '100px',
+                  borderRadius: '8px',
                   backgroundColor: 'rgba(15, 23, 42, 0.95)',
                   border: '2px solid rgba(34, 211, 238, 0.4)',
                   display: 'flex',
@@ -307,10 +298,10 @@ export function SectionPlane({
                 }}>
                   <span style={{
                     fontFamily: 'JetBrains Mono, monospace',
-                    fontSize: '10px',
+                    fontSize: '9px',
                     color: '#64748b',
                   }}>
-                    Your Image
+                    Image
                   </span>
                 </div>
               )}
@@ -320,7 +311,7 @@ export function SectionPlane({
       </Html>
 
       {/* Corner accents */}
-      <mesh position={[-6.3, -3.3, 0.01]}>
+      <mesh position={[-5.8, -2.55, 0.01]}>
         <circleGeometry args={[0.08, 16]} />
         <meshBasicMaterial 
           color={borderColor} 
@@ -328,7 +319,7 @@ export function SectionPlane({
           opacity={targets.opacity * 0.9} 
         />
       </mesh>
-      <mesh position={[6.3, -3.3, 0.01]}>
+      <mesh position={[5.8, -2.55, 0.01]}>
         <circleGeometry args={[0.08, 16]} />
         <meshBasicMaterial 
           color={borderColor} 
@@ -336,7 +327,7 @@ export function SectionPlane({
           opacity={targets.opacity * 0.9} 
         />
       </mesh>
-      <mesh position={[-6.3, 3.3, 0.01]}>
+      <mesh position={[-5.8, 2.55, 0.01]}>
         <circleGeometry args={[0.08, 16]} />
         <meshBasicMaterial 
           color={borderColor} 
@@ -344,7 +335,7 @@ export function SectionPlane({
           opacity={targets.opacity * 0.9} 
         />
       </mesh>
-      <mesh position={[6.3, 3.3, 0.01]}>
+      <mesh position={[5.8, 2.55, 0.01]}>
         <circleGeometry args={[0.08, 16]} />
         <meshBasicMaterial 
           color={borderColor} 
