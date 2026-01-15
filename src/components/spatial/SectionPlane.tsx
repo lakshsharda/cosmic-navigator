@@ -86,14 +86,14 @@ export function SectionPlane({
 
   // Calculate target values based on focus and hover state
   const targets = useMemo(() => {
-    const baseOpacity = 0.15 + focusWeight * 0.5;
+    const baseOpacity = 0.6 + focusWeight * 0.3; // Higher base opacity for better text backdrop
     const baseScale = 0.85 + focusWeight * 0.2;
     
     return {
       scale: isActive ? baseScale * 1.05 : baseScale,
-      opacity: hovered ? Math.min(baseOpacity + 0.15, 0.7) : baseOpacity,
-      glowOpacity: isActive ? 0.4 + focusWeight * 0.3 : focusWeight * 0.2,
-      rotationY: hovered ? 0.02 : 0,
+      opacity: hovered ? Math.min(baseOpacity + 0.1, 0.9) : baseOpacity,
+      glowOpacity: isActive ? 0.3 + focusWeight * 0.2 : focusWeight * 0.15,
+      rotationY: hovered ? 0.015 : 0,
     };
   }, [focusWeight, isActive, hovered]);
 
@@ -130,7 +130,7 @@ export function SectionPlane({
 
     if (borderRef.current) {
       const borderMaterial = borderRef.current.material as THREE.LineBasicMaterial;
-      borderMaterial.opacity = isActive ? 0.8 : 0.4;
+      borderMaterial.opacity = isActive ? 0.7 : 0.4;
     }
   });
 
@@ -150,10 +150,10 @@ export function SectionPlane({
     }
   };
 
-  // Brighter base colors for better visibility
-  const baseColor = isActive ? '#0c1929' : '#0a1420';
+  // Darker base for better text contrast
+  const baseColor = '#050a12';
   const glowColor = '#0ea5e9';
-  const borderColor = isActive ? '#38bdf8' : '#3b82f6';
+  const borderColor = isActive ? '#38bdf8' : '#1e40af';
 
   // Calculate content visibility based on focus weight
   const showFullContent = focusWeight > 0.5;
@@ -174,7 +174,7 @@ export function SectionPlane({
         />
       </mesh>
 
-      {/* Main glass plane - darker for contrast */}
+      {/* Main glass plane - solid dark for text readability */}
       <mesh
         ref={meshRef}
         onPointerEnter={handlePointerEnter}
@@ -184,65 +184,64 @@ export function SectionPlane({
         <meshBasicMaterial
           color={baseColor}
           transparent
-          opacity={0.4}
+          opacity={0.85}
           side={THREE.DoubleSide}
         />
       </mesh>
 
-      {/* Border effect - brighter */}
+      {/* Border effect */}
       <lineSegments ref={borderRef}>
         <primitive object={edgesGeometry} attach="geometry" />
         <lineBasicMaterial
           color={borderColor}
           transparent
           opacity={0.6}
-          linewidth={2}
         />
       </lineSegments>
 
-      {/* HTML overlay for content - scales with 3D plane */}
+      {/* HTML overlay for content */}
       <Html
         center
         position={[0, 0, 0.1]}
         style={{
           pointerEvents: 'none',
           userSelect: 'none',
-          width: '800px',
+          width: '820px',
         }}
         transform
         occlude={false}
         distanceFactor={8}
       >
         <div 
-          className="w-full"
           style={{
-            opacity: 0.3 + focusWeight * 0.7,
+            opacity: 0.4 + focusWeight * 0.6,
             transition: 'opacity 0.3s ease',
           }}
         >
           {/* Simple label when far away */}
           {!showFullContent && (
-            <div className="flex flex-col items-center gap-3">
-              <span 
-                className="font-mono tracking-[0.3em]"
-                style={{ 
-                  fontSize: '16px',
-                  color: '#38bdf8',
-                  textShadow: '0 0 10px rgba(56, 189, 248, 0.5)',
-                }}
-              >
+            <div style={{ 
+              display: 'flex', 
+              flexDirection: 'column', 
+              alignItems: 'center', 
+              gap: '12px' 
+            }}>
+              <span style={{ 
+                fontFamily: 'JetBrains Mono, monospace',
+                fontSize: '16px',
+                letterSpacing: '0.3em',
+                color: '#67e8f9', // Bright cyan
+                fontWeight: 500,
+              }}>
                 {`0${index + 1}`}
               </span>
-              <span 
-                className="font-mono tracking-[0.15em] font-semibold"
-                style={{ 
-                  fontSize: '32px',
-                  color: isActive ? '#ffffff' : '#e2e8f0',
-                  textShadow: isActive 
-                    ? '0 0 30px rgba(56, 189, 248, 0.6), 0 0 60px rgba(56, 189, 248, 0.3)' 
-                    : '0 2px 4px rgba(0,0,0,0.5)',
-                }}
-              >
+              <span style={{ 
+                fontFamily: 'JetBrains Mono, monospace',
+                fontSize: '36px',
+                letterSpacing: '0.12em',
+                fontWeight: 700,
+                color: '#EAF6FF', // Bright off-white
+              }}>
                 {label.toUpperCase()}
               </span>
             </div>
@@ -250,72 +249,95 @@ export function SectionPlane({
 
           {/* Full content when focused */}
           {showFullContent && content && (
-            <div 
-              className="grid grid-cols-5 gap-10 items-center px-8"
-              style={{ opacity: contentOpacity }}
-            >
-              {/* Left: Text Content (3 columns) */}
-              <div className="col-span-3 space-y-5 text-left">
-                <div>
-                  <span 
-                    className="font-mono text-sm tracking-widest"
-                    style={{ 
-                      color: '#38bdf8',
-                      textShadow: '0 0 8px rgba(56, 189, 248, 0.4)',
-                    }}
-                  >
-                    0{index + 1} / {label.toUpperCase()}
-                  </span>
-                  <h2 
-                    className="font-mono text-3xl font-bold mt-2 tracking-tight"
-                    style={{ 
-                      color: '#ffffff',
-                      textShadow: '0 0 20px rgba(56, 189, 248, 0.3)',
-                    }}
-                  >
-                    {content.title}
-                  </h2>
-                  {content.subtitle && (
-                    <p 
-                      className="font-mono text-base mt-1"
-                      style={{ 
-                        color: '#38bdf8',
-                        textShadow: '0 0 10px rgba(56, 189, 248, 0.3)',
-                      }}
-                    >
-                      {content.subtitle}
-                    </p>
-                  )}
-                </div>
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: '3fr 2fr',
+              gap: '48px',
+              alignItems: 'center',
+              padding: '24px 32px',
+              opacity: contentOpacity,
+            }}>
+              {/* Left: Text Content */}
+              <div style={{ textAlign: 'left' }}>
+                {/* Section label */}
+                <span style={{
+                  fontFamily: 'JetBrains Mono, monospace',
+                  fontSize: '12px',
+                  letterSpacing: '0.2em',
+                  color: '#67e8f9', // Bright cyan
+                  fontWeight: 500,
+                  display: 'block',
+                  marginBottom: '8px',
+                }}>
+                  0{index + 1} / {label.toUpperCase()}
+                </span>
 
+                {/* Main heading - bright and bold */}
+                <h2 style={{
+                  fontFamily: 'JetBrains Mono, monospace',
+                  fontSize: '32px',
+                  fontWeight: 700,
+                  color: '#CFF4FF', // Light cyan as specified
+                  margin: '0 0 6px 0',
+                  letterSpacing: '0.02em',
+                  lineHeight: 1.2,
+                }}>
+                  {content.title}
+                </h2>
+
+                {/* Subtitle - medium weight, spaced */}
+                {content.subtitle && (
+                  <p style={{
+                    fontFamily: 'JetBrains Mono, monospace',
+                    fontSize: '14px',
+                    fontWeight: 500,
+                    color: '#38bdf8', // Cyan accent
+                    margin: '0 0 20px 0',
+                    letterSpacing: '0.15em',
+                  }}>
+                    {content.subtitle}
+                  </p>
+                )}
+
+                {/* Description paragraphs - clean, readable */}
                 {content.description && (
-                  <div className="space-y-3">
+                  <div style={{ marginBottom: '20px' }}>
                     {content.description.map((para, i) => (
-                      <p 
-                        key={i} 
-                        className="text-sm leading-relaxed"
-                        style={{ 
-                          color: '#cbd5e1',
-                          textShadow: '0 1px 2px rgba(0,0,0,0.5)',
-                        }}
-                      >
+                      <p key={i} style={{
+                        fontFamily: 'Inter, system-ui, sans-serif',
+                        fontSize: '14px',
+                        fontWeight: 400,
+                        color: '#e2e8f0', // Strong contrast - slate-200
+                        margin: '0 0 12px 0',
+                        lineHeight: 1.65, // Good readability
+                        letterSpacing: '0.01em',
+                      }}>
                         {para}
                       </p>
                     ))}
                   </div>
                 )}
 
+                {/* Tags */}
                 {content.tags && (
-                  <div className="flex gap-3 pt-3">
+                  <div style={{ 
+                    display: 'flex', 
+                    gap: '10px', 
+                    flexWrap: 'wrap',
+                    marginTop: '8px',
+                  }}>
                     {content.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="px-4 py-1.5 rounded-md text-xs font-mono font-medium"
-                        style={{ 
-                          color: '#38bdf8',
-                          backgroundColor: 'rgba(56, 189, 248, 0.1)',
-                          border: '1px solid rgba(56, 189, 248, 0.4)',
-                          boxShadow: '0 0 10px rgba(56, 189, 248, 0.2)',
+                        style={{
+                          fontFamily: 'JetBrains Mono, monospace',
+                          fontSize: '11px',
+                          fontWeight: 500,
+                          color: '#67e8f9',
+                          padding: '6px 14px',
+                          borderRadius: '6px',
+                          backgroundColor: 'rgba(56, 189, 248, 0.12)',
+                          border: '1px solid rgba(103, 232, 249, 0.3)',
                         }}
                       >
                         {tag}
@@ -325,30 +347,38 @@ export function SectionPlane({
                 )}
               </div>
 
-              {/* Right: Image placeholder (2 columns) */}
+              {/* Right: Image placeholder - visually separated */}
               {content.hasImage && (
-                <div className="col-span-2 flex justify-center">
-                  <div 
-                    className="relative w-44 h-44 rounded-xl overflow-hidden"
-                    style={{
-                      backgroundColor: 'rgba(15, 23, 42, 0.8)',
-                      border: '2px solid rgba(56, 189, 248, 0.4)',
-                      boxShadow: '0 0 30px rgba(56, 189, 248, 0.2), inset 0 0 30px rgba(56, 189, 248, 0.1)',
-                    }}
-                  >
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <span 
-                        className="font-mono text-sm"
-                        style={{ color: '#64748b' }}
-                      >
-                        Your Image
-                      </span>
-                    </div>
+                <div style={{ 
+                  display: 'flex', 
+                  justifyContent: 'center',
+                  paddingLeft: '24px',
+                  borderLeft: '1px solid rgba(56, 189, 248, 0.2)',
+                }}>
+                  <div style={{
+                    position: 'relative',
+                    width: '160px',
+                    height: '160px',
+                    borderRadius: '12px',
+                    overflow: 'hidden',
+                    backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                    border: '2px solid rgba(56, 189, 248, 0.35)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                    <span style={{
+                      fontFamily: 'JetBrains Mono, monospace',
+                      fontSize: '12px',
+                      color: '#64748b',
+                    }}>
+                      Your Image
+                    </span>
                     {/* Corner accents */}
-                    <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2" style={{ borderColor: '#38bdf8' }} />
-                    <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2" style={{ borderColor: '#38bdf8' }} />
-                    <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2" style={{ borderColor: '#38bdf8' }} />
-                    <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2" style={{ borderColor: '#38bdf8' }} />
+                    <div style={{ position: 'absolute', top: 0, left: 0, width: '16px', height: '16px', borderTop: '2px solid #38bdf8', borderLeft: '2px solid #38bdf8' }} />
+                    <div style={{ position: 'absolute', top: 0, right: 0, width: '16px', height: '16px', borderTop: '2px solid #38bdf8', borderRight: '2px solid #38bdf8' }} />
+                    <div style={{ position: 'absolute', bottom: 0, left: 0, width: '16px', height: '16px', borderBottom: '2px solid #38bdf8', borderLeft: '2px solid #38bdf8' }} />
+                    <div style={{ position: 'absolute', bottom: 0, right: 0, width: '16px', height: '16px', borderBottom: '2px solid #38bdf8', borderRight: '2px solid #38bdf8' }} />
                   </div>
                 </div>
               )}
@@ -357,11 +387,11 @@ export function SectionPlane({
         </div>
       </Html>
 
-      {/* Corner dots for frame effect - brighter */}
+      {/* Corner dots for frame effect */}
       <mesh position={[-6.8, -4.3, 0.01]}>
         <circleGeometry args={[0.1, 16]} />
         <meshBasicMaterial 
-          color={isActive ? '#38bdf8' : '#3b82f6'} 
+          color={isActive ? '#38bdf8' : '#1e40af'} 
           transparent 
           opacity={isActive ? 0.9 : 0.5} 
         />
@@ -369,7 +399,7 @@ export function SectionPlane({
       <mesh position={[6.8, -4.3, 0.01]}>
         <circleGeometry args={[0.1, 16]} />
         <meshBasicMaterial 
-          color={isActive ? '#38bdf8' : '#3b82f6'} 
+          color={isActive ? '#38bdf8' : '#1e40af'} 
           transparent 
           opacity={isActive ? 0.9 : 0.5} 
         />
@@ -377,7 +407,7 @@ export function SectionPlane({
       <mesh position={[-6.8, 4.3, 0.01]}>
         <circleGeometry args={[0.1, 16]} />
         <meshBasicMaterial 
-          color={isActive ? '#38bdf8' : '#3b82f6'} 
+          color={isActive ? '#38bdf8' : '#1e40af'} 
           transparent 
           opacity={isActive ? 0.9 : 0.5} 
         />
@@ -385,7 +415,7 @@ export function SectionPlane({
       <mesh position={[6.8, 4.3, 0.01]}>
         <circleGeometry args={[0.1, 16]} />
         <meshBasicMaterial 
-          color={isActive ? '#38bdf8' : '#3b82f6'} 
+          color={isActive ? '#38bdf8' : '#1e40af'} 
           transparent 
           opacity={isActive ? 0.9 : 0.5} 
         />
