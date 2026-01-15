@@ -86,13 +86,13 @@ export function SectionPlane({
 
   // Calculate target values based on focus and hover state
   const targets = useMemo(() => {
-    const baseOpacity = 0.08 + focusWeight * 0.25;
+    const baseOpacity = 0.15 + focusWeight * 0.5;
     const baseScale = 0.85 + focusWeight * 0.2;
     
     return {
       scale: isActive ? baseScale * 1.05 : baseScale,
-      opacity: hovered ? Math.min(baseOpacity + 0.1, 0.4) : baseOpacity,
-      glowOpacity: isActive ? 0.25 + focusWeight * 0.2 : focusWeight * 0.1,
+      opacity: hovered ? Math.min(baseOpacity + 0.15, 0.7) : baseOpacity,
+      glowOpacity: isActive ? 0.4 + focusWeight * 0.3 : focusWeight * 0.2,
       rotationY: hovered ? 0.02 : 0,
     };
   }, [focusWeight, isActive, hovered]);
@@ -130,7 +130,7 @@ export function SectionPlane({
 
     if (borderRef.current) {
       const borderMaterial = borderRef.current.material as THREE.LineBasicMaterial;
-      borderMaterial.opacity = isActive ? 0.6 : 0.25;
+      borderMaterial.opacity = isActive ? 0.8 : 0.4;
     }
   });
 
@@ -150,9 +150,10 @@ export function SectionPlane({
     }
   };
 
-  const baseColor = isActive ? '#1e3a5f' : '#1a2744';
+  // Brighter base colors for better visibility
+  const baseColor = isActive ? '#0c1929' : '#0a1420';
   const glowColor = '#0ea5e9';
-  const borderColor = isActive ? '#38bdf8' : '#334155';
+  const borderColor = isActive ? '#38bdf8' : '#3b82f6';
 
   // Calculate content visibility based on focus weight
   const showFullContent = focusWeight > 0.5;
@@ -173,7 +174,7 @@ export function SectionPlane({
         />
       </mesh>
 
-      {/* Main glass plane */}
+      {/* Main glass plane - darker for contrast */}
       <mesh
         ref={meshRef}
         onPointerEnter={handlePointerEnter}
@@ -183,18 +184,19 @@ export function SectionPlane({
         <meshBasicMaterial
           color={baseColor}
           transparent
-          opacity={0.2}
+          opacity={0.4}
           side={THREE.DoubleSide}
         />
       </mesh>
 
-      {/* Border effect */}
+      {/* Border effect - brighter */}
       <lineSegments ref={borderRef}>
         <primitive object={edgesGeometry} attach="geometry" />
         <lineBasicMaterial
           color={borderColor}
           transparent
-          opacity={0.4}
+          opacity={0.6}
+          linewidth={2}
         />
       </lineSegments>
 
@@ -205,7 +207,7 @@ export function SectionPlane({
         style={{
           pointerEvents: 'none',
           userSelect: 'none',
-          width: '700px',
+          width: '800px',
         }}
         transform
         occlude={false}
@@ -214,26 +216,31 @@ export function SectionPlane({
         <div 
           className="w-full"
           style={{
-            opacity: 0.15 + focusWeight * 0.85,
+            opacity: 0.3 + focusWeight * 0.7,
             transition: 'opacity 0.3s ease',
           }}
         >
           {/* Simple label when far away */}
           {!showFullContent && (
-            <div className="flex flex-col items-center gap-2">
+            <div className="flex flex-col items-center gap-3">
               <span 
-                className="font-mono text-sm tracking-[0.3em] text-primary/60"
-                style={{ fontSize: '14px' }}
+                className="font-mono tracking-[0.3em]"
+                style={{ 
+                  fontSize: '16px',
+                  color: '#38bdf8',
+                  textShadow: '0 0 10px rgba(56, 189, 248, 0.5)',
+                }}
               >
                 {`0${index + 1}`}
               </span>
               <span 
-                className={`font-mono text-3xl tracking-[0.2em] font-medium ${
-                  isActive ? 'text-foreground' : 'text-foreground/60'
-                }`}
+                className="font-mono tracking-[0.15em] font-semibold"
                 style={{ 
-                  fontSize: '28px',
-                  textShadow: isActive ? '0 0 30px hsl(195 85% 55% / 0.4)' : 'none'
+                  fontSize: '32px',
+                  color: isActive ? '#ffffff' : '#e2e8f0',
+                  textShadow: isActive 
+                    ? '0 0 30px rgba(56, 189, 248, 0.6), 0 0 60px rgba(56, 189, 248, 0.3)' 
+                    : '0 2px 4px rgba(0,0,0,0.5)',
                 }}
               >
                 {label.toUpperCase()}
@@ -244,37 +251,72 @@ export function SectionPlane({
           {/* Full content when focused */}
           {showFullContent && content && (
             <div 
-              className="grid grid-cols-5 gap-8 items-center px-6"
+              className="grid grid-cols-5 gap-10 items-center px-8"
               style={{ opacity: contentOpacity }}
             >
               {/* Left: Text Content (3 columns) */}
-              <div className="col-span-3 space-y-4 text-left">
+              <div className="col-span-3 space-y-5 text-left">
                 <div>
-                  <span className="font-mono text-xs text-primary tracking-widest">
+                  <span 
+                    className="font-mono text-sm tracking-widest"
+                    style={{ 
+                      color: '#38bdf8',
+                      textShadow: '0 0 8px rgba(56, 189, 248, 0.4)',
+                    }}
+                  >
                     0{index + 1} / {label.toUpperCase()}
                   </span>
-                  <h2 className="font-mono text-2xl font-semibold text-foreground mt-1 tracking-tight">
+                  <h2 
+                    className="font-mono text-3xl font-bold mt-2 tracking-tight"
+                    style={{ 
+                      color: '#ffffff',
+                      textShadow: '0 0 20px rgba(56, 189, 248, 0.3)',
+                    }}
+                  >
                     {content.title}
                   </h2>
                   {content.subtitle && (
-                    <p className="text-primary font-mono text-sm mt-0.5">{content.subtitle}</p>
+                    <p 
+                      className="font-mono text-base mt-1"
+                      style={{ 
+                        color: '#38bdf8',
+                        textShadow: '0 0 10px rgba(56, 189, 248, 0.3)',
+                      }}
+                    >
+                      {content.subtitle}
+                    </p>
                   )}
                 </div>
 
                 {content.description && (
-                  <div className="space-y-2 text-secondary-foreground/80 text-sm leading-relaxed">
+                  <div className="space-y-3">
                     {content.description.map((para, i) => (
-                      <p key={i}>{para}</p>
+                      <p 
+                        key={i} 
+                        className="text-sm leading-relaxed"
+                        style={{ 
+                          color: '#cbd5e1',
+                          textShadow: '0 1px 2px rgba(0,0,0,0.5)',
+                        }}
+                      >
+                        {para}
+                      </p>
                     ))}
                   </div>
                 )}
 
                 {content.tags && (
-                  <div className="flex gap-2 pt-2">
+                  <div className="flex gap-3 pt-3">
                     {content.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="px-3 py-1 rounded-md text-xs font-mono text-primary border border-primary/30 bg-primary/5"
+                        className="px-4 py-1.5 rounded-md text-xs font-mono font-medium"
+                        style={{ 
+                          color: '#38bdf8',
+                          backgroundColor: 'rgba(56, 189, 248, 0.1)',
+                          border: '1px solid rgba(56, 189, 248, 0.4)',
+                          boxShadow: '0 0 10px rgba(56, 189, 248, 0.2)',
+                        }}
                       >
                         {tag}
                       </span>
@@ -286,15 +328,27 @@ export function SectionPlane({
               {/* Right: Image placeholder (2 columns) */}
               {content.hasImage && (
                 <div className="col-span-2 flex justify-center">
-                  <div className="relative w-40 h-40 rounded-xl overflow-hidden border border-primary/30 bg-secondary/30">
+                  <div 
+                    className="relative w-44 h-44 rounded-xl overflow-hidden"
+                    style={{
+                      backgroundColor: 'rgba(15, 23, 42, 0.8)',
+                      border: '2px solid rgba(56, 189, 248, 0.4)',
+                      boxShadow: '0 0 30px rgba(56, 189, 248, 0.2), inset 0 0 30px rgba(56, 189, 248, 0.1)',
+                    }}
+                  >
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="font-mono text-muted-foreground text-xs">Your Image</span>
+                      <span 
+                        className="font-mono text-sm"
+                        style={{ color: '#64748b' }}
+                      >
+                        Your Image
+                      </span>
                     </div>
                     {/* Corner accents */}
-                    <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-primary/60" />
-                    <div className="absolute top-0 right-0 w-3 h-3 border-t border-r border-primary/60" />
-                    <div className="absolute bottom-0 left-0 w-3 h-3 border-b border-l border-primary/60" />
-                    <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-primary/60" />
+                    <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2" style={{ borderColor: '#38bdf8' }} />
+                    <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2" style={{ borderColor: '#38bdf8' }} />
+                    <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2" style={{ borderColor: '#38bdf8' }} />
+                    <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2" style={{ borderColor: '#38bdf8' }} />
                   </div>
                 </div>
               )}
@@ -303,37 +357,37 @@ export function SectionPlane({
         </div>
       </Html>
 
-      {/* Corner dots for frame effect */}
+      {/* Corner dots for frame effect - brighter */}
       <mesh position={[-6.8, -4.3, 0.01]}>
-        <circleGeometry args={[0.08, 16]} />
+        <circleGeometry args={[0.1, 16]} />
         <meshBasicMaterial 
-          color={isActive ? '#38bdf8' : '#475569'} 
+          color={isActive ? '#38bdf8' : '#3b82f6'} 
           transparent 
-          opacity={isActive ? 0.7 : 0.3} 
+          opacity={isActive ? 0.9 : 0.5} 
         />
       </mesh>
       <mesh position={[6.8, -4.3, 0.01]}>
-        <circleGeometry args={[0.08, 16]} />
+        <circleGeometry args={[0.1, 16]} />
         <meshBasicMaterial 
-          color={isActive ? '#38bdf8' : '#475569'} 
+          color={isActive ? '#38bdf8' : '#3b82f6'} 
           transparent 
-          opacity={isActive ? 0.7 : 0.3} 
+          opacity={isActive ? 0.9 : 0.5} 
         />
       </mesh>
       <mesh position={[-6.8, 4.3, 0.01]}>
-        <circleGeometry args={[0.08, 16]} />
+        <circleGeometry args={[0.1, 16]} />
         <meshBasicMaterial 
-          color={isActive ? '#38bdf8' : '#475569'} 
+          color={isActive ? '#38bdf8' : '#3b82f6'} 
           transparent 
-          opacity={isActive ? 0.7 : 0.3} 
+          opacity={isActive ? 0.9 : 0.5} 
         />
       </mesh>
       <mesh position={[6.8, 4.3, 0.01]}>
-        <circleGeometry args={[0.08, 16]} />
+        <circleGeometry args={[0.1, 16]} />
         <meshBasicMaterial 
-          color={isActive ? '#38bdf8' : '#475569'} 
+          color={isActive ? '#38bdf8' : '#3b82f6'} 
           transparent 
-          opacity={isActive ? 0.7 : 0.3} 
+          opacity={isActive ? 0.9 : 0.5} 
         />
       </mesh>
     </group>
