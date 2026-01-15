@@ -71,7 +71,9 @@ export function Navbar({ activeSectionId, onNavigate }: NavbarProps) {
 
             {/* Resume Button */}
             <motion.a
-              href="#resume"
+              href="/resume.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
               className="flex items-center gap-1.5 lg:gap-2 px-3 lg:px-4 py-1.5 lg:py-2 rounded-full bg-primary/10 border border-primary/30 text-primary font-mono text-[10px] lg:text-xs tracking-wider hover:bg-primary/20 hover:border-primary/50 transition-all duration-300"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
@@ -98,7 +100,9 @@ export function Navbar({ activeSectionId, onNavigate }: NavbarProps) {
 
             <div className="flex items-center gap-2 sm:gap-3">
               <motion.a
-                href="#resume"
+                href="/resume.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full bg-primary/10 border border-primary/30 text-primary font-mono text-[10px] sm:text-xs"
                 whileTap={{ scale: 0.95 }}
               >
