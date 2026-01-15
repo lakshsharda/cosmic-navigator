@@ -13,7 +13,7 @@ const SECTION_CONTENT: Record<string, {
   about: {
     title: 'LAKSH SHARDA',
     subtitle: 'Developer • Designer • Creator',
-    description: "I'm a tech-focused developer passionate about building scalable, well-structured applications. My experience spans web development, frontend frameworks, and backend services. I focus on writing clean, maintainable code and understanding systems end-to-end.",
+    description: "I'm a full-stack developer with expertise in building scalable, production-ready applications. My technical focus includes React, TypeScript, Node.js, and cloud-native architectures. I have hands-on experience with frontend frameworks, RESTful APIs, database design, and CI/CD pipelines. I prioritize writing clean, testable code and building systems that are maintainable long-term. Currently exploring distributed systems, performance optimization, and developer tooling.",
     hasImage: true,
   },
   experience: {
@@ -92,9 +92,9 @@ export function SectionPlane({
     };
   }, [focusWeight, isActive, hovered]);
 
-  // Plane geometry sized to fit content compactly
-  const planeGeometry = useMemo(() => new THREE.PlaneGeometry(12, 5.5), []);
-  const glowGeometry = useMemo(() => new THREE.PlaneGeometry(13.5, 6.5), []);
+  // Larger plane geometry with room for content
+  const planeGeometry = useMemo(() => new THREE.PlaneGeometry(14, 7), []);
+  const glowGeometry = useMemo(() => new THREE.PlaneGeometry(15, 8), []);
   const edgesGeometry = useMemo(() => new THREE.EdgesGeometry(planeGeometry), [planeGeometry]);
 
   // Smooth animation
@@ -145,10 +145,10 @@ export function SectionPlane({
     }
   };
 
-  // Solid dark background
-  const baseColor = '#030712';
-  const glowColor = '#0ea5e9';
-  const borderColor = isActive ? '#22d3ee' : '#0891b2';
+  // Darker background for better contrast
+  const baseColor = '#020408';
+  const glowColor = '#0891b2';
+  const borderColor = isActive ? '#67e8f9' : '#22d3ee';
 
   // Show full content only when very focused
   const showFullContent = focusWeight > 0.6;
@@ -183,24 +183,24 @@ export function SectionPlane({
         />
       </mesh>
 
-      {/* Border effect */}
+      {/* Border effect - subtle and soft */}
       <lineSegments ref={borderRef}>
         <primitive object={edgesGeometry} attach="geometry" />
         <lineBasicMaterial
           color={borderColor}
           transparent
-          opacity={0.7}
+          opacity={0.5}
         />
       </lineSegments>
 
-      {/* HTML content - sized to fit inside the plane */}
+      {/* HTML content - generous sizing for comfortable fit */}
       <Html
         center
         position={[0, 0, 0.1]}
         style={{
           pointerEvents: 'none',
           userSelect: 'none',
-          width: '680px',
+          width: '800px',
         }}
         transform
         occlude={false}
@@ -217,14 +217,14 @@ export function SectionPlane({
               flexDirection: 'column', 
               alignItems: 'center', 
               gap: '10px',
-              padding: '20px',
+              padding: '24px',
             }}>
               <span style={{ 
                 fontFamily: 'JetBrains Mono, monospace',
-                fontSize: '26px',
+                fontSize: '28px',
                 letterSpacing: '0.1em',
                 fontWeight: 700,
-                color: '#ffffff',
+                color: '#F5FAFF',
               }}>
                 {label.toUpperCase()}
               </span>
@@ -236,18 +236,20 @@ export function SectionPlane({
             <div style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '28px',
-              padding: '18px 28px',
+              gap: '36px',
+              padding: '32px 40px',
+              background: 'linear-gradient(135deg, rgba(2, 4, 8, 0.95) 0%, rgba(8, 12, 20, 0.92) 100%)',
+              borderRadius: '12px',
             }}>
               {/* Text Content */}
               <div style={{ textAlign: 'left', flex: 1 }}>
-                {/* Main heading - maximum contrast */}
+                {/* Main heading - near-white, high contrast */}
                 <h2 style={{
                   fontFamily: 'JetBrains Mono, monospace',
-                  fontSize: '24px',
+                  fontSize: '26px',
                   fontWeight: 700,
-                  color: '#ffffff',
-                  margin: '0 0 4px 0',
+                  color: '#F5FAFF',
+                  margin: '0 0 6px 0',
                   letterSpacing: '0.02em',
                   lineHeight: 1.2,
                 }}>
@@ -258,25 +260,26 @@ export function SectionPlane({
                 {content.subtitle && (
                   <p style={{
                     fontFamily: 'JetBrains Mono, monospace',
-                    fontSize: '12px',
+                    fontSize: '13px',
                     fontWeight: 500,
-                    color: '#22d3ee',
-                    margin: '0 0 12px 0',
-                    letterSpacing: '0.12em',
+                    color: '#67e8f9',
+                    margin: '0 0 16px 0',
+                    letterSpacing: '0.15em',
                   }}>
                     {content.subtitle}
                   </p>
                 )}
 
-                {/* Description - single paragraph, pure white */}
+                {/* Description - light grey-white, no effects */}
                 {content.description && (
                   <p style={{
                     fontFamily: 'Inter, system-ui, sans-serif',
-                    fontSize: '13px',
+                    fontSize: '14px',
                     fontWeight: 400,
-                    color: '#ffffff',
+                    color: '#DDE7EE',
                     margin: 0,
-                    lineHeight: 1.65,
+                    lineHeight: 1.75,
+                    maxWidth: '520px',
                   }}>
                     {content.description}
                   </p>
@@ -286,11 +289,11 @@ export function SectionPlane({
               {/* Image placeholder */}
               {content.hasImage && (
                 <div style={{
-                  width: '100px',
-                  height: '100px',
-                  borderRadius: '8px',
-                  backgroundColor: 'rgba(15, 23, 42, 0.95)',
-                  border: '2px solid rgba(34, 211, 238, 0.4)',
+                  width: '120px',
+                  height: '120px',
+                  borderRadius: '10px',
+                  backgroundColor: 'rgba(8, 15, 30, 0.98)',
+                  border: '1.5px solid rgba(103, 232, 249, 0.35)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -298,8 +301,8 @@ export function SectionPlane({
                 }}>
                   <span style={{
                     fontFamily: 'JetBrains Mono, monospace',
-                    fontSize: '9px',
-                    color: '#64748b',
+                    fontSize: '10px',
+                    color: '#475569',
                   }}>
                     Image
                   </span>
@@ -311,36 +314,36 @@ export function SectionPlane({
       </Html>
 
       {/* Corner accents */}
-      <mesh position={[-5.8, -2.55, 0.01]}>
-        <circleGeometry args={[0.08, 16]} />
+      <mesh position={[-6.8, -3.3, 0.01]}>
+        <circleGeometry args={[0.06, 16]} />
         <meshBasicMaterial 
           color={borderColor} 
           transparent 
-          opacity={targets.opacity * 0.9} 
+          opacity={targets.opacity * 0.7} 
         />
       </mesh>
-      <mesh position={[5.8, -2.55, 0.01]}>
-        <circleGeometry args={[0.08, 16]} />
+      <mesh position={[6.8, -3.3, 0.01]}>
+        <circleGeometry args={[0.06, 16]} />
         <meshBasicMaterial 
           color={borderColor} 
           transparent 
-          opacity={targets.opacity * 0.9} 
+          opacity={targets.opacity * 0.7} 
         />
       </mesh>
-      <mesh position={[-5.8, 2.55, 0.01]}>
-        <circleGeometry args={[0.08, 16]} />
+      <mesh position={[-6.8, 3.3, 0.01]}>
+        <circleGeometry args={[0.06, 16]} />
         <meshBasicMaterial 
           color={borderColor} 
           transparent 
-          opacity={targets.opacity * 0.9} 
+          opacity={targets.opacity * 0.7} 
         />
       </mesh>
-      <mesh position={[5.8, 2.55, 0.01]}>
-        <circleGeometry args={[0.08, 16]} />
+      <mesh position={[6.8, 3.3, 0.01]}>
+        <circleGeometry args={[0.06, 16]} />
         <meshBasicMaterial 
           color={borderColor} 
           transparent 
-          opacity={targets.opacity * 0.9} 
+          opacity={targets.opacity * 0.7} 
         />
       </mesh>
     </group>
