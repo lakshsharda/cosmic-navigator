@@ -168,7 +168,7 @@ export function SectionPlane({
         />
       </mesh>
 
-      {/* Main plane - solid dark background */}
+      {/* Main plane - fully transparent so stars show through */}
       <mesh
         ref={meshRef}
         onPointerEnter={handlePointerEnter}
@@ -178,7 +178,7 @@ export function SectionPlane({
         <meshBasicMaterial
           color={baseColor}
           transparent
-          opacity={0.95}
+          opacity={0}
           side={THREE.DoubleSide}
         />
       </mesh>
@@ -246,24 +246,22 @@ export function SectionPlane({
                 alignItems: 'center',
                 gap: '28px',
                 padding: '24px 28px',
-                background:
-                  'linear-gradient(135deg, rgba(2, 4, 8, 0.95) 0%, rgba(8, 12, 20, 0.92) 100%)',
-                borderRadius: '14px',
                 boxSizing: 'border-box',
               }}
             >
               {/* Text Content */}
               <div style={{ textAlign: 'left', flex: 1, minWidth: 0 }}>
-                {/* Main heading - near-white, high contrast */}
+                {/* Main heading - pure white */}
                 <h2
                   style={{
                     fontFamily: 'JetBrains Mono, monospace',
-                    fontSize: '23px',
+                    fontSize: '24px',
                     fontWeight: 700,
-                    color: '#F5FAFF',
+                    color: '#ffffff',
                     margin: '0 0 6px 0',
                     letterSpacing: '0.02em',
                     lineHeight: 1.2,
+                    textShadow: '0 2px 8px rgba(0,0,0,0.6)',
                   }}
                 >
                   {content.title}
@@ -279,23 +277,25 @@ export function SectionPlane({
                       color: '#67e8f9',
                       margin: '0 0 14px 0',
                       letterSpacing: '0.15em',
+                      textShadow: '0 1px 4px rgba(0,0,0,0.5)',
                     }}
                   >
                     {content.subtitle}
                   </p>
                 )}
 
-                {/* Description - smaller so it fits; no effects */}
+                {/* Description - pure white, readable */}
                 {content.description && (
                   <p
                     style={{
                       fontFamily: 'Inter, system-ui, sans-serif',
-                      fontSize: '12.75px',
+                      fontSize: '13px',
                       fontWeight: 400,
-                      color: '#DDE7EE',
+                      color: '#ffffff',
                       margin: 0,
                       lineHeight: 1.75,
-                      maxWidth: '400px',
+                      maxWidth: '420px',
+                      textShadow: '0 1px 6px rgba(0,0,0,0.7)',
                     }}
                   >
                     {content.description}
@@ -303,15 +303,15 @@ export function SectionPlane({
                 )}
               </div>
 
-              {/* Image placeholder (bigger, still inside box) */}
+              {/* Image placeholder */}
               {content.hasImage && (
                 <div
                   style={{
-                    width: '180px',
-                    height: '180px',
+                    width: '160px',
+                    height: '160px',
                     borderRadius: '12px',
-                    backgroundColor: 'rgba(8, 15, 30, 0.98)',
-                    border: '1px solid rgba(103, 232, 249, 0.35)',
+                    backgroundColor: 'rgba(8, 15, 30, 0.6)',
+                    border: '1px solid rgba(103, 232, 249, 0.4)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -322,7 +322,7 @@ export function SectionPlane({
                     style={{
                       fontFamily: 'JetBrains Mono, monospace',
                       fontSize: '10px',
-                      color: '#475569',
+                      color: '#94a3b8',
                     }}
                   >
                     Image
