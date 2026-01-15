@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { X, ZoomIn } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { X, ZoomIn, ExternalLink, Calendar, Code2 } from 'lucide-react';
 
 // Project images
 import projectVisionAi from '@/assets/project-vision-ai.png';
@@ -145,328 +146,216 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
   return (
     <>
       {/* Main Modal */}
-      <div
-        style={{
-          position: 'fixed',
-          inset: 0,
-          zIndex: 9999,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: '20px',
-        }}
-        onClick={onClose}
-      >
-        {/* Backdrop */}
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            backgroundColor: 'rgba(0, 0, 0, 0.85)',
-            backdropFilter: 'blur(8px)',
-          }}
-        />
-
-        {/* Modal Content */}
-        <div
-          style={{
-            position: 'relative',
-            width: '100%',
-            maxWidth: '600px',
-            maxHeight: '80vh',
-            backgroundColor: 'rgba(8, 15, 30, 0.98)',
-            border: '1px solid rgba(103, 232, 249, 0.4)',
-            borderRadius: '16px',
-            overflow: 'hidden',
-            display: 'flex',
-            flexDirection: 'column',
-          }}
-          onClick={(e) => e.stopPropagation()}
+      <AnimatePresence>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6"
+          onClick={onClose}
         >
-          {/* Close Button */}
-          <button
-            onClick={onClose}
-            style={{
-              position: 'absolute',
-              top: '12px',
-              right: '12px',
-              zIndex: 10,
-              width: '32px',
-              height: '32px',
-              borderRadius: '50%',
-              backgroundColor: 'rgba(0, 0, 0, 0.7)',
-              border: '1px solid rgba(103, 232, 249, 0.4)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = 'rgba(103, 232, 249, 0.2)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
-            }}
-          >
-            <X size={16} color="#67e8f9" />
-          </button>
+          {/* Backdrop with blur */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 bg-background/80 backdrop-blur-xl"
+          />
 
-          {/* Scrollable Content */}
-          <div
-            style={{
-              overflowY: 'auto',
-              padding: '20px',
-            }}
+          {/* Modal Content */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+            className="relative w-full max-w-2xl max-h-[85vh] bg-gradient-to-b from-secondary/50 to-background/95 border border-primary/30 rounded-2xl overflow-hidden shadow-[0_0_60px_-15px_hsl(var(--primary)/0.3)]"
+            onClick={(e) => e.stopPropagation()}
           >
-            {/* Media Section */}
-            {project.youtubeUrl ? (
-              <div
-                style={{
-                  width: '100%',
-                  aspectRatio: '16/9',
-                  borderRadius: '10px',
-                  overflow: 'hidden',
-                  marginBottom: '20px',
-                  backgroundColor: 'rgba(0, 0, 0, 0.4)',
-                }}
-              >
-                <iframe
-                  src={project.youtubeUrl}
-                  title={project.title}
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    border: 'none',
-                  }}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                />
-              </div>
-            ) : project.image ? (
-              <div
-                style={{
-                  width: '100%',
-                  maxHeight: '180px',
-                  borderRadius: '10px',
-                  overflow: 'hidden',
-                  marginBottom: '16px',
-                  backgroundColor: 'rgba(0, 0, 0, 0.4)',
-                  position: 'relative',
-                  cursor: 'pointer',
-                }}
-                onClick={() => setImagePopupOpen(true)}
-              >
-                <img
-                  src={project.image}
-                  alt={project.title}
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'contain',
-                  }}
-                />
-                {/* Zoom Indicator */}
-                <div
-                  style={{
-                    position: 'absolute',
-                    bottom: '8px',
-                    right: '8px',
-                    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-                    borderRadius: '6px',
-                    padding: '6px 10px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '4px',
-                    border: '1px solid rgba(103, 232, 249, 0.4)',
-                  }}
-                >
-                  <ZoomIn size={12} color="#67e8f9" />
-                  <span
-                    style={{
-                      fontFamily: 'JetBrains Mono, monospace',
-                      fontSize: '9px',
-                      color: '#67e8f9',
-                    }}
-                  >
-                    Click to expand
-                  </span>
+            {/* Decorative top glow */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-px bg-gradient-to-r from-transparent via-primary to-transparent" />
+            
+            {/* Close Button */}
+            <motion.button
+              onClick={onClose}
+              className="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-background/80 border border-primary/30 flex items-center justify-center text-primary hover:bg-primary/20 hover:border-primary/50 transition-all duration-200"
+              whileHover={{ scale: 1.1, rotate: 90 }}
+              whileTap={{ scale: 0.9 }}
+            >
+              <X size={18} />
+            </motion.button>
+
+            {/* Scrollable Content */}
+            <div className="overflow-y-auto max-h-[85vh] custom-scrollbar">
+              {/* Media Section */}
+              {project.youtubeUrl ? (
+                <div className="w-full aspect-video bg-background/50">
+                  <iframe
+                    src={project.youtubeUrl}
+                    title={project.title}
+                    className="w-full h-full"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
                 </div>
-              </div>
-            ) : null}
-
-            {/* Header */}
-            <div style={{ marginBottom: '16px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '6px' }}>
-                <h2
-                  style={{
-                    fontFamily: 'JetBrains Mono, monospace',
-                    fontSize: '18px',
-                    fontWeight: 700,
-                    color: '#F5FAFF',
-                    margin: 0,
-                  }}
+              ) : project.image ? (
+                <motion.div
+                  className="relative w-full h-48 sm:h-56 bg-background/50 cursor-pointer group overflow-hidden"
+                  onClick={() => setImagePopupOpen(true)}
+                  whileHover={{ scale: 1.02 }}
+                  transition={{ duration: 0.3 }}
                 >
-                  {project.title}
-                </h2>
-                <span
-                  style={{
-                    fontFamily: 'JetBrains Mono, monospace',
-                    fontSize: '10px',
-                    color: '#94a3b8',
-                    padding: '3px 8px',
-                    backgroundColor: 'rgba(103, 232, 249, 0.1)',
-                    borderRadius: '5px',
-                    border: '1px solid rgba(103, 232, 249, 0.3)',
-                  }}
-                >
-                  {project.year}
-                </span>
-              </div>
-            </div>
-
-            {/* Tech Stack Badges */}
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '20px' }}>
-              {project.techStack.map((tech, idx) => (
-                <span
-                  key={idx}
-                  style={{
-                    fontFamily: 'JetBrains Mono, monospace',
-                    fontSize: '10px',
-                    fontWeight: 500,
-                    color: '#a5f3fc',
-                    padding: '5px 10px',
-                    backgroundColor: 'rgba(8, 15, 30, 0.8)',
-                    borderRadius: '16px',
-                    border: '1px solid rgba(103, 232, 249, 0.4)',
-                  }}
-                >
-                  {tech}
-                </span>
-              ))}
-            </div>
-
-            {/* Full Description */}
-            <div>
-              <h3
-                style={{
-                  fontFamily: 'JetBrains Mono, monospace',
-                  fontSize: '11px',
-                  fontWeight: 600,
-                  color: '#67e8f9',
-                  margin: '0 0 10px 0',
-                  letterSpacing: '0.08em',
-                }}
-              >
-                PROJECT DETAILS
-              </h3>
-              <ul
-                style={{
-                  margin: 0,
-                  padding: 0,
-                  listStyle: 'none',
-                }}
-              >
-                {project.fullDescription.map((desc, idx) => (
-                  <li
-                    key={idx}
-                    style={{
-                      fontFamily: 'Inter, system-ui, sans-serif',
-                      fontSize: '13px',
-                      color: '#DDE7EE',
-                      lineHeight: 1.6,
-                      marginBottom: '8px',
-                      paddingLeft: '14px',
-                      position: 'relative',
-                    }}
+                  <img
+                    src={project.image}
+                    alt={project.title}
+                    className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
+                  />
+                  {/* Zoom overlay */}
+                  <motion.div 
+                    className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-4"
                   >
-                    <span
-                      style={{
-                        position: 'absolute',
-                        left: 0,
-                        color: '#67e8f9',
-                      }}
+                    <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-primary/20 border border-primary/40 backdrop-blur-sm">
+                      <ZoomIn size={14} className="text-primary" />
+                      <span className="font-mono text-xs text-primary">Click to expand</span>
+                    </div>
+                  </motion.div>
+                </motion.div>
+              ) : (
+                <div className="w-full h-32 bg-gradient-to-b from-primary/10 to-transparent flex items-center justify-center">
+                  <Code2 size={40} className="text-primary/40" />
+                </div>
+              )}
+
+              {/* Content */}
+              <div className="p-6 sm:p-8">
+                {/* Header */}
+                <div className="mb-6">
+                  <div className="flex items-start justify-between gap-4 mb-3">
+                    <motion.h2
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      className="font-mono text-xl sm:text-2xl font-bold text-foreground leading-tight"
                     >
-                      •
-                    </span>
-                    {desc}
-                  </li>
-                ))}
-              </ul>
+                      {project.title}
+                    </motion.h2>
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/30"
+                    >
+                      <Calendar size={12} className="text-primary" />
+                      <span className="font-mono text-xs text-primary">{project.year}</span>
+                    </motion.div>
+                  </div>
+                  
+                  <motion.p
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.1 }}
+                    className="text-muted-foreground text-sm leading-relaxed"
+                  >
+                    {project.shortDescription}
+                  </motion.p>
+                </div>
+
+                {/* Tech Stack */}
+                <motion.div 
+                  className="mb-6"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.15 }}
+                >
+                  <div className="flex items-center gap-2 mb-3">
+                    <Code2 size={14} className="text-primary" />
+                    <span className="font-mono text-xs text-primary tracking-wider">TECH STACK</span>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {project.techStack.map((tech, idx) => (
+                      <motion.span
+                        key={idx}
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.2 + idx * 0.05 }}
+                        className="font-mono text-xs px-3 py-1.5 rounded-full bg-secondary/80 border border-primary/20 text-foreground/90 hover:border-primary/40 hover:bg-primary/10 transition-all duration-200"
+                      >
+                        {tech}
+                      </motion.span>
+                    ))}
+                  </div>
+                </motion.div>
+
+                {/* Description */}
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.25 }}
+                >
+                  <div className="flex items-center gap-2 mb-3">
+                    <ExternalLink size={14} className="text-primary" />
+                    <span className="font-mono text-xs text-primary tracking-wider">PROJECT DETAILS</span>
+                  </div>
+                  <ul className="space-y-3">
+                    {project.fullDescription.map((desc, idx) => (
+                      <motion.li
+                        key={idx}
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.3 + idx * 0.1 }}
+                        className="flex gap-3 text-foreground/85 text-sm leading-relaxed"
+                      >
+                        <span className="text-primary mt-1 flex-shrink-0">●</span>
+                        <span>{desc}</span>
+                      </motion.li>
+                    ))}
+                  </ul>
+                </motion.div>
+              </div>
             </div>
-          </div>
-        </div>
-      </div>
+          </motion.div>
+        </motion.div>
+      </AnimatePresence>
 
       {/* Image Popup Overlay */}
-      {imagePopupOpen && project.image && (
-        <div
-          style={{
-            position: 'fixed',
-            inset: 0,
-            zIndex: 10000,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '40px',
-            backgroundColor: 'rgba(0, 0, 0, 0.95)',
-            cursor: 'pointer',
-          }}
-          onClick={() => setImagePopupOpen(false)}
-        >
-          {/* Close hint */}
-          <div
-            style={{
-              position: 'absolute',
-              top: '20px',
-              right: '20px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-            }}
+      <AnimatePresence>
+        {imagePopupOpen && project.image && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[10000] flex items-center justify-center p-6 sm:p-12 bg-background/95 backdrop-blur-xl cursor-pointer"
+            onClick={() => setImagePopupOpen(false)}
           >
-            <span
-              style={{
-                fontFamily: 'JetBrains Mono, monospace',
-                fontSize: '12px',
-                color: '#94a3b8',
-              }}
+            {/* Close hint */}
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="absolute top-6 right-6 flex items-center gap-3"
             >
-              Press ESC or click anywhere to close
-            </span>
-            <button
-              onClick={() => setImagePopupOpen(false)}
-              style={{
-                width: '36px',
-                height: '36px',
-                borderRadius: '50%',
-                backgroundColor: 'rgba(103, 232, 249, 0.1)',
-                border: '1px solid rgba(103, 232, 249, 0.4)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-              }}
-            >
-              <X size={18} color="#67e8f9" />
-            </button>
-          </div>
+              <span className="font-mono text-xs text-muted-foreground hidden sm:block">
+                Press ESC or click anywhere to close
+              </span>
+              <motion.button
+                onClick={() => setImagePopupOpen(false)}
+                className="w-10 h-10 rounded-full bg-primary/10 border border-primary/30 flex items-center justify-center text-primary hover:bg-primary/20 transition-colors"
+                whileHover={{ scale: 1.1, rotate: 90 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                <X size={18} />
+              </motion.button>
+            </motion.div>
 
-          {/* Full-size image */}
-          <img
-            src={project.image}
-            alt={project.title}
-            style={{
-              maxWidth: '90vw',
-              maxHeight: '85vh',
-              objectFit: 'contain',
-              borderRadius: '12px',
-              boxShadow: '0 20px 60px rgba(0, 0, 0, 0.5)',
-            }}
-            onClick={(e) => e.stopPropagation()}
-          />
-        </div>
-      )}
+            {/* Full-size image */}
+            <motion.img
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              src={project.image}
+              alt={project.title}
+              className="max-w-full max-h-[85vh] object-contain rounded-xl shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 }

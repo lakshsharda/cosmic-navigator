@@ -87,10 +87,10 @@ export function ExperienceSection() {
           </p>
         </motion.div>
 
-        {/* Timeline */}
-        <div className="relative">
+        {/* Desktop Timeline */}
+        <div className="relative hidden md:block">
           {/* Center timeline line */}
-          <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-primary via-primary/50 to-primary/20 -translate-x-1/2 hidden md:block" />
+          <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-primary via-primary/50 to-primary/20 -translate-x-1/2" />
 
           {/* U2CA - Left side, above */}
           <motion.div
@@ -98,14 +98,17 @@ export function ExperienceSection() {
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
-            className="relative flex flex-col md:flex-row items-center mb-16"
+            className="relative flex items-center mb-20"
           >
             {/* Left content */}
-            <div className="w-full md:w-1/2 md:pr-12">
+            <div className="w-1/2 pr-16 flex justify-end">
               <motion.div
-                className="p-6 rounded-xl bg-secondary/30 border border-primary/20 hover:border-primary/40 transition-all backdrop-blur-sm"
+                className="p-6 rounded-xl bg-secondary/30 border border-primary/20 hover:border-primary/40 transition-all backdrop-blur-sm max-w-md relative"
                 whileHover={{ scale: 1.02, y: -2 }}
               >
+                {/* Horizontal connector line from card to center */}
+                <div className="absolute top-1/2 -right-16 w-16 h-0.5 bg-gradient-to-r from-primary/20 to-primary" />
+                
                 <div className="flex flex-col gap-2 mb-3">
                   <h3 className="font-mono text-lg font-bold text-foreground">
                     {EXPERIENCE_DATA[0].company}
@@ -136,9 +139,9 @@ export function ExperienceSection() {
               </motion.div>
             </div>
 
-            {/* Center dot with connector */}
+            {/* Center dot */}
             <motion.div
-              className="absolute left-1/2 -translate-x-1/2 w-10 h-10 rounded-full bg-background border-2 border-primary flex items-center justify-center z-10 hidden md:flex"
+              className="absolute left-1/2 -translate-x-1/2 w-12 h-12 rounded-full bg-background border-2 border-primary flex items-center justify-center z-10"
               whileHover={{ scale: 1.2 }}
               animate={{
                 boxShadow: [
@@ -152,11 +155,11 @@ export function ExperienceSection() {
                 repeat: Infinity,
               }}
             >
-              <Briefcase className="w-4 h-4 text-primary" />
+              <Briefcase className="w-5 h-5 text-primary" />
             </motion.div>
 
             {/* Right side empty */}
-            <div className="w-full md:w-1/2 md:pl-12" />
+            <div className="w-1/2 pl-16" />
           </motion.div>
 
           {/* ThinkingLabs - Right side, below */}
@@ -165,14 +168,14 @@ export function ExperienceSection() {
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
             viewport={{ once: true }}
-            className="relative flex flex-col md:flex-row items-center"
+            className="relative flex items-center"
           >
             {/* Left side empty */}
-            <div className="w-full md:w-1/2 md:pr-12 hidden md:block" />
+            <div className="w-1/2 pr-16" />
 
-            {/* Center dot with connector */}
+            {/* Center dot */}
             <motion.div
-              className="absolute left-1/2 -translate-x-1/2 w-10 h-10 rounded-full bg-background border-2 border-primary flex items-center justify-center z-10 hidden md:flex"
+              className="absolute left-1/2 -translate-x-1/2 w-12 h-12 rounded-full bg-background border-2 border-primary flex items-center justify-center z-10"
               whileHover={{ scale: 1.2 }}
               animate={{
                 boxShadow: [
@@ -187,15 +190,18 @@ export function ExperienceSection() {
                 delay: 0.5,
               }}
             >
-              <Briefcase className="w-4 h-4 text-primary" />
+              <Briefcase className="w-5 h-5 text-primary" />
             </motion.div>
 
             {/* Right content */}
-            <div className="w-full md:w-1/2 md:pl-12">
+            <div className="w-1/2 pl-16 flex justify-start">
               <motion.div
-                className="p-6 rounded-xl bg-secondary/30 border border-primary/20 hover:border-primary/40 transition-all backdrop-blur-sm"
+                className="p-6 rounded-xl bg-secondary/30 border border-primary/20 hover:border-primary/40 transition-all backdrop-blur-sm max-w-md relative"
                 whileHover={{ scale: 1.02, y: -2 }}
               >
+                {/* Horizontal connector line from center to card */}
+                <div className="absolute top-1/2 -left-16 w-16 h-0.5 bg-gradient-to-l from-primary/20 to-primary" />
+                
                 <div className="flex flex-col gap-2 mb-3">
                   <h3 className="font-mono text-lg font-bold text-foreground">
                     {EXPERIENCE_DATA[1].company}
@@ -226,37 +232,37 @@ export function ExperienceSection() {
               </motion.div>
             </div>
           </motion.div>
+        </div>
 
-          {/* Mobile view - stacked */}
-          <div className="md:hidden space-y-6">
-            {EXPERIENCE_DATA.map((exp, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: idx * 0.1 }}
-                viewport={{ once: true }}
-                className="relative pl-8"
-              >
-                <div className="absolute left-0 top-6 w-6 h-6 rounded-full bg-background border-2 border-primary flex items-center justify-center">
-                  <Briefcase className="w-3 h-3 text-primary" />
-                </div>
-                <div className="p-5 rounded-xl bg-secondary/30 border border-primary/20">
-                  <h3 className="font-mono text-base font-bold text-foreground">{exp.company}</h3>
-                  <p className="text-primary/90 text-sm font-medium mt-1">{exp.role}</p>
-                  <span className="font-mono text-xs text-muted-foreground">{exp.duration}</span>
-                  <ul className="space-y-2 mt-3">
-                    {exp.description.map((bullet, bIdx) => (
-                      <li key={bIdx} className="text-foreground/80 text-sm flex gap-2">
-                        <span className="text-primary">▹</span>
-                        {bullet}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+        {/* Mobile view - stacked */}
+        <div className="md:hidden space-y-6">
+          {EXPERIENCE_DATA.map((exp, idx) => (
+            <motion.div
+              key={idx}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: idx * 0.1 }}
+              viewport={{ once: true }}
+              className="relative pl-8"
+            >
+              <div className="absolute left-0 top-6 w-6 h-6 rounded-full bg-background border-2 border-primary flex items-center justify-center">
+                <Briefcase className="w-3 h-3 text-primary" />
+              </div>
+              <div className="p-5 rounded-xl bg-secondary/30 border border-primary/20">
+                <h3 className="font-mono text-base font-bold text-foreground">{exp.company}</h3>
+                <p className="text-primary/90 text-sm font-medium mt-1">{exp.role}</p>
+                <span className="font-mono text-xs text-muted-foreground">{exp.duration}</span>
+                <ul className="space-y-2 mt-3">
+                  {exp.description.map((bullet, bIdx) => (
+                    <li key={bIdx} className="text-foreground/80 text-sm flex gap-2">
+                      <span className="text-primary">▹</span>
+                      {bullet}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </motion.div>
+          ))}
         </div>
       </div>
     </section>
