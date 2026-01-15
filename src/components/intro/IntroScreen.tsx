@@ -111,7 +111,7 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
 
       setActiveVideo((prev) => (prev === 1 ? 2 : 1));
 
-      // After fade, reset the old one for the next loop
+      // After fade completes, reset the old video for the next loop
       window.setTimeout(() => {
         try {
           current.pause();
@@ -121,7 +121,7 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
         }
         switchingRef.current = false;
         setIsLoopTransition(false);
-      }, 650);
+      }, 500);
     };
 
     const handleTimeUpdate = () => {
@@ -327,12 +327,12 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
         transition={{ duration: 1 }}
       />
 
-      {/* Loop-mask overlay: hides the visual discontinuity when we jump back to 8s */}
+      {/* Loop-mask overlay: subtle fade to hide visual discontinuity when we jump back to 8s */}
       <motion.div
-        className="absolute inset-0 bg-background z-[5] pointer-events-none"
+        className="absolute inset-0 bg-black z-[5] pointer-events-none"
         initial={false}
-        animate={{ opacity: isLoopTransition ? 0.55 : 0 }}
-        transition={{ duration: 0.28, ease: 'easeInOut' }}
+        animate={{ opacity: isLoopTransition ? 0.25 : 0 }}
+        transition={{ duration: 0.4, ease: 'easeInOut' }}
       />
 
       {/* Sound toggle button */}
