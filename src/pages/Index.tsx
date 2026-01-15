@@ -6,6 +6,7 @@ import SectionIndicator from '@/components/ui/SectionIndicator';
 import Navbar from '@/components/ui/Navbar';
 import { useScrollProgress } from '@/hooks/useScrollProgress';
 import { useFocusDetection, SECTION_CONFIGS } from '@/hooks/useFocusDetection';
+import { ProjectModal, Project } from '@/components/projects/ProjectModal';
 
 /**
  * Main portfolio index page
@@ -14,7 +15,20 @@ import { useFocusDetection, SECTION_CONFIGS } from '@/hooks/useFocusDetection';
 const Index = () => {
   const [showIntro, setShowIntro] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  // Listen for project modal events
+  useEffect(() => {
+    const handleOpenModal = (e: CustomEvent<Project>) => {
+      setSelectedProject(e.detail);
+      setIsModalOpen(true);
+    };
+
+    window.addEventListener('openProjectModal', handleOpenModal as EventListener);
+    return () => window.removeEventListener('openProjectModal', handleOpenModal as EventListener);
+  }, []);
 
   // Simulate brief loading for smooth entry
   useEffect(() => {
@@ -58,6 +72,11 @@ const Index = () => {
     window.addEventListener('wheel', handleWheel, { passive: true });
     return () => window.removeEventListener('wheel', handleWheel);
   }, [showIntro]);
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedProject(null);
+  };
 
   return (
     <div ref={containerRef} className="relative w-full h-screen overflow-hidden bg-background">
@@ -146,6 +165,13 @@ const Index = () => {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Project Modal - Outside of AnimatePresence for proper z-index */}
+      <ProjectModal
+        project={selectedProject}
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+      />
     </div>
   );
 };
