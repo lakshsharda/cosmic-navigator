@@ -279,28 +279,26 @@ export function SectionPlane({
                 display: 'flex',
                 flexDirection: content.isExperience ? 'column' : 'row',
                 alignItems: content.isExperience ? 'flex-start' : 'center',
-                gap: content.isExperience ? '16px' : '28px',
+                gap: content.isExperience ? '12px' : '28px',
                 padding: '24px 28px',
                 boxSizing: 'border-box',
-                background: content.isExperience ? 'rgba(2, 4, 8, 0.85)' : 'transparent',
-                borderRadius: '8px',
               }}
             >
               {/* Experience Section Layout */}
               {content.isExperience ? (
                 <>
                   {/* Header */}
-                  <div style={{ marginBottom: '8px' }}>
+                  <div style={{ marginBottom: '4px' }}>
                     <h2
                       style={{
                         fontFamily: 'JetBrains Mono, monospace',
-                        fontSize: '22px',
+                        fontSize: '20px',
                         fontWeight: 700,
                         color: '#ffffff',
                         margin: '0 0 4px 0',
                         letterSpacing: '0.02em',
                         lineHeight: 1.2,
-                        textShadow: '0 2px 12px rgba(0,0,0,0.8)',
+                        textShadow: '0 2px 12px rgba(0,0,0,0.9)',
                       }}
                     >
                       {content.title}
@@ -308,24 +306,23 @@ export function SectionPlane({
                     <p
                       style={{
                         fontFamily: 'JetBrains Mono, monospace',
-                        fontSize: '11px',
+                        fontSize: '10px',
                         fontWeight: 600,
                         color: '#a5f3fc',
                         margin: 0,
                         letterSpacing: '0.15em',
-                        textShadow: '0 1px 6px rgba(0,0,0,0.6)',
+                        textShadow: '0 1px 6px rgba(0,0,0,0.7)',
                       }}
                     >
                       {content.subtitle}
                     </p>
                   </div>
 
-                  {/* Experience Items */}
+                  {/* Experience Items - Two columns */}
                   <div
                     style={{
                       display: 'flex',
-                      flexDirection: 'column',
-                      gap: '18px',
+                      gap: '24px',
                       width: '100%',
                     }}
                   >
@@ -333,20 +330,22 @@ export function SectionPlane({
                       <div
                         key={idx}
                         style={{
+                          flex: 1,
                           borderLeft: '2px solid rgba(103, 232, 249, 0.5)',
-                          paddingLeft: '14px',
+                          paddingLeft: '12px',
                         }}
                       >
                         {/* Company Name */}
                         <h3
                           style={{
                             fontFamily: 'JetBrains Mono, monospace',
-                            fontSize: '14px',
+                            fontSize: '12px',
                             fontWeight: 700,
                             color: '#F5FAFF',
-                            margin: '0 0 3px 0',
+                            margin: '0 0 2px 0',
                             letterSpacing: '0.02em',
                             lineHeight: 1.3,
+                            textShadow: '0 1px 8px rgba(0,0,0,0.9)',
                           }}
                         >
                           {exp.company}
@@ -355,11 +354,12 @@ export function SectionPlane({
                         <p
                           style={{
                             fontFamily: 'Inter, system-ui, sans-serif',
-                            fontSize: '12px',
+                            fontSize: '10px',
                             fontWeight: 500,
                             color: '#e2e8f0',
-                            margin: '0 0 2px 0',
+                            margin: '0 0 1px 0',
                             lineHeight: 1.4,
+                            textShadow: '0 1px 6px rgba(0,0,0,0.8)',
                           }}
                         >
                           {exp.role}
@@ -368,11 +368,12 @@ export function SectionPlane({
                         <p
                           style={{
                             fontFamily: 'JetBrains Mono, monospace',
-                            fontSize: '10px',
+                            fontSize: '9px',
                             fontWeight: 400,
                             color: '#94a3b8',
-                            margin: '0 0 8px 0',
+                            margin: '0 0 6px 0',
                             letterSpacing: '0.05em',
+                            textShadow: '0 1px 4px rgba(0,0,0,0.7)',
                           }}
                         >
                           {exp.duration}
@@ -390,13 +391,14 @@ export function SectionPlane({
                               key={bIdx}
                               style={{
                                 fontFamily: 'Inter, system-ui, sans-serif',
-                                fontSize: '11px',
+                                fontSize: '9px',
                                 fontWeight: 400,
                                 color: '#DDE7EE',
-                                lineHeight: 1.7,
-                                marginBottom: '2px',
-                                paddingLeft: '12px',
+                                lineHeight: 1.6,
+                                marginBottom: '1px',
+                                paddingLeft: '10px',
                                 position: 'relative',
+                                textShadow: '0 1px 6px rgba(0,0,0,0.8)',
                               }}
                             >
                               <span
@@ -414,6 +416,30 @@ export function SectionPlane({
                         </ul>
                       </div>
                     ))}
+                  </div>
+
+                  {/* Scroll indicator */}
+                  <div
+                    style={{
+                      marginTop: '8px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      opacity: 0.6,
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontFamily: 'JetBrains Mono, monospace',
+                        fontSize: '8px',
+                        color: '#67e8f9',
+                        letterSpacing: '0.1em',
+                        textShadow: '0 1px 4px rgba(0,0,0,0.6)',
+                      }}
+                    >
+                      SCROLL TO NAVIGATE
+                    </span>
+                    <span style={{ color: '#67e8f9', fontSize: '10px' }}>↓</span>
                   </div>
                 </>
               ) : (
