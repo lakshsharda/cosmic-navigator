@@ -29,6 +29,7 @@ const ROLES = [
 
 export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
   const LOOP_START = 8; // seconds (skip the explosion segment)
+  const VIDEO_SRC = `${import.meta.env.BASE_URL}videos/cosmic-intro.mp4`;
 
   const [showContent, setShowContent] = useState(false);
   const [audioEnabled, setAudioEnabled] = useState(false);
@@ -172,7 +173,7 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
       <video
         ref={video1Ref}
         className={`absolute inset-0 z-[0] w-full h-full object-cover ${videoReady ? 'opacity-100' : 'opacity-0'} transition-opacity duration-500`}
-        src="/videos/cosmic-intro.mp4"
+        src={VIDEO_SRC}
         muted
         playsInline
         preload="auto"
