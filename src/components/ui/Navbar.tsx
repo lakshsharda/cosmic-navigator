@@ -50,7 +50,7 @@ export function Navbar({ activeSectionId, onNavigate }: NavbarProps) {
                   className={`px-4 py-2 rounded-full font-mono text-xs tracking-wider transition-all duration-300 ${
                     activeSectionId === section.id
                       ? 'bg-primary/20 text-primary'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50'
+                      : 'text-foreground/70 hover:text-foreground hover:bg-secondary/50'
                   }`}
                 >
                   {section.label.toUpperCase()}
@@ -123,7 +123,7 @@ export function Navbar({ activeSectionId, onNavigate }: NavbarProps) {
                 className={`w-full px-4 py-3 rounded-xl font-mono text-sm tracking-wider text-left transition-all ${
                   activeSectionId === section.id
                     ? 'bg-primary/20 text-primary'
-                    : 'text-muted-foreground hover:bg-secondary/50'
+                    : 'text-foreground/70 hover:bg-secondary/50'
                 }`}
               >
                 {section.label.toUpperCase()}
