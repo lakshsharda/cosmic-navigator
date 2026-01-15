@@ -18,33 +18,56 @@ const SKILL_CATEGORIES: SkillCategory[] = [
     skills: [
       { name: 'JavaScript', descriptor: 'Programming Language', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg' },
       { name: 'React.js', descriptor: 'Frontend Library', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg' },
+      { name: 'Next.js', descriptor: 'React Framework', icon: 'https://cdn.simpleicons.org/nextdotjs/ffffff' },
       { name: 'Redux', descriptor: 'State Management', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/redux/redux-original.svg' },
-      { name: 'HTML', descriptor: 'Markup Language', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg' },
-      { name: 'CSS', descriptor: 'Styling Language', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg' },
-      { name: 'Tailwind CSS', descriptor: 'Utility Framework', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg' },
       { name: 'Node.js', descriptor: 'Runtime Environment', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg' },
-      { name: 'MongoDB', descriptor: 'NoSQL Database', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg' },
-      { name: 'Firebase', descriptor: 'Cloud Platform', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/firebase/firebase-plain.svg' },
+      { name: 'Tailwind CSS', descriptor: 'Utility Framework', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg' },
+      { name: 'REST API', descriptor: 'API Architecture', icon: 'https://cdn.simpleicons.org/openapiinitiative/6BA539' },
+      { name: 'JWT', descriptor: 'Token Authentication', icon: 'https://cdn.simpleicons.org/jsonwebtokens/ffffff' },
+      { name: 'Vercel', descriptor: 'Deployment Platform', icon: 'https://cdn.simpleicons.org/vercel/ffffff' },
+      { name: 'Postman', descriptor: 'API Testing Tool', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postman/postman-original.svg' },
     ],
   },
   {
     name: 'DATA & ML',
     skills: [
       { name: 'Python', descriptor: 'Programming Language', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg' },
-      { name: 'SQL', descriptor: 'Query Language', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg' },
-      { name: 'Machine Learning', descriptor: 'AI Models', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tensorflow/tensorflow-original.svg' },
-      { name: 'Computer Vision', descriptor: 'Image Processing', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/opencv/opencv-original.svg' },
-      { name: 'GANs', descriptor: 'Deep Learning Models', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pytorch/pytorch-original.svg' },
-      { name: 'Data Analysis', descriptor: 'Analytics & Insights', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pandas/pandas-original.svg' },
+      { name: 'TensorFlow', descriptor: 'Deep Learning Framework', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tensorflow/tensorflow-original.svg' },
+      { name: 'PyTorch', descriptor: 'ML Framework', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pytorch/pytorch-original.svg' },
+      { name: 'OpenCV', descriptor: 'Computer Vision', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/opencv/opencv-original.svg' },
+      { name: 'Scikit-learn', descriptor: 'ML Library', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/scikitlearn/scikitlearn-original.svg' },
+      { name: 'NumPy', descriptor: 'Numerical Computing', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/numpy/numpy-original.svg' },
+      { name: 'Pandas', descriptor: 'Data Analysis', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pandas/pandas-original.svg' },
+      { name: 'MediaPipe', descriptor: 'ML Solutions', icon: 'https://cdn.simpleicons.org/mediapipe/0097A7' },
     ],
   },
   {
-    name: 'SYSTEMS & CORE',
+    name: 'DATABASES',
     skills: [
+      { name: 'MongoDB', descriptor: 'NoSQL Database', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg' },
+      { name: 'PostgreSQL', descriptor: 'Relational Database', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg' },
+      { name: 'Firebase', descriptor: 'Cloud Database', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/firebase/firebase-plain.svg' },
+      { name: 'Redis', descriptor: 'In-Memory Store', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/redis/redis-original.svg' },
+      { name: 'SQL', descriptor: 'Query Language', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg' },
+    ],
+  },
+  {
+    name: 'CLOUD & DEVOPS',
+    skills: [
+      { name: 'Docker', descriptor: 'Containerization', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg' },
+      { name: 'Google Cloud', descriptor: 'Cloud Platform', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/googlecloud/googlecloud-original.svg' },
+      { name: 'AWS', descriptor: 'Cloud Services', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original-wordmark.svg' },
+      { name: 'Nginx', descriptor: 'Web Server', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nginx/nginx-original.svg' },
+      { name: 'Linux', descriptor: 'Operating System', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linux/linux-original.svg' },
+    ],
+  },
+  {
+    name: 'IOT SYSTEMS',
+    skills: [
+      { name: 'Arduino', descriptor: 'Microcontroller', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/arduino/arduino-original.svg' },
+      { name: 'Raspberry Pi', descriptor: 'Single-Board Computer', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/raspberrypi/raspberrypi-original.svg' },
+      { name: 'MQTT', descriptor: 'IoT Protocol', icon: 'https://cdn.simpleicons.org/mqtt/660066' },
       { name: 'C++', descriptor: 'Systems Language', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg' },
-      { name: 'Java', descriptor: 'Enterprise Language', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg' },
-      { name: 'DSA', descriptor: 'Algorithms & Structures', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/thealgorithms/thealgorithms-original.svg' },
-      { name: 'IoT Systems', descriptor: 'Embedded Solutions', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/raspberrypi/raspberrypi-original.svg' },
     ],
   },
   {
@@ -52,9 +75,8 @@ const SKILL_CATEGORIES: SkillCategory[] = [
     skills: [
       { name: 'Git', descriptor: 'Version Control', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg' },
       { name: 'GitHub', descriptor: 'Code Hosting', icon: 'https://cdn.simpleicons.org/github/ffffff' },
-      { name: 'Firebase', descriptor: 'Backend Services', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/firebase/firebase-plain.svg' },
       { name: 'Figma', descriptor: 'Design Tool', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/figma/figma-original.svg' },
-      { name: 'Canva', descriptor: 'Graphics Editor', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/canva/canva-original.svg' },
+      { name: 'Java', descriptor: 'Enterprise Language', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg' },
     ],
   },
 ];
@@ -74,7 +96,7 @@ function SkillIcon({ skill }: SkillIconProps) {
       style={{ pointerEvents: 'auto' }}
     >
       <motion.div
-        className="relative w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center cursor-pointer"
+        className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center cursor-pointer"
         style={{
           background: 'rgba(0, 0, 0, 0.6)',
           border: '1.5px solid rgba(34, 197, 94, 0.5)',
@@ -88,7 +110,7 @@ function SkillIcon({ skill }: SkillIconProps) {
         <img
           src={skill.icon}
           alt={skill.name}
-          className="w-5 h-5 sm:w-6 sm:h-6 object-contain"
+          className="w-4 h-4 sm:w-5 sm:h-5 object-contain"
           style={{
             filter: 'brightness(1.1)',
           }}
@@ -175,11 +197,11 @@ export function SkillsSection({ focusWeight }: SkillsSectionProps) {
       style={{
         display: 'flex',
         flexDirection: 'column',
-        gap: '14px',
-        padding: '20px 24px',
+        gap: '10px',
+        padding: '16px 20px',
         boxSizing: 'border-box',
         width: '100%',
-        maxWidth: '680px',
+        maxWidth: '720px',
         opacity: focusWeight > 0.3 ? Math.min((focusWeight - 0.3) / 0.5, 1) : 0,
         transition: 'opacity 0.3s ease',
       }}
@@ -220,7 +242,7 @@ export function SkillsSection({ focusWeight }: SkillsSectionProps) {
         style={{
           display: 'flex',
           flexDirection: 'column',
-          gap: '12px',
+          gap: '8px',
         }}
       >
         {SKILL_CATEGORIES.map((category, idx) => (
@@ -235,19 +257,19 @@ export function SkillsSection({ focusWeight }: SkillsSectionProps) {
             {/* Category Label */}
             <div
               style={{
-                minWidth: '100px',
+                minWidth: '90px',
                 flexShrink: 0,
                 borderLeft: '2px solid rgba(34, 211, 238, 0.6)',
-                paddingLeft: '10px',
+                paddingLeft: '8px',
               }}
             >
               <span
                 style={{
                   fontFamily: 'JetBrains Mono, monospace',
-                  fontSize: '9px',
+                  fontSize: '8px',
                   fontWeight: 600,
                   color: '#22d3ee',
-                  letterSpacing: '0.08em',
+                  letterSpacing: '0.06em',
                   lineHeight: 1.4,
                   textShadow: '0 1px 4px rgba(0,0,0,0.8)',
                 }}
@@ -261,7 +283,7 @@ export function SkillsSection({ focusWeight }: SkillsSectionProps) {
               style={{
                 display: 'flex',
                 flexWrap: 'wrap',
-                gap: '8px',
+                gap: '6px',
                 alignItems: 'center',
               }}
             >
