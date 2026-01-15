@@ -29,7 +29,9 @@ const ROLES = [
 
 export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
   const LOOP_START = 8; // seconds (skip the explosion segment)
-  const VIDEO_SRC = `${import.meta.env.BASE_URL}videos/cosmic-intro.mp4`;
+  // Use a media fragment (#t=...) so the browser starts fetching/playing from after the explosion.
+  // This avoids any “t=0” flash in production when supported.
+  const VIDEO_SRC = `${import.meta.env.BASE_URL}videos/cosmic-intro.mp4#t=${LOOP_START}`;
 
   const [showContent, setShowContent] = useState(false);
   const [audioEnabled, setAudioEnabled] = useState(false);
@@ -182,6 +184,17 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
         // before our seek runs, causing the explosion to flash in production.
         onLoadedMetadata={(e) => {
           const v = e.currentTarget;
+
+          // If the browser honored #t=LOOP_START, currentTime will already be ~LOOP_START.
+          // In that case: reveal + play immediately.
+          if (v.currentTime >= LOOP_START - 0.2) {
+            if (!videoReady) setVideoReady(true);
+            if (!videoVisible) setVideoVisible(true);
+            v.play().catch(() => {});
+            return;
+          }
+
+          // Fallback: keep hidden, then seek to LOOP_START and reveal only once seek succeeded.
           setVideoVisible(false);
           try {
             v.pause();
