@@ -16,9 +16,9 @@ interface StarFieldProps {
  * Extremely subtle - just enough to convey infinite space
  */
 export function StarField({
-  count = 1200,
-  radius = 180,
-  size = 0.5,
+  count = 3000,
+  radius = 200,
+  size = 0.6,
 }: StarFieldProps) {
   const pointsRef = useRef<THREE.Points>(null);
 
@@ -70,9 +70,9 @@ export function StarField({
       <pointsMaterial
         size={size}
         sizeAttenuation
-        color="#a8c5d9"
+        color="#e0f0ff"
         transparent
-        opacity={0.5}
+        opacity={0.85}
         blending={THREE.AdditiveBlending}
         depthWrite={false}
       />
@@ -84,7 +84,7 @@ export function StarField({
  * Ambient dust particles for extra depth
  */
 export function DustParticles({
-  count = 100,
+  count = 200,
 }: {
   count?: number;
 }) {
