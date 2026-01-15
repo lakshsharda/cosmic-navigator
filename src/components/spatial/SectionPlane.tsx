@@ -92,9 +92,9 @@ export function SectionPlane({
     };
   }, [focusWeight, isActive, hovered]);
 
-  // Larger plane geometry with room for content
-  const planeGeometry = useMemo(() => new THREE.PlaneGeometry(14, 7), []);
-  const glowGeometry = useMemo(() => new THREE.PlaneGeometry(15, 8), []);
+  // Larger plane geometry with room for content (keep everything inside border)
+  const planeGeometry = useMemo(() => new THREE.PlaneGeometry(15.5, 7.6), []);
+  const glowGeometry = useMemo(() => new THREE.PlaneGeometry(16.6, 8.6), []);
   const edgesGeometry = useMemo(() => new THREE.EdgesGeometry(planeGeometry), [planeGeometry]);
 
   // Smooth animation
@@ -193,39 +193,46 @@ export function SectionPlane({
         />
       </lineSegments>
 
-      {/* HTML content - generous sizing for comfortable fit */}
+      {/* HTML content - sized to stay INSIDE the plane border */}
       <Html
         center
         position={[0, 0, 0.1]}
         style={{
           pointerEvents: 'none',
           userSelect: 'none',
-          width: '800px',
+          width: '720px',
         }}
         transform
         occlude={false}
         distanceFactor={8}
       >
-        <div style={{
-          opacity: focusWeight > 0.3 ? Math.min((focusWeight - 0.3) / 0.5, 1) : 0,
-          transition: 'opacity 0.2s ease',
-        }}>
+        <div
+          style={{
+            opacity: focusWeight > 0.3 ? Math.min((focusWeight - 0.3) / 0.5, 1) : 0,
+            transition: 'opacity 0.2s ease',
+            boxSizing: 'border-box',
+          }}
+        >
           {/* Simple label when approaching */}
           {!showFullContent && (
-            <div style={{ 
-              display: 'flex', 
-              flexDirection: 'column', 
-              alignItems: 'center', 
-              gap: '10px',
-              padding: '24px',
-            }}>
-              <span style={{ 
-                fontFamily: 'JetBrains Mono, monospace',
-                fontSize: '28px',
-                letterSpacing: '0.1em',
-                fontWeight: 700,
-                color: '#F5FAFF',
-              }}>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '10px',
+                padding: '24px',
+              }}
+            >
+              <span
+                style={{
+                  fontFamily: 'JetBrains Mono, monospace',
+                  fontSize: '28px',
+                  letterSpacing: '0.1em',
+                  fontWeight: 700,
+                  color: '#F5FAFF',
+                }}
+              >
                 {label.toUpperCase()}
               </span>
             </div>
@@ -233,77 +240,91 @@ export function SectionPlane({
 
           {/* Full content when very focused */}
           {showFullContent && content && (
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '36px',
-              padding: '32px 40px',
-              background: 'linear-gradient(135deg, rgba(2, 4, 8, 0.95) 0%, rgba(8, 12, 20, 0.92) 100%)',
-              borderRadius: '12px',
-            }}>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '28px',
+                padding: '24px 28px',
+                background:
+                  'linear-gradient(135deg, rgba(2, 4, 8, 0.95) 0%, rgba(8, 12, 20, 0.92) 100%)',
+                borderRadius: '14px',
+                boxSizing: 'border-box',
+              }}
+            >
               {/* Text Content */}
-              <div style={{ textAlign: 'left', flex: 1 }}>
+              <div style={{ textAlign: 'left', flex: 1, minWidth: 0 }}>
                 {/* Main heading - near-white, high contrast */}
-                <h2 style={{
-                  fontFamily: 'JetBrains Mono, monospace',
-                  fontSize: '26px',
-                  fontWeight: 700,
-                  color: '#F5FAFF',
-                  margin: '0 0 6px 0',
-                  letterSpacing: '0.02em',
-                  lineHeight: 1.2,
-                }}>
+                <h2
+                  style={{
+                    fontFamily: 'JetBrains Mono, monospace',
+                    fontSize: '23px',
+                    fontWeight: 700,
+                    color: '#F5FAFF',
+                    margin: '0 0 6px 0',
+                    letterSpacing: '0.02em',
+                    lineHeight: 1.2,
+                  }}
+                >
                   {content.title}
                 </h2>
 
                 {/* Subtitle */}
                 {content.subtitle && (
-                  <p style={{
-                    fontFamily: 'JetBrains Mono, monospace',
-                    fontSize: '13px',
-                    fontWeight: 500,
-                    color: '#67e8f9',
-                    margin: '0 0 16px 0',
-                    letterSpacing: '0.15em',
-                  }}>
+                  <p
+                    style={{
+                      fontFamily: 'JetBrains Mono, monospace',
+                      fontSize: '12px',
+                      fontWeight: 500,
+                      color: '#67e8f9',
+                      margin: '0 0 14px 0',
+                      letterSpacing: '0.15em',
+                    }}
+                  >
                     {content.subtitle}
                   </p>
                 )}
 
-                {/* Description - light grey-white, no effects */}
+                {/* Description - smaller so it fits; no effects */}
                 {content.description && (
-                  <p style={{
-                    fontFamily: 'Inter, system-ui, sans-serif',
-                    fontSize: '14px',
-                    fontWeight: 400,
-                    color: '#DDE7EE',
-                    margin: 0,
-                    lineHeight: 1.75,
-                    maxWidth: '520px',
-                  }}>
+                  <p
+                    style={{
+                      fontFamily: 'Inter, system-ui, sans-serif',
+                      fontSize: '12.75px',
+                      fontWeight: 400,
+                      color: '#DDE7EE',
+                      margin: 0,
+                      lineHeight: 1.75,
+                      maxWidth: '400px',
+                    }}
+                  >
                     {content.description}
                   </p>
                 )}
               </div>
 
-              {/* Image placeholder */}
+              {/* Image placeholder (bigger, still inside box) */}
               {content.hasImage && (
-                <div style={{
-                  width: '120px',
-                  height: '120px',
-                  borderRadius: '10px',
-                  backgroundColor: 'rgba(8, 15, 30, 0.98)',
-                  border: '1.5px solid rgba(103, 232, 249, 0.35)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexShrink: 0,
-                }}>
-                  <span style={{
-                    fontFamily: 'JetBrains Mono, monospace',
-                    fontSize: '10px',
-                    color: '#475569',
-                  }}>
+                <div
+                  style={{
+                    width: '180px',
+                    height: '180px',
+                    borderRadius: '12px',
+                    backgroundColor: 'rgba(8, 15, 30, 0.98)',
+                    border: '1px solid rgba(103, 232, 249, 0.35)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0,
+                  }}
+                >
+                  <span
+                    style={{
+                      fontFamily: 'JetBrains Mono, monospace',
+                      fontSize: '10px',
+                      color: '#475569',
+                    }}
+                  >
                     Image
                   </span>
                 </div>
@@ -314,7 +335,7 @@ export function SectionPlane({
       </Html>
 
       {/* Corner accents */}
-      <mesh position={[-6.8, -3.3, 0.01]}>
+      <mesh position={[-7.55, -3.55, 0.01]}>
         <circleGeometry args={[0.06, 16]} />
         <meshBasicMaterial 
           color={borderColor} 
@@ -322,7 +343,7 @@ export function SectionPlane({
           opacity={targets.opacity * 0.7} 
         />
       </mesh>
-      <mesh position={[6.8, -3.3, 0.01]}>
+      <mesh position={[7.55, -3.55, 0.01]}>
         <circleGeometry args={[0.06, 16]} />
         <meshBasicMaterial 
           color={borderColor} 
@@ -330,7 +351,7 @@ export function SectionPlane({
           opacity={targets.opacity * 0.7} 
         />
       </mesh>
-      <mesh position={[-6.8, 3.3, 0.01]}>
+      <mesh position={[-7.55, 3.55, 0.01]}>
         <circleGeometry args={[0.06, 16]} />
         <meshBasicMaterial 
           color={borderColor} 
@@ -338,7 +359,7 @@ export function SectionPlane({
           opacity={targets.opacity * 0.7} 
         />
       </mesh>
-      <mesh position={[6.8, 3.3, 0.01]}>
+      <mesh position={[7.55, 3.55, 0.01]}>
         <circleGeometry args={[0.06, 16]} />
         <meshBasicMaterial 
           color={borderColor} 
