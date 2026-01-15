@@ -39,7 +39,7 @@ const Index = () => {
   }, []);
 
   // Get scroll progress for UI sync
-  const { smoothProgress } = useScrollProgress({
+  const { smoothProgress, scrollToProgress } = useScrollProgress({
     scrollDistance: 4000,
     smoothing: 0.06,
   });
@@ -55,6 +55,16 @@ const Index = () => {
     cameraZ,
     6
   );
+
+  // Handle navigation to a specific section
+  const handleNavigate = (sectionId: string) => {
+    const section = SECTION_CONFIGS.find(s => s.id === sectionId);
+    if (section) {
+      // Calculate target progress: progress = (zPosition - startZ) / (endZ - startZ)
+      const targetProgress = (section.zPosition - startZ) / (endZ - startZ);
+      scrollToProgress(targetProgress);
+    }
+  };
 
   // Handle transition from intro to portfolio with cosmic loader
   const handleScrollToPortfolio = () => {
@@ -138,7 +148,7 @@ const Index = () => {
               transition={{ duration: 0.6, delay: 0.5 }}
             >
               {/* Navbar */}
-              <Navbar activeSectionId={activeSection?.id || null} />
+              <Navbar activeSectionId={activeSection?.id || null} onNavigate={handleNavigate} />
 
               <SectionIndicator
                 activeSectionId={activeSection?.id || null}

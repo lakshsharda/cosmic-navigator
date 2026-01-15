@@ -18,6 +18,8 @@ interface ScrollProgressState {
   velocity: number;
   /** Direction of scroll (-1, 0, or 1) */
   direction: number;
+  /** Function to programmatically scroll to a target progress */
+  scrollToProgress: (targetProgress: number) => void;
 }
 
 /**
@@ -31,13 +33,6 @@ export function useScrollProgress(config: ScrollProgressConfig = {}): ScrollProg
     inertiaDecay = 0.95,
   } = config;
 
-  const [state, setState] = useState<ScrollProgressState>({
-    progress: 0,
-    smoothProgress: 0,
-    velocity: 0,
-    direction: 0,
-  });
-
   // Refs for animation frame and previous values
   const animationRef = useRef<number>();
   const targetProgressRef = useRef(0);
@@ -45,6 +40,22 @@ export function useScrollProgress(config: ScrollProgressConfig = {}): ScrollProg
   const velocityRef = useRef(0);
   const lastScrollRef = useRef(0);
   const lastTimeRef = useRef(Date.now());
+
+  // Programmatic scroll to progress function
+  const scrollToProgress = useCallback((targetProgress: number) => {
+    const clampedProgress = Math.max(0, Math.min(1, targetProgress));
+    targetProgressRef.current = clampedProgress;
+    lastScrollRef.current = clampedProgress * scrollDistance;
+  }, [scrollDistance]);
+
+  const [state, setState] = useState<ScrollProgressState>({
+    progress: 0,
+    smoothProgress: 0,
+    velocity: 0,
+    direction: 0,
+    scrollToProgress,
+  });
+
 
   // Handle wheel events for smooth scroll tracking
   const handleWheel = useCallback((event: WheelEvent) => {
@@ -117,6 +128,11 @@ export function useScrollProgress(config: ScrollProgressConfig = {}): ScrollProg
       }
     };
   }, [handleWheel, animate]);
+
+  // Update scrollToProgress in state when it changes
+  useEffect(() => {
+    setState(prev => ({ ...prev, scrollToProgress }));
+  }, [scrollToProgress]);
 
   return state;
 }
