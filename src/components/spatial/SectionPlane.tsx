@@ -8,7 +8,6 @@ const SECTION_CONTENT: Record<string, {
   title: string;
   subtitle?: string;
   description?: string[];
-  tags?: string[];
   hasImage?: boolean;
 }> = {
   about: {
@@ -19,7 +18,6 @@ const SECTION_CONTENT: Record<string, {
       "My experience includes web development, frontend frameworks, and backend services.",
       "I focus on writing clean, maintainable code and understanding how systems work end-to-end."
     ],
-    tags: ['Full Stack', 'System Design', 'UI/UX'],
     hasImage: true,
   },
   experience: {
@@ -98,9 +96,9 @@ export function SectionPlane({
     };
   }, [focusWeight, isActive, hovered]);
 
-  // Smaller plane geometry - reduced width
-  const planeGeometry = useMemo(() => new THREE.PlaneGeometry(11, 7), []);
-  const glowGeometry = useMemo(() => new THREE.PlaneGeometry(12.5, 8), []);
+  // Wider plane geometry to fit content
+  const planeGeometry = useMemo(() => new THREE.PlaneGeometry(13, 7), []);
+  const glowGeometry = useMemo(() => new THREE.PlaneGeometry(14.5, 8), []);
   const edgesGeometry = useMemo(() => new THREE.EdgesGeometry(planeGeometry), [planeGeometry]);
 
   // Smooth animation
@@ -206,7 +204,7 @@ export function SectionPlane({
         style={{
           pointerEvents: 'none',
           userSelect: 'none',
-          width: '620px', // Smaller to fit inside border
+          width: '740px',
         }}
         transform
         occlude={false}
@@ -227,15 +225,6 @@ export function SectionPlane({
             }}>
               <span style={{ 
                 fontFamily: 'JetBrains Mono, monospace',
-                fontSize: '14px',
-                letterSpacing: '0.3em',
-                color: '#22d3ee',
-                fontWeight: 600,
-              }}>
-                {`0${index + 1}`}
-              </span>
-              <span style={{ 
-                fontFamily: 'JetBrains Mono, monospace',
                 fontSize: '28px',
                 letterSpacing: '0.1em',
                 fontWeight: 700,
@@ -251,32 +240,19 @@ export function SectionPlane({
             <div style={{
               display: 'grid',
               gridTemplateColumns: content.hasImage ? '1fr auto' : '1fr',
-              gap: '32px',
+              gap: '40px',
               alignItems: 'center',
-              padding: '20px 28px',
+              padding: '24px 36px',
             }}>
               {/* Text Content */}
               <div style={{ textAlign: 'left' }}>
-                {/* Section label */}
-                <span style={{
-                  fontFamily: 'JetBrains Mono, monospace',
-                  fontSize: '11px',
-                  letterSpacing: '0.2em',
-                  color: '#22d3ee',
-                  fontWeight: 600,
-                  display: 'block',
-                  marginBottom: '6px',
-                }}>
-                  0{index + 1} / {label.toUpperCase()}
-                </span>
-
                 {/* Main heading - maximum contrast */}
                 <h2 style={{
                   fontFamily: 'JetBrains Mono, monospace',
-                  fontSize: '26px',
+                  fontSize: '28px',
                   fontWeight: 700,
                   color: '#ffffff',
-                  margin: '0 0 4px 0',
+                  margin: '0 0 6px 0',
                   letterSpacing: '0.02em',
                   lineHeight: 1.2,
                 }}>
@@ -290,54 +266,27 @@ export function SectionPlane({
                     fontSize: '13px',
                     fontWeight: 500,
                     color: '#22d3ee',
-                    margin: '0 0 16px 0',
+                    margin: '0 0 18px 0',
                     letterSpacing: '0.12em',
                   }}>
                     {content.subtitle}
                   </p>
                 )}
 
-                {/* Description - high contrast */}
+                {/* Description - maximum white contrast */}
                 {content.description && (
-                  <div style={{ marginBottom: '16px' }}>
+                  <div>
                     {content.description.map((para, i) => (
                       <p key={i} style={{
                         fontFamily: 'Inter, system-ui, sans-serif',
-                        fontSize: '13px',
+                        fontSize: '14px',
                         fontWeight: 400,
-                        color: '#f1f5f9', // Very high contrast
-                        margin: '0 0 10px 0',
-                        lineHeight: 1.6,
+                        color: '#ffffff',
+                        margin: '0 0 12px 0',
+                        lineHeight: 1.7,
                       }}>
                         {para}
                       </p>
-                    ))}
-                  </div>
-                )}
-
-                {/* Tags */}
-                {content.tags && (
-                  <div style={{ 
-                    display: 'flex', 
-                    gap: '8px', 
-                    flexWrap: 'wrap',
-                  }}>
-                    {content.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        style={{
-                          fontFamily: 'JetBrains Mono, monospace',
-                          fontSize: '10px',
-                          fontWeight: 600,
-                          color: '#22d3ee',
-                          padding: '5px 12px',
-                          borderRadius: '4px',
-                          backgroundColor: 'rgba(34, 211, 238, 0.1)',
-                          border: '1px solid rgba(34, 211, 238, 0.35)',
-                        }}
-                      >
-                        {tag}
-                      </span>
                     ))}
                   </div>
                 )}
@@ -346,8 +295,8 @@ export function SectionPlane({
               {/* Image placeholder */}
               {content.hasImage && (
                 <div style={{
-                  width: '120px',
-                  height: '120px',
+                  width: '130px',
+                  height: '130px',
                   borderRadius: '10px',
                   backgroundColor: 'rgba(15, 23, 42, 0.95)',
                   border: '2px solid rgba(34, 211, 238, 0.4)',
@@ -359,7 +308,7 @@ export function SectionPlane({
                   <span style={{
                     fontFamily: 'JetBrains Mono, monospace',
                     fontSize: '10px',
-                    color: '#475569',
+                    color: '#64748b',
                   }}>
                     Your Image
                   </span>
@@ -371,7 +320,7 @@ export function SectionPlane({
       </Html>
 
       {/* Corner accents */}
-      <mesh position={[-5.3, -3.3, 0.01]}>
+      <mesh position={[-6.3, -3.3, 0.01]}>
         <circleGeometry args={[0.08, 16]} />
         <meshBasicMaterial 
           color={borderColor} 
@@ -379,7 +328,7 @@ export function SectionPlane({
           opacity={targets.opacity * 0.9} 
         />
       </mesh>
-      <mesh position={[5.3, -3.3, 0.01]}>
+      <mesh position={[6.3, -3.3, 0.01]}>
         <circleGeometry args={[0.08, 16]} />
         <meshBasicMaterial 
           color={borderColor} 
@@ -387,7 +336,7 @@ export function SectionPlane({
           opacity={targets.opacity * 0.9} 
         />
       </mesh>
-      <mesh position={[-5.3, 3.3, 0.01]}>
+      <mesh position={[-6.3, 3.3, 0.01]}>
         <circleGeometry args={[0.08, 16]} />
         <meshBasicMaterial 
           color={borderColor} 
@@ -395,7 +344,7 @@ export function SectionPlane({
           opacity={targets.opacity * 0.9} 
         />
       </mesh>
-      <mesh position={[5.3, 3.3, 0.01]}>
+      <mesh position={[6.3, 3.3, 0.01]}>
         <circleGeometry args={[0.08, 16]} />
         <meshBasicMaterial 
           color={borderColor} 
