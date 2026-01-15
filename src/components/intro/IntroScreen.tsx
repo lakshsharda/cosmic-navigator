@@ -40,6 +40,7 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
   // so there is no black screen and no explosion flash.
   const [posterDataUrl, setPosterDataUrl] = useState<string | null>(null);
   const [videoReady, setVideoReady] = useState(false);
+  const [videoVisible, setVideoVisible] = useState(false);
 
   const video1Ref = useRef<HTMLVideoElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -172,7 +173,7 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
       {/* Background Video - starts after explosion */}
       <video
         ref={video1Ref}
-        className={`absolute inset-0 z-[0] w-full h-full object-cover ${videoReady ? 'opacity-100' : 'opacity-0'} transition-opacity duration-500`}
+        className={`absolute inset-0 z-[0] w-full h-full object-cover ${videoReady ? 'opacity-100' : 'opacity-0'} ${videoVisible ? 'visible' : 'invisible'} transition-opacity duration-500`}
         src={VIDEO_SRC}
         muted
         playsInline
@@ -181,6 +182,7 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
         // before our seek runs, causing the explosion to flash in production.
         onLoadedMetadata={(e) => {
           const v = e.currentTarget;
+          setVideoVisible(false);
           try {
             v.pause();
             v.currentTime = LOOP_START;
@@ -190,6 +192,10 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
         }}
         onSeeked={(e) => {
           const v = e.currentTarget;
+
+          // If the seek didn't actually land at LOOP_START (some browsers block programmatic seeking
+          // before user interaction), do NOT reveal/play the video (prevents explosion flash).
+          if (v.currentTime < LOOP_START - 0.2) return;
 
           // Capture poster once we're at LOOP_START
           if (!posterDataUrl) {
@@ -208,6 +214,7 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
           }
 
           if (!videoReady) setVideoReady(true);
+          if (!videoVisible) setVideoVisible(true);
 
           // Start playback after the seek (avoids explosion flash)
           v.play().catch(() => {
