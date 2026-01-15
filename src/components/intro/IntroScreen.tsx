@@ -33,16 +33,12 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
   const [activeVideo, setActiveVideo] = useState<1 | 2>(1);
   const [isLoopTransition, setIsLoopTransition] = useState(false);
   const [roleIndex, setRoleIndex] = useState(0);
-  const [videoReady, setVideoReady] = useState(false);
-
   const activeVideoRef = useRef<1 | 2>(1);
   const switchingRef = useRef(false);
-  const videoReadyRef = useRef(false);
 
   const video1Ref = useRef<HTMLVideoElement>(null);
   const video2Ref = useRef<HTMLVideoElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
-  const initialStartedRef = useRef(false);
 
   // Cycle through roles every 4 seconds
   useEffect(() => {
@@ -80,11 +76,8 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
     const prepareNext = async () => {
       const { next } = getVideos();
       try {
-        // Ensure metadata is loaded before seeking
-        if (Number.isNaN(next.duration) || next.duration === 0) {
-          // noop
-        }
-        next.currentTime = 8;
+        // Prepare next video at start for seamless loop
+        next.currentTime = 0;
         next.pause();
       } catch {
         // ignore seek errors
@@ -99,7 +92,7 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
       const { current, next } = getVideos();
 
       try {
-        next.currentTime = 8;
+        next.currentTime = 0;
         await next.play();
       } catch {
         // If play fails, don't switch (avoids blank frame)
@@ -114,7 +107,7 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
       window.setTimeout(() => {
         try {
           current.pause();
-          current.currentTime = 8;
+          current.currentTime = 0;
         } catch {
           // ignore
         }
@@ -190,67 +183,31 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
 
   return (
     <div className="relative w-full h-screen overflow-hidden bg-black">
-      {/* Background Video 1 - starts at 8s (after explosion) */}
+      {/* Background Video 1 - plays from start including explosion */}
       <video
         ref={video1Ref}
         className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
-          activeVideo === 1 && videoReady ? 'opacity-100' : 'opacity-0'
+          activeVideo === 1 ? 'opacity-100' : 'opacity-0'
         }`}
         src="/videos/cosmic-intro.mp4"
         muted
         playsInline
         preload="auto"
-        onLoadedMetadata={(e) => {
-          // Some browsers briefly paint frame 0 before the seek applies.
-          // We keep the video hidden until we confirm a seek >= 8s.
-          try {
-            e.currentTarget.currentTime = 8;
-            e.currentTarget.pause();
-          } catch {
-            // ignore
-          }
-        }}
-        onSeeked={async (e) => {
-          // Mark ready once we have *actually* landed on (or past) 8s.
-          if (!videoReadyRef.current && e.currentTarget.currentTime >= 7.9) {
-            videoReadyRef.current = true;
-            setVideoReady(true);
-          }
-
-          // Start playback only after the seek to 8s has completed
-          if (initialStartedRef.current) return;
-          initialStartedRef.current = true;
-          try {
-            await e.currentTarget.play();
-          } catch {
-            // autoplay can fail; user still sees the correct frame at 8s
-          }
-        }}
+        autoPlay
       />
 
       {/* Background Video 2 (for seamless loop) */}
       <video
         ref={video2Ref}
         className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
-          activeVideo === 2 && videoReady ? 'opacity-100' : 'opacity-0'
+          activeVideo === 2 ? 'opacity-100' : 'opacity-0'
         }`}
         src="/videos/cosmic-intro.mp4"
         muted
         playsInline
         preload="auto"
-        onLoadedMetadata={(e) => {
-          // Keep the "loop segment" ready on the hidden video
-          try {
-            e.currentTarget.currentTime = 8;
-            e.currentTarget.pause();
-          } catch {
-            // ignore
-          }
-        }}
       />
 
-      {/* Covers any frame-0 flash until we confirm the initial seek */}
-      {!videoReady && <div className="absolute inset-0 bg-black z-[1]" />}
 
       {/* Epic Space Ambient Audio - using Soundhelix (free reliable CDN) */}
       <audio
