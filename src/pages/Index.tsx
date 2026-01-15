@@ -4,7 +4,6 @@ import IntroScreen from '@/components/intro/IntroScreen';
 import SpatialScene from '@/components/spatial/SpatialScene';
 import SectionIndicator from '@/components/ui/SectionIndicator';
 import Navbar from '@/components/ui/Navbar';
-import AboutSection from '@/components/sections/AboutSection';
 import { useScrollProgress } from '@/hooks/useScrollProgress';
 import { useFocusDetection, SECTION_CONFIGS } from '@/hooks/useFocusDetection';
 
@@ -106,7 +105,7 @@ const Index = () => {
               <SpatialScene />
             </Suspense>
 
-            {/* UI Overlay */}
+            {/* UI Overlay - Only navbar and indicators */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -119,24 +118,6 @@ const Index = () => {
                 activeSectionId={activeSection?.id || null}
                 activeSectionIndex={activeSectionIndex}
               />
-
-              {/* Section Content Overlay */}
-              <AnimatePresence mode="wait">
-                {activeSection?.id === 'about' && (
-                  <motion.div
-                    key="about-content"
-                    className="fixed inset-0 z-30 flex items-center justify-center pointer-events-none"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.4 }}
-                  >
-                    <div className="pointer-events-auto">
-                      <AboutSection isActive={activeSection?.id === 'about'} />
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
 
               {/* Top-right progress indicator */}
               <div className="fixed top-24 md:top-8 right-8 z-40 flex items-center gap-3">
