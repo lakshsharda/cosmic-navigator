@@ -16,9 +16,9 @@ interface StarFieldProps {
  * Extremely subtle - just enough to convey infinite space
  */
 export function StarField({
-  count = 600,
-  radius = 150,
-  size = 0.4,
+  count = 1200,
+  radius = 180,
+  size = 0.5,
 }: StarFieldProps) {
   const pointsRef = useRef<THREE.Points>(null);
 

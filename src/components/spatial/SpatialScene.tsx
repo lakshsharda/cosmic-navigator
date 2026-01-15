@@ -123,11 +123,11 @@ export function SpatialScene() {
         decay={2}
       />
 
-      {/* Star field background */}
-      <StarField count={500} radius={120} size={0.35} />
+      {/* Star field background - increased density */}
+      <StarField count={1500} radius={150} size={0.45} />
       
-      {/* Ambient dust particles */}
-      <DustParticles count={80} />
+      {/* Ambient dust particles - increased */}
+      <DustParticles count={150} />
 
       {/* Camera controller */}
       <CameraScrollController
