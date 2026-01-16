@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, Volume2, VolumeX } from 'lucide-react';
 
 interface IntroScreenProps {
   onScrollToPortfolio: () => void;
@@ -29,11 +29,14 @@ const ROLES = [
 
 export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
   const VIDEO_SRC = `${import.meta.env.BASE_URL}videos/intro-bg.mp4`;
+  const AUDIO_SRC = `${import.meta.env.BASE_URL}audio/111.mp3`;
 
   const [showContent, setShowContent] = useState(false);
   const [isLoopTransition, setIsLoopTransition] = useState(false);
   const [roleIndex, setRoleIndex] = useState(0);
+  const [isMuted, setIsMuted] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
 
   // Show content after a brief delay
   useEffect(() => {
@@ -48,6 +51,37 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
     }, 4000);
     return () => clearInterval(interval);
   }, []);
+
+  // Start audio playback
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    
+    audio.loop = true;
+    audio.volume = 0.5;
+    
+    const playAudio = () => {
+      audio.play().catch(() => {
+        // Auto-play blocked - will play on user interaction
+      });
+    };
+    
+    playAudio();
+  }, []);
+
+  // Toggle mute/unmute
+  const toggleMute = () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    
+    if (isMuted) {
+      audio.volume = 0.5;
+      setIsMuted(false);
+    } else {
+      audio.volume = 0;
+      setIsMuted(true);
+    }
+  };
 
   // Enforce muted video (per request)
   useEffect(() => {
@@ -107,7 +141,7 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
 
   return (
     <div className="relative w-full h-screen overflow-hidden bg-black">
-      {/* Background Video with audio */}
+      {/* Background Video */}
       <video
         ref={videoRef}
         className="absolute inset-0 z-0 w-full h-full object-cover"
@@ -117,6 +151,23 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
         playsInline
         preload="auto"
       />
+
+      {/* Background Audio */}
+      <audio ref={audioRef} src={AUDIO_SRC} />
+
+      {/* Mute/Unmute Button - Top Right */}
+      <motion.button
+        onClick={toggleMute}
+        className="fixed top-6 right-6 z-[100] w-12 h-12 rounded-full bg-background/20 backdrop-blur-sm border border-primary/30 flex items-center justify-center text-primary hover:bg-primary/20 hover:border-primary/50 transition-all"
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 1, duration: 0.5 }}
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.95 }}
+        aria-label={isMuted ? 'Unmute audio' : 'Mute audio'}
+      >
+        {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
+      </motion.button>
 
       {/* Dark overlay for better text visibility */}
       <motion.div
@@ -142,6 +193,7 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1.5, ease: 'easeOut' }}
+            layout={false}
           >
             {/* Name with glow */}
             <motion.div
@@ -149,6 +201,9 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 1.2, delay: 0.5, ease: 'easeOut' }}
+              layout={false}
+              // Only animate once on mount, never re-animate
+              exit="never"
             >
               {/* Background glow */}
               <div
@@ -192,6 +247,7 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
               initial={{ opacity: 0, scaleX: 0 }}
               animate={{ opacity: 1, scaleX: 1 }}
               transition={{ duration: 1, delay: 0.8 }}
+              layout={false}
             >
               <div
                 className="h-px w-48 md:w-72"
@@ -208,6 +264,7 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 1 }}
+              layout={false}
             >
               <AnimatePresence mode="wait">
                 <motion.p

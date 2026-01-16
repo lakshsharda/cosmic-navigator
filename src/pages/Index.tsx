@@ -37,7 +37,8 @@ const Index = () => {
     if (!showIntro) return;
 
     const handleWheel = (e: WheelEvent) => {
-      if (e.deltaY > 50) {
+      // More responsive - trigger on any downward scroll
+      if (e.deltaY > 10) {
         handleScrollToPortfolio();
       }
     };

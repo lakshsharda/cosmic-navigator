@@ -17,11 +17,20 @@ export function AboutSection() {
               About Me
             </h2>
             <p className="text-foreground/90 text-base sm:text-lg leading-relaxed max-w-xl">
-              I'm a full-stack developer with expertise in building scalable, production-ready applications. 
-              My technical focus includes React, TypeScript, Node.js, and cloud-native architectures. 
-              I have hands-on experience with frontend frameworks, RESTful APIs, database design, and CI/CD pipelines. 
-              I prioritize writing clean, testable code and building systems that are maintainable long-term. 
-              Currently exploring distributed systems, performance optimization, and developer tooling.
+              I'm a tech-driven problem solver who enjoys turning complex ideas into simple, reliable, and impactful solutions. 
+              I approach development not just as writing code, but as understanding problems deeply, breaking them down logically, 
+              and building systems that work well in real-world conditions.
+            </p>
+            <p className="text-foreground/90 text-base sm:text-lg leading-relaxed max-w-xl mt-4">
+              My focus is on creating solutions that are scalable, maintainable, and user-centric. Before jumping into implementation, 
+              I spend time analyzing requirements, identifying edge cases, and designing clear workflows. I believe strong fundamentals, 
+              clean structure, and thoughtful decision-making matter more than chasing tools or trends.
+            </p>
+            <p className="text-foreground/90 text-base sm:text-lg leading-relaxed max-w-xl mt-4">
+              I enjoy working across the entire lifecycle of a product-from ideation and system design to execution and refinement. 
+              Driven by curiosity, I actively explore new technologies, especially in system design, optimization, and developer experience. 
+              I'm always looking for opportunities to learn, improve, and collaborate with people who value innovation, quality, 
+              and purposeful problem-solving.
             </p>
           </div>
 

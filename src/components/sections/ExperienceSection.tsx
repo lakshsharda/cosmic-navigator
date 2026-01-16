@@ -140,23 +140,26 @@ export function ExperienceSection() {
             </div>
 
             {/* Center dot */}
-            <motion.div
+            <div
               className="absolute left-1/2 -translate-x-1/2 w-12 h-12 rounded-full bg-background border-2 border-primary flex items-center justify-center z-10"
-              whileHover={{ scale: 1.2 }}
-              animate={{
-                boxShadow: [
-                  '0 0 0 0 hsla(var(--primary), 0.4)',
-                  '0 0 0 12px hsla(var(--primary), 0)',
-                  '0 0 0 0 hsla(var(--primary), 0)',
-                ],
-              }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-              }}
             >
-              <Briefcase className="w-5 h-5 text-primary" />
-            </motion.div>
+              <motion.div
+                animate={{
+                  boxShadow: [
+                    '0 0 0 0 hsla(var(--primary), 0.4)',
+                    '0 0 0 12px hsla(var(--primary), 0)',
+                    '0 0 0 0 hsla(var(--primary), 0)',
+                  ],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                }}
+                className="w-full h-full rounded-full flex items-center justify-center"
+              >
+                <Briefcase className="w-5 h-5 text-primary" />
+              </motion.div>
+            </div>
 
             {/* Right side empty */}
             <div className="w-1/2 pl-16" />
@@ -174,24 +177,27 @@ export function ExperienceSection() {
             <div className="w-1/2 pr-16" />
 
             {/* Center dot */}
-            <motion.div
+            <div
               className="absolute left-1/2 -translate-x-1/2 w-12 h-12 rounded-full bg-background border-2 border-primary flex items-center justify-center z-10"
-              whileHover={{ scale: 1.2 }}
-              animate={{
-                boxShadow: [
-                  '0 0 0 0 hsla(var(--primary), 0.4)',
-                  '0 0 0 12px hsla(var(--primary), 0)',
-                  '0 0 0 0 hsla(var(--primary), 0)',
-                ],
-              }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                delay: 0.5,
-              }}
             >
-              <Briefcase className="w-5 h-5 text-primary" />
-            </motion.div>
+              <motion.div
+                animate={{
+                  boxShadow: [
+                    '0 0 0 0 hsla(var(--primary), 0.4)',
+                    '0 0 0 12px hsla(var(--primary), 0)',
+                    '0 0 0 0 hsla(var(--primary), 0)',
+                  ],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  delay: 0.5,
+                }}
+                className="w-full h-full rounded-full flex items-center justify-center"
+              >
+                <Briefcase className="w-5 h-5 text-primary" />
+              </motion.div>
+            </div>
 
             {/* Right content */}
             <div className="w-1/2 pl-16 flex justify-start">

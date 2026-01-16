@@ -30,7 +30,7 @@ export function ProjectsSection({ onProjectClick }: ProjectsSectionProps) {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: idx * 0.1 }}
                 viewport={{ once: true }}
-                className="group p-6 rounded-xl bg-secondary/30 border border-primary/20 hover:border-primary/50 transition-all duration-300 cursor-pointer"
+                className="group p-6 rounded-xl bg-secondary/30 border border-primary/20 hover:border-primary/50 transition-all duration-300 cursor-pointer flex flex-col h-full"
                 onClick={() => onProjectClick(project)}
               >
                 <div className="flex items-start justify-between gap-4 mb-3">
@@ -44,7 +44,7 @@ export function ProjectsSection({ onProjectClick }: ProjectsSectionProps) {
                 <p className="text-foreground/70 text-sm leading-relaxed mb-4 line-clamp-2">
                   {project.shortDescription}
                 </p>
-                <button className="font-mono text-xs text-primary hover:text-primary/80 transition-colors">
+                <button className="font-mono text-xs text-primary hover:text-primary/80 transition-colors mt-auto text-left">
                   View Details →
                 </button>
               </motion.div>

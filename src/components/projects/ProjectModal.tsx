@@ -17,6 +17,8 @@ export interface Project {
   techStack: string[];
   image?: string;
   youtubeUrl?: string;
+   repoUrl?: string;
+   repoLabel?: string;
 }
 
 export const PROJECTS_DATA: Project[] = [
@@ -45,6 +47,8 @@ export const PROJECTS_DATA: Project[] = [
     ],
     techStack: ['TypeScript', 'React', 'Node.js', 'Firebase', 'Gemini API', 'Qloo API'],
     youtubeUrl: 'https://www.youtube.com/embed/1gRseMOR9I0',
+    repoUrl: 'https://github.com/Laksh-npc/culture-circle-vibes-hub',
+    repoLabel: 'Code',
   },
   {
     id: 3,
@@ -58,6 +62,8 @@ export const PROJECTS_DATA: Project[] = [
     ],
     techStack: ['Java', 'Machine Learning', 'Firebase', 'Mobile App Development'],
     image: projectManthan,
+    repoUrl: 'https://github.com/lakshsharda/mental-welness',
+    repoLabel: 'Code',
   },
   {
     id: 4,
@@ -77,9 +83,12 @@ export const PROJECTS_DATA: Project[] = [
     year: '2025',
     shortDescription: 'Platform designed to enhance peer-to-peer learning and academic collaboration.',
     fullDescription: [
-      'Built LearnLift as a structured learning platform enabling students to access resources, interact with peers, and improve academic outcomes through organized content and collaboration tools.',
+      'Built a structured learning platform enabling students to access resources, interact with peers, and improve academic outcomes through organized content and collaboration tools.',
     ],
     techStack: ['Web Development', 'Learning Systems'],
+    image: '/tudent.png',
+    repoUrl: 'https://github.com/Laksh-npc/LearnLift_final',
+    repoLabel: 'Code',
   },
   {
     id: 6,
@@ -104,6 +113,62 @@ export const PROJECTS_DATA: Project[] = [
       'Developed within agile teams with a focus on production-ready architecture and performance.',
     ],
     techStack: ['React', 'Node.js', 'Firebase', 'Full Stack Development'],
+    repoUrl: 'https://github.com/lakshsharda/thursday-tribe-frontend-glow',
+    repoLabel: 'Code',
+  },
+  {
+    id: 8,
+    title: 'Author Contribution & Institutional Analysis of Highly Cited Indian Research Papers',
+    year: '2024',
+    shortDescription: 'Research-driven analysis of author collaboration, institutional impact, and publication strategies in highly cited Indian academic papers.',
+    fullDescription: [
+      'INTRODUCTION',
+      'The research paper delves into an in-depth analysis of the contributions made by individual authors and groups of authors to highly cited academic papers originating from India. It seeks to understand the dynamics of authorial input in shaping the success and impact of such scholarly works, offering a nuanced exploration of the factors that contribute to their widespread recognition.',
+      'By examining whether papers authored by a single individual or through collaborations involving multiple authors receive more attention and citations, the study sheds light on the interplay between solo and collaborative academic efforts in driving research influence.',
+      'A significant focus of the research lies in mapping the institutional affiliations of these authors. By identifying the universities, research institutes, and organizations with which they are associated, the study highlights the institutions that are at the forefront of producing impactful academic research in India.',
+      'Furthermore, the paper categorizes the types of research being published, distinguishing between articles, reviews, and conference papers, among other formats. It examines how these different publication types influence citation rates and academic recognition.',
+      'By evaluating author collaboration patterns, institutional affiliations, and publication formats, the study identifies trends that underpin the success of academic research in India.',
+      'The findings offer actionable insights for researchers, institutions, and policymakers by highlighting how collaboration, institutional support, and publication strategies contribute to research visibility and citation impact.',
+    ],
+    techStack: ['Research Analysis', 'Bibliometrics', 'Data Analysis', 'Academic Research'],
+    image: '/image.png',
+  },
+  {
+    id: 9,
+    title: 'Stock Market Analytics & Financial Network Platform',
+    year: '2025',
+    shortDescription: 'Full-stack stock market platform with trading dashboard and advanced financial network analytics.',
+    fullDescription: [
+      'Comprehensive stock market analysis and visualization platform with a Groww-inspired dashboard and DSFM analytics engine.',
+      'Live and historical price visualization, company info, sector trends, market movers, watchlists, and portfolio tracking.',
+      'Computed log returns from NSE data; built correlation matrices and financial networks.',
+      'Analyzed network connectivity and structure with Betweenness Centrality using the Brandes algorithm.',
+      'Interactive walkthrough of centrality computation; shock propagation simulation using correlation-based decay.',
+      'Systemic risk and contagion effect analysis.',
+      'Hybrid ARIMA–GARCH models for returns and volatility with confidence intervals.',
+      'Interactive charts, heatmaps, network graphs, and forecast views in full-stack architecture.',
+    ],
+    techStack: ['React', 'Python', 'Data Science', 'Financial Networks', 'ARIMA', 'GARCH', 'NSE Data'],
+    image: '/dsfm.png',
+    repoUrl: 'https://github.com/Laksh-npc/pixel-perfect-clone-4392',
+    repoLabel: 'Code',
+  },
+  {
+    id: 10,
+    title: 'EcoEmpower',
+    year: '2024',
+    shortDescription: 'A sustainability-focused web platform built to promote eco-friendly awareness and actions.',
+    fullDescription: [
+      'Built a sustainability-focused web platform to promote environmental awareness.',
+      'Designed interactive and responsive UI using HTML and CSS.',
+      'Implemented dynamic functionality using JavaScript.',
+      'Organized content to present eco-friendly practices and insights clearly.',
+      'Focused on clean design, usability, and accessibility.',
+    ],
+    techStack: ['HTML', 'CSS', 'JavaScript'],
+    image: '/ecoempower.png',
+    repoUrl: 'https://github.com/lakshsharda/EcoEmpower',
+    repoLabel: 'Code',
   },
 ];
 
@@ -237,14 +302,27 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
                     >
                       {project.title}
                     </motion.h2>
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/30"
-                    >
-                      <Calendar size={12} className="text-primary" />
-                      <span className="font-mono text-xs text-primary">{project.year}</span>
-                    </motion.div>
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/30"
+                      >
+                        <Calendar size={12} className="text-primary" />
+                        <span className="font-mono text-xs text-primary">{project.year}</span>
+                      </motion.div>
+                      {project.repoUrl && (
+                        <a
+                          href={project.repoUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-[#0d1526] border border-white/10 text-foreground text-xs font-mono hover:border-primary/60 hover:text-primary transition-colors"
+                        >
+                          <span>{project.repoLabel || 'Code'}</span>
+                          <ExternalLink size={14} />
+                        </a>
+                      )}
+                    </div>
                   </div>
                   
                   <motion.p
