@@ -196,12 +196,77 @@ export function HeroSection() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 1.2, ease: 'easeOut' }}
+          transition={{ duration: 0.6, ease: 'easeOut' }}
         >
           {/* Single unified cycling text */}
           <CyclingTextAnimation text={TEXT_CYCLE[textIndex]} isName={isName} />
         </motion.div>
       </div>
+
+      {/* Scroll Down Indicator */}
+      <motion.div
+        className="absolute bottom-10 inset-x-0 mx-auto w-fit flex flex-col items-center gap-2 cursor-pointer z-20"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1.5, duration: 0.8 }}
+        onClick={() => {
+          const aboutSection = document.getElementById('about');
+          aboutSection?.scrollIntoView({ behavior: 'smooth' });
+        }}
+      >
+        {/* Mouse shape */}
+        <motion.div
+          className="w-6 h-10 rounded-full border-2 border-cyan-400/60 flex justify-center pt-2"
+          style={{
+            boxShadow: '0 0 15px rgba(34, 211, 238, 0.3), inset 0 0 10px rgba(34, 211, 238, 0.1)',
+          }}
+          animate={{ y: [0, 5, 0] }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+        >
+          {/* Scroll wheel dot */}
+          <motion.div
+            className="w-1.5 h-3 rounded-full bg-cyan-400"
+            animate={{ y: [0, 8, 0], opacity: [1, 0.3, 1] }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+            style={{
+              boxShadow: '0 0 8px rgba(34, 211, 238, 0.8)',
+            }}
+          />
+        </motion.div>
+        
+        {/* Scroll text */}
+        <motion.span
+          className="text-xs font-mono tracking-widest text-cyan-400/70 uppercase"
+          animate={{ opacity: [0.5, 1, 0.5] }}
+          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+        >
+          Scroll Down
+        </motion.span>
+        
+        {/* Animated arrows */}
+        <motion.div className="flex flex-col items-center -mt-1">
+          {[0, 1].map((i) => (
+            <motion.svg
+              key={i}
+              width="16"
+              height="8"
+              viewBox="0 0 16 8"
+              className="text-cyan-400/60"
+              animate={{ y: [0, 3, 0], opacity: [0.3, 0.8, 0.3] }}
+              transition={{ duration: 1, repeat: Infinity, delay: i * 0.2, ease: 'easeInOut' }}
+            >
+              <path
+                d="M1 1L8 7L15 1"
+                stroke="currentColor"
+                strokeWidth="2"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </motion.svg>
+          ))}
+        </motion.div>
+      </motion.div>
     </section>
   );
 }

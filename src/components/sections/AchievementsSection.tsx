@@ -94,10 +94,10 @@ export function AchievementsSection() {
     <section id="achievements" className="py-16 px-4 sm:px-8 relative">
       <div className="max-w-4xl w-full mx-auto">
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: 'easeOut' }}
-          viewport={{ once: true, margin: '-100px' }}
+          transition={{ duration: 0.4, ease: 'easeOut' }}
+          viewport={{ once: true, margin: '-50px' }}
         >
           <div className="text-center mb-12">
             <h2 className="font-mono text-2xl sm:text-3xl font-bold text-foreground mb-2 tracking-tight">

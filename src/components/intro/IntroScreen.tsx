@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Volume2, VolumeX } from 'lucide-react';
 
@@ -37,6 +37,59 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
   const [isMuted, setIsMuted] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
+  const hasStartedRef = useRef(false);
+
+  // Try to play the audio
+  const tryPlayAudio = useCallback(async () => {
+    const audio = audioRef.current;
+    if (!audio || hasStartedRef.current) return;
+    audio.loop = true;
+    audio.volume = 0.5;
+    try {
+      await audio.play();
+      hasStartedRef.current = true;
+    } catch {
+      // blocked – will retry on user gesture
+    }
+  }, []);
+
+  // Autoplay audio on mount; fallback to first user gesture
+  useEffect(() => {
+    tryPlayAudio();
+
+    const onGesture = async () => {
+      if (hasStartedRef.current) { cleanup(); return; }
+      await tryPlayAudio();
+      if (hasStartedRef.current) cleanup();
+    };
+
+    const events = ['click', 'pointerdown', 'keydown', 'touchstart', 'scroll', 'wheel', 'mousemove'] as const;
+    events.forEach(e => document.addEventListener(e, onGesture, { passive: true }));
+
+    function cleanup() {
+      events.forEach(e => document.removeEventListener(e, onGesture));
+    }
+    return () => {
+      cleanup();
+      // Stop audio when intro unmounts
+      const audio = audioRef.current;
+      if (audio) { audio.pause(); audio.currentTime = 0; }
+    };
+  }, [tryPlayAudio]);
+
+  // Toggle mute/unmute
+  const toggleMute = async () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (!hasStartedRef.current) await tryPlayAudio();
+    if (isMuted) {
+      audio.volume = 0.5;
+      setIsMuted(false);
+    } else {
+      audio.volume = 0;
+      setIsMuted(true);
+    }
+  };
 
   // Show content after a brief delay
   useEffect(() => {
@@ -51,37 +104,6 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
     }, 4000);
     return () => clearInterval(interval);
   }, []);
-
-  // Start audio playback
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    
-    audio.loop = true;
-    audio.volume = 0.5;
-    
-    const playAudio = () => {
-      audio.play().catch(() => {
-        // Auto-play blocked - will play on user interaction
-      });
-    };
-    
-    playAudio();
-  }, []);
-
-  // Toggle mute/unmute
-  const toggleMute = () => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    
-    if (isMuted) {
-      audio.volume = 0.5;
-      setIsMuted(false);
-    } else {
-      audio.volume = 0;
-      setIsMuted(true);
-    }
-  };
 
   // Enforce muted video (per request)
   useEffect(() => {
@@ -153,7 +175,7 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
       />
 
       {/* Background Audio */}
-      <audio ref={audioRef} src={AUDIO_SRC} />
+      <audio ref={audioRef} src={AUDIO_SRC} preload="auto" />
 
       {/* Mute/Unmute Button - Top Right */}
       <motion.button
@@ -215,11 +237,9 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
               
               <h1 className="relative flex flex-wrap justify-center">
                 {nameLetters.map((letter, index) => (
-                  <motion.span
+                  <span
                     key={index}
-                    className={`font-mono text-5xl md:text-7xl lg:text-8xl xl:text-9xl font-bold cursor-default ${
-                      letter === ' ' ? 'mx-3 md:mx-6' : 'mx-0.5 md:mx-1'
-                    }`}
+                    className={`font-mono text-5xl md:text-7xl lg:text-8xl xl:text-9xl font-bold ${letter === ' ' ? 'mx-3 md:mx-6' : 'mx-0.5 md:mx-1'}`}
                     style={{
                       color: 'hsl(210 20% 98%)',
                       textShadow: `
@@ -228,34 +248,11 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
                         0 0 100px hsl(250 60% 55% / 0.3)
                       `,
                     }}
-                    whileHover={{
-                      scale: 1.2,
-                      y: -8,
-                      textShadow: '0 0 60px hsl(195 85% 55% / 1), 0 0 120px hsl(195 85% 55% / 0.8)',
-                      transition: { type: 'spring', stiffness: 400, damping: 15 },
-                    }}
                   >
                     {letter === ' ' ? '' : letter}
-                  </motion.span>
+                  </span>
                 ))}
               </h1>
-            </motion.div>
-
-            {/* Decorative line */}
-            <motion.div
-              className="mt-10 relative"
-              initial={{ opacity: 0, scaleX: 0 }}
-              animate={{ opacity: 1, scaleX: 1 }}
-              transition={{ duration: 1, delay: 0.8 }}
-              layout={false}
-            >
-              <div
-                className="h-px w-48 md:w-72"
-                style={{
-                  background: 'linear-gradient(90deg, transparent, hsl(195 85% 55%), hsl(250 60% 55%), hsl(195 85% 55%), transparent)',
-                }}
-              />
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-primary rotate-45" />
             </motion.div>
 
             {/* Role/title - cycles every 4s */}

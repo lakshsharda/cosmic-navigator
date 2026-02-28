@@ -1,9 +1,7 @@
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 
 interface Skill {
   name: string;
-  descriptor: string;
   icon: string;
 }
 
@@ -16,122 +14,108 @@ const SKILL_CATEGORIES: SkillCategory[] = [
   {
     name: 'DEVELOPMENT',
     skills: [
-      { name: 'JavaScript', descriptor: 'Programming Language', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg' },
-      { name: 'React.js', descriptor: 'Frontend Library', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg' },
-      { name: 'Next.js', descriptor: 'React Framework', icon: 'https://cdn.simpleicons.org/nextdotjs/ffffff' },
-      { name: 'Redux', descriptor: 'State Management', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/redux/redux-original.svg' },
-      { name: 'Node.js', descriptor: 'Runtime Environment', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg' },
-      { name: 'Tailwind CSS', descriptor: 'Utility Framework', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg' },
-      { name: 'REST API', descriptor: 'API Architecture', icon: 'https://cdn.simpleicons.org/openapiinitiative/6BA539' },
-      { name: 'JWT', descriptor: 'Token Authentication', icon: 'https://cdn.simpleicons.org/jsonwebtokens/ffffff' },
-      { name: 'Vercel', descriptor: 'Deployment Platform', icon: 'https://cdn.simpleicons.org/vercel/ffffff' },
-      { name: 'Postman', descriptor: 'API Testing Tool', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postman/postman-original.svg' },
+      { name: 'JavaScript', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg' },
+      { name: 'React.js', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg' },
+      { name: 'Next.js', icon: 'https://cdn.simpleicons.org/nextdotjs/ffffff' },
+      { name: 'Redux', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/redux/redux-original.svg' },
+      { name: 'Node.js', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg' },
+      { name: 'Tailwind CSS', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg' },
+      { name: 'REST API', icon: 'https://cdn.simpleicons.org/openapiinitiative/6BA539' },
+      { name: 'JWT', icon: 'https://cdn.simpleicons.org/jsonwebtokens/ffffff' },
+      { name: 'Vercel', icon: 'https://cdn.simpleicons.org/vercel/ffffff' },
+      { name: 'Postman', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postman/postman-original.svg' },
     ],
   },
   {
     name: 'DATA & ML',
     skills: [
-      { name: 'Python', descriptor: 'Programming Language', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg' },
-      { name: 'TensorFlow', descriptor: 'Deep Learning Framework', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tensorflow/tensorflow-original.svg' },
-      { name: 'PyTorch', descriptor: 'ML Framework', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pytorch/pytorch-original.svg' },
-      { name: 'OpenCV', descriptor: 'Computer Vision', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/opencv/opencv-original.svg' },
-      { name: 'Scikit-learn', descriptor: 'ML Library', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/scikitlearn/scikitlearn-original.svg' },
-      { name: 'NumPy', descriptor: 'Numerical Computing', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/numpy/numpy-original.svg' },
-      { name: 'Pandas', descriptor: 'Data Analysis', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pandas/pandas-original.svg' },
-      { name: 'MediaPipe', descriptor: 'ML Solutions', icon: 'https://cdn.simpleicons.org/mediapipe/0097A7' },
+      { name: 'Python', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg' },
+      { name: 'TensorFlow', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tensorflow/tensorflow-original.svg' },
+      { name: 'PyTorch', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pytorch/pytorch-original.svg' },
+      { name: 'OpenCV', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/opencv/opencv-original.svg' },
+      { name: 'Scikit-learn', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/scikitlearn/scikitlearn-original.svg' },
+      { name: 'NumPy', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/numpy/numpy-original.svg' },
+      { name: 'Pandas', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pandas/pandas-original.svg' },
+      { name: 'MediaPipe', icon: 'https://cdn.simpleicons.org/mediapipe/0097A7' },
     ],
   },
   {
     name: 'DATABASES',
     skills: [
-      { name: 'MongoDB', descriptor: 'NoSQL Database', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg' },
-      { name: 'PostgreSQL', descriptor: 'Relational Database', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg' },
-      { name: 'Firebase', descriptor: 'Cloud Database', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/firebase/firebase-plain.svg' },
-      { name: 'Redis', descriptor: 'In-Memory Store', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/redis/redis-original.svg' },
-      { name: 'SQL', descriptor: 'Query Language', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg' },
+      { name: 'MongoDB', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg' },
+      { name: 'PostgreSQL', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg' },
+      { name: 'Firebase', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/firebase/firebase-plain.svg' },
+      { name: 'Redis', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/redis/redis-original.svg' },
+      { name: 'SQL', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg' },
     ],
   },
   {
     name: 'CLOUD & DEVOPS',
     skills: [
-      { name: 'Docker', descriptor: 'Containerization', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg' },
-      { name: 'Google Cloud', descriptor: 'Cloud Platform', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/googlecloud/googlecloud-original.svg' },
-      { name: 'AWS', descriptor: 'Cloud Services', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original-wordmark.svg' },
-      { name: 'Nginx', descriptor: 'Web Server', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nginx/nginx-original.svg' },
-      { name: 'Linux', descriptor: 'Operating System', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linux/linux-original.svg' },
+      { name: 'Docker', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg' },
+      { name: 'Google Cloud', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/googlecloud/googlecloud-original.svg' },
+      { name: 'AWS', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original-wordmark.svg' },
+      { name: 'Nginx', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nginx/nginx-original.svg' },
+      { name: 'Linux', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linux/linux-original.svg' },
     ],
   },
   {
     name: 'IOT SYSTEMS',
     skills: [
-      { name: 'Arduino', descriptor: 'Microcontroller', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/arduino/arduino-original.svg' },
-      { name: 'Raspberry Pi', descriptor: 'Single-Board Computer', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/raspberrypi/raspberrypi-original.svg' },
-      { name: 'MQTT', descriptor: 'IoT Protocol', icon: 'https://cdn.simpleicons.org/mqtt/660066' },
-      { name: 'C++', descriptor: 'Systems Language', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg' },
+      { name: 'Arduino', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/arduino/arduino-original.svg' },
+      { name: 'Raspberry Pi', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/raspberrypi/raspberrypi-original.svg' },
+      { name: 'MQTT', icon: 'https://cdn.simpleicons.org/mqtt/660066' },
+      { name: 'C++', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg' },
     ],
   },
   {
     name: 'TOOLS',
     skills: [
-      { name: 'Git', descriptor: 'Version Control', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg' },
-      { name: 'GitHub', descriptor: 'Code Hosting', icon: 'https://cdn.simpleicons.org/github/ffffff' },
-      { name: 'Figma', descriptor: 'Design Tool', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/figma/figma-original.svg' },
-      { name: 'Java', descriptor: 'Enterprise Language', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg' },
+      { name: 'Git', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg' },
+      { name: 'GitHub', icon: 'https://cdn.simpleicons.org/github/ffffff' },
+      { name: 'Figma', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/figma/figma-original.svg' },
+      { name: 'Java', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg' },
     ],
   },
 ];
 
 function SkillIcon({ skill }: { skill: Skill }) {
-  const [isHovered, setIsHovered] = useState(false);
+  const [hovered, setHovered] = useState(false);
 
   return (
     <div
       className="relative"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
     >
-      <motion.div
-        className="w-12 h-12 rounded-full flex items-center justify-center cursor-pointer bg-background/60 border border-green-500/40"
-        style={{
-          boxShadow: isHovered
-            ? '0 0 12px rgba(34, 197, 94, 0.4), inset 0 0 8px rgba(34, 197, 94, 0.1)'
-            : '0 0 4px rgba(34, 197, 94, 0.15)',
-        }}
-        whileHover={{ scale: 1.1 }}
-        transition={{ duration: 0.2 }}
-      >
+      <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-lg bg-background/60 border border-primary/15 hover:border-primary/50 flex items-center justify-center transition-colors cursor-pointer">
         <img
           src={skill.icon}
           alt={skill.name}
-          className="w-6 h-6 object-contain"
+          className="w-5 h-5 sm:w-6 sm:h-6 object-contain"
           onError={(e) => {
-            const target = e.target as HTMLImageElement;
-            target.style.display = 'none';
+            const t = e.target as HTMLImageElement;
+            t.style.display = 'none';
+            const parent = t.parentElement;
+            if (parent && !parent.querySelector('span')) {
+              const s = document.createElement('span');
+              s.textContent = skill.name.charAt(0);
+              s.className = 'font-mono text-sm font-bold text-primary';
+              parent.appendChild(s);
+            }
           }}
         />
-      </motion.div>
+      </div>
 
-      <AnimatePresence>
-        {isHovered && (
-          <motion.div
-            className="absolute left-1/2 -translate-x-1/2 z-50 pointer-events-none"
-            style={{ bottom: 'calc(100% + 8px)' }}
-            initial={{ opacity: 0, y: 4 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 4 }}
-            transition={{ duration: 0.15 }}
-          >
-            <div className="px-3 py-2 rounded-lg whitespace-nowrap text-center bg-card border border-green-500/30 shadow-lg">
-              <p className="text-xs font-semibold font-mono text-foreground mb-0.5">
-                {skill.name}
-              </p>
-              <p className="text-[10px] text-green-400">
-                {skill.descriptor}
-              </p>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Tooltip on hover */}
+      {hovered && (
+        <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 z-50 pointer-events-none">
+          <div className="px-2.5 py-1 rounded-md bg-background/95 border border-primary/30 shadow-lg whitespace-nowrap">
+            <span className="font-mono text-[11px] text-foreground">{skill.name}</span>
+          </div>
+          <div className="absolute left-1/2 -translate-x-1/2 top-full w-0 h-0 border-l-[5px] border-r-[5px] border-t-[5px] border-l-transparent border-r-transparent border-t-background/95" />
+        </div>
+      )}
     </div>
   );
 }
@@ -140,43 +124,36 @@ export function SkillsSection() {
   return (
     <section id="skills" className="py-16 px-4 sm:px-8 relative">
       <div className="max-w-5xl w-full mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: 'easeOut' }}
-          viewport={{ once: true, margin: '-100px' }}
-        >
-          <h2 className="font-mono text-2xl sm:text-3xl font-bold text-foreground mb-2 tracking-tight text-center">
-            SKILLS
-          </h2>
-          <p className="font-mono text-xs text-primary mb-10 tracking-widest text-center">
-            Technical Expertise
-          </p>
+        <h2 className="font-mono text-2xl sm:text-3xl font-bold text-foreground mb-2 tracking-tight text-center">
+          SKILLS
+        </h2>
+        <p className="font-mono text-xs text-primary mb-10 tracking-widest text-center">
+          Technical Expertise
+        </p>
 
-          <div className="space-y-6">
-            {SKILL_CATEGORIES.map((category, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5, delay: idx * 0.1 }}
-                viewport={{ once: true }}
-                className="flex flex-col sm:flex-row items-start gap-4"
-              >
-                <div className="min-w-[120px] border-l-2 border-primary/60 pl-3">
-                  <span className="font-mono text-xs font-semibold text-primary tracking-wider">
-                    {category.name}
-                  </span>
-                </div>
-                <div className="flex flex-wrap gap-3">
-                  {category.skills.map((skill, skillIdx) => (
-                    <SkillIcon key={skillIdx} skill={skill} />
-                  ))}
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
+        <div className="space-y-6">
+          {SKILL_CATEGORIES.map((category) => (
+            <div
+              key={category.name}
+              className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6 p-4 sm:p-5 rounded-xl bg-secondary/20 border border-primary/15"
+            >
+              {/* Category label */}
+              <h3 className="font-mono text-[11px] font-bold text-primary tracking-widest w-full sm:w-36 flex-shrink-0">
+                {category.name}
+              </h3>
+
+              {/* Separator */}
+              <div className="hidden sm:block w-px h-8 bg-primary/20 flex-shrink-0" />
+
+              {/* Skill icons row */}
+              <div className="flex flex-wrap gap-2.5">
+                {category.skills.map((skill) => (
+                  <SkillIcon key={skill.name} skill={skill} />
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );

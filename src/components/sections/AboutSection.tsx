@@ -5,10 +5,10 @@ export function AboutSection() {
     <section id="about" className="py-16 px-4 sm:px-8 relative">
       <div className="max-w-4xl w-full mx-auto">
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: 'easeOut' }}
-          viewport={{ once: true, margin: '-100px' }}
+          transition={{ duration: 0.4, ease: 'easeOut' }}
+          viewport={{ once: true, margin: '-50px' }}
           className="flex flex-col md:flex-row items-center gap-8 md:gap-12"
         >
           {/* Text Content */}
@@ -34,9 +34,16 @@ export function AboutSection() {
             </p>
           </div>
 
-          {/* Profile Image Placeholder */}
-          <div className="w-40 h-40 sm:w-48 sm:h-48 rounded-xl bg-secondary/50 border border-primary/30 flex items-center justify-center flex-shrink-0">
-            <span className="font-mono text-xs text-muted-foreground">Image</span>
+          {/* Profile Image */}
+          <div className="relative flex-shrink-0">
+            <div className="absolute -inset-2 rounded-2xl opacity-30 blur-lg" style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.4) 0%, transparent 70%)' }} />
+            <div className="relative w-56 h-56 sm:w-64 sm:h-64 md:w-72 md:h-72 rounded-2xl overflow-hidden border border-blue-500/30" style={{ boxShadow: '0 0 12px rgba(59,130,246,0.2)' }}>
+              <img 
+                src="/image1.jpeg" 
+                alt="Profile" 
+                className="w-full h-full object-cover"
+              />
+            </div>
           </div>
         </motion.div>
       </div>

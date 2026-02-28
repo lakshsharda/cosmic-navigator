@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { SkillSphere3D } from './SkillSphere3D';
 
 interface Skill {
   name: string;
@@ -192,6 +193,11 @@ interface SkillsSectionProps {
 }
 
 export function SkillsSection({ focusWeight }: SkillsSectionProps) {
+  // Flatten all skills into a single array for the 3D sphere
+  const allSkills = useMemo(() => {
+    return SKILL_CATEGORIES.flatMap(category => category.skills);
+  }, []);
+
   return (
     <div
       style={{
@@ -201,13 +207,13 @@ export function SkillsSection({ focusWeight }: SkillsSectionProps) {
         padding: '16px 20px',
         boxSizing: 'border-box',
         width: '100%',
-        maxWidth: '720px',
+        maxWidth: '800px',
         opacity: focusWeight > 0.3 ? Math.min((focusWeight - 0.3) / 0.5, 1) : 0,
         transition: 'opacity 0.3s ease',
       }}
     >
       {/* Header */}
-      <div style={{ marginBottom: '4px' }}>
+      <div style={{ marginBottom: '4px', textAlign: 'center' }}>
         <h2
           style={{
             fontFamily: 'JetBrains Mono, monospace',
@@ -237,63 +243,12 @@ export function SkillsSection({ focusWeight }: SkillsSectionProps) {
         </p>
       </div>
 
-      {/* Categories */}
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '8px',
-        }}
-      >
-        {SKILL_CATEGORIES.map((category, idx) => (
-          <div
-            key={idx}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '16px',
-            }}
-          >
-            {/* Category Label */}
-            <div
-              style={{
-                minWidth: '90px',
-                flexShrink: 0,
-                borderLeft: '2px solid rgba(34, 211, 238, 0.6)',
-                paddingLeft: '8px',
-              }}
-            >
-              <span
-                style={{
-                  fontFamily: 'JetBrains Mono, monospace',
-                  fontSize: '8px',
-                  fontWeight: 600,
-                  color: '#22d3ee',
-                  letterSpacing: '0.06em',
-                  lineHeight: 1.4,
-                  textShadow: '0 1px 4px rgba(0,0,0,0.8)',
-                }}
-              >
-                {category.name}
-              </span>
-            </div>
-
-            {/* Skills Icons Row */}
-            <div
-              style={{
-                display: 'flex',
-                flexWrap: 'wrap',
-                gap: '6px',
-                alignItems: 'center',
-              }}
-            >
-              {category.skills.map((skill, skillIdx) => (
-                <SkillIcon key={skillIdx} skill={skill} />
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
+      {/* 3D Skills Sphere */}
+      <SkillSphere3D 
+        skills={allSkills} 
+        radius={3.5} 
+        height="380px"
+      />
     </div>
   );
 }

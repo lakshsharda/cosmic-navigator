@@ -19,11 +19,28 @@ export interface Project {
   youtubeUrl?: string;
    repoUrl?: string;
    repoLabel?: string;
+   demoUrl?: string;
 }
 
 export const PROJECTS_DATA: Project[] = [
   {
     id: 1,
+    title: 'CodeJanitor',
+    year: '2025',
+    shortDescription: 'Autonomous DevSecOps agent that finds, verifies, and repairs security vulnerabilities in real-time.',
+    fullDescription: [
+      'CodeJanitor is a self-healing security layer for CI/CD pipelines using multi-agent AI architecture.',
+      'Red Team Agent: Attempts to exploit vulnerabilities within a Docker Sandbox to confirm they are real and reachable.',
+      'Blue Team Agent: Analyzes code and generates precise patches, then re-tests against exploits to verify fixes.',
+      'Automated workflow: Detection → Validation → Remediation → Regression Testing → PR Generation.',
+    ],
+    techStack: ['AI Agents', 'DevSecOps', 'Docker', 'CI/CD', 'Security'],
+    image: '/codjanitor.png',
+    youtubeUrl: 'https://www.youtube.com/embed/hKggrSrdvHg',
+    demoUrl: 'http://143.110.255.103:3000/',
+  },
+  {
+    id: 2,
     title: 'Vision-Based Assistive AI',
     year: '2025',
     shortDescription: 'Deep learning–based assistive vision system for image and video scene understanding.',
@@ -34,9 +51,11 @@ export const PROJECTS_DATA: Project[] = [
     ],
     techStack: ['Python', 'Computer Vision', 'Deep Learning'],
     image: projectVisionAi,
+    youtubeUrl: 'https://www.youtube.com/embed/LwvlC_jxezQ',
+    demoUrl: 'https://laksh123y9gi67txry6cv-ai-navigation-assistant.hf.space/',
   },
   {
-    id: 2,
+    id: 3,
     title: 'CultureCircle',
     year: '2025',
     shortDescription: 'AI-powered group compatibility platform using taste intelligence and real-time recommendations.',
@@ -51,7 +70,7 @@ export const PROJECTS_DATA: Project[] = [
     repoLabel: 'Code',
   },
   {
-    id: 3,
+    id: 4,
     title: 'Manthan – Mental Wellness App',
     year: '2025',
     shortDescription: 'Mobile mental wellness app delivering personalized ML-based wellness insights.',
@@ -66,7 +85,7 @@ export const PROJECTS_DATA: Project[] = [
     repoLabel: 'Code',
   },
   {
-    id: 4,
+    id: 5,
     title: 'Burnt Face Reconstruction',
     year: '2025',
     shortDescription: 'GAN-based facial image reconstruction and restoration system.',
@@ -78,7 +97,7 @@ export const PROJECTS_DATA: Project[] = [
     image: projectBurntFace,
   },
   {
-    id: 5,
+    id: 6,
     title: 'LearnLift',
     year: '2025',
     shortDescription: 'Platform designed to enhance peer-to-peer learning and academic collaboration.',
@@ -91,7 +110,7 @@ export const PROJECTS_DATA: Project[] = [
     repoLabel: 'Code',
   },
   {
-    id: 6,
+    id: 7,
     title: 'BreathGuard (IoT Project)',
     year: '2025',
     shortDescription: 'IoT-based air quality and breathing safety monitoring system.',
@@ -103,7 +122,7 @@ export const PROJECTS_DATA: Project[] = [
     image: projectBreathguard,
   },
   {
-    id: 7,
+    id: 8,
     title: 'The Thursday Thing',
     year: '2025',
     shortDescription: 'Scalable full-stack web platform built for real-world production use.',
@@ -117,7 +136,7 @@ export const PROJECTS_DATA: Project[] = [
     repoLabel: 'Code',
   },
   {
-    id: 8,
+    id: 9,
     title: 'Author Contribution & Institutional Analysis of Highly Cited Indian Research Papers',
     year: '2024',
     shortDescription: 'Research-driven analysis of author collaboration, institutional impact, and publication strategies in highly cited Indian academic papers.',
@@ -134,7 +153,7 @@ export const PROJECTS_DATA: Project[] = [
     image: '/image.png',
   },
   {
-    id: 9,
+    id: 10,
     title: 'Stock Market Analytics & Financial Network Platform',
     year: '2025',
     shortDescription: 'Full-stack stock market platform with trading dashboard and advanced financial network analytics.',
@@ -154,7 +173,7 @@ export const PROJECTS_DATA: Project[] = [
     repoLabel: 'Code',
   },
   {
-    id: 10,
+    id: 11,
     title: 'EcoEmpower',
     year: '2024',
     shortDescription: 'A sustainability-focused web platform built to promote eco-friendly awareness and actions.',
@@ -319,6 +338,17 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
                           className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-[#0d1526] border border-white/10 text-foreground text-xs font-mono hover:border-primary/60 hover:text-primary transition-colors"
                         >
                           <span>{project.repoLabel || 'Code'}</span>
+                          <ExternalLink size={14} />
+                        </a>
+                      )}
+                      {project.demoUrl && (
+                        <a
+                          href={project.demoUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-primary/20 border border-primary/40 text-primary text-xs font-mono hover:bg-primary/30 hover:border-primary/60 transition-colors"
+                        >
+                          <span>Demo</span>
                           <ExternalLink size={14} />
                         </a>
                       )}

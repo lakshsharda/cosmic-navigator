@@ -49,20 +49,14 @@ export function ScrollNavbar({ activeSection }: ScrollNavbarProps) {
         <div className="mx-4 lg:mx-8 mt-4 lg:mt-6 rounded-full px-4 lg:px-6 py-2.5 lg:py-3 bg-background/10 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.1)]">
           <div className="flex items-center justify-between">
             {/* Logo / Name */}
-            <div className="flex items-center gap-2 lg:gap-3">
-              <span className="font-mono text-xs lg:text-sm font-semibold text-foreground tracking-widest">
-                LS
-              </span>
-              <div className="h-3 lg:h-4 w-px bg-border" />
-              <span className="font-mono text-[10px] lg:text-xs text-muted-foreground tracking-wider">
-                PORTFOLIO
-              </span>
-            </div>
+            <span className="font-mono text-sm lg:text-base font-bold text-white tracking-wide">
+              Laksh Sharda
+            </span>
 
             {/* Navigation Links */}
             <div className="flex items-center gap-0.5 lg:gap-1">
               {SECTIONS.map((section) => (
-                <button
+                <motion.button
                   key={section.id}
                   onClick={() => handleNavClick(section.id)}
                   className={`px-2.5 lg:px-4 py-1.5 lg:py-2 rounded-full font-mono text-[10px] lg:text-xs tracking-wider transition-all duration-300 ${
@@ -70,15 +64,17 @@ export function ScrollNavbar({ activeSection }: ScrollNavbarProps) {
                       ? 'bg-primary/20 text-primary'
                       : 'text-foreground/70 hover:text-foreground hover:bg-secondary/50'
                   }`}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                 >
                   {section.label.toUpperCase()}
-                </button>
+                </motion.button>
               ))}
             </div>
 
             {/* Resume Button */}
             <motion.a
-              href="/resume.pdf"
+              href="/LakshSharda_Resume.pdf"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-1.5 lg:gap-2 px-3 lg:px-4 py-1.5 lg:py-2 rounded-full bg-primary/10 border border-primary/30 text-primary font-mono text-[10px] lg:text-xs tracking-wider hover:bg-primary/20 hover:border-primary/50 transition-all duration-300"
@@ -101,13 +97,13 @@ export function ScrollNavbar({ activeSection }: ScrollNavbarProps) {
       >
         <div className="mx-3 sm:mx-4 mt-3 sm:mt-4 rounded-2xl px-3 sm:px-4 py-2.5 sm:py-3 bg-background/10 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.1)]">
           <div className="flex items-center justify-between">
-            <span className="font-mono text-xs sm:text-sm font-semibold text-foreground tracking-widest">
-              LAKSH
+            <span className="font-mono text-sm font-bold text-white tracking-wide">
+              Laksh Sharda
             </span>
 
             <div className="flex items-center gap-2 sm:gap-3">
               <motion.a
-                href="/resume.pdf"
+                href="/LakshSharda_Resume.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full bg-primary/10 border border-primary/30 text-primary font-mono text-[10px] sm:text-xs"

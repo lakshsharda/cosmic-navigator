@@ -73,10 +73,10 @@ export function ExperienceSection() {
 
       <div className="max-w-5xl mx-auto relative z-10">
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: 'easeOut' }}
-          viewport={{ once: true, margin: '-100px' }}
+          transition={{ duration: 0.4, ease: 'easeOut' }}
+          viewport={{ once: true, margin: '-50px' }}
           className="text-center mb-12"
         >
           <h2 className="font-mono text-2xl sm:text-3xl font-bold text-foreground mb-2 tracking-tight">
@@ -94,9 +94,9 @@ export function ExperienceSection() {
 
           {/* U2CA - Left side, above */}
           <motion.div
-            initial={{ opacity: 0, x: -50 }}
+            initial={{ opacity: 0, x: -25 }}
             whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.35 }}
             viewport={{ once: true }}
             className="relative flex items-center mb-20"
           >
@@ -167,9 +167,9 @@ export function ExperienceSection() {
 
           {/* ThinkingLabs - Right side, below */}
           <motion.div
-            initial={{ opacity: 0, x: 50 }}
+            initial={{ opacity: 0, x: 25 }}
             whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            transition={{ duration: 0.35, delay: 0.1 }}
             viewport={{ once: true }}
             className="relative flex items-center"
           >
@@ -245,9 +245,9 @@ export function ExperienceSection() {
           {EXPERIENCE_DATA.map((exp, idx) => (
             <motion.div
               key={idx}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: idx * 0.1 }}
+              transition={{ duration: 0.25, delay: idx * 0.05 }}
               viewport={{ once: true }}
               className="relative pl-8"
             >

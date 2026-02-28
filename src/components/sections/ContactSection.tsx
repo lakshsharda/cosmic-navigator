@@ -8,7 +8,7 @@ export function ContactSection() {
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.3 }}
           viewport={{ once: true }}
           className="text-3xl sm:text-4xl font-bold text-foreground mb-12 text-center"
         >
@@ -18,9 +18,9 @@ export function ContactSection() {
         <div className="grid md:grid-cols-2 gap-12 items-center">
           {/* Left - Contact Details */}
           <motion.div
-            initial={{ opacity: 0, x: -30 }}
+            initial={{ opacity: 0, x: -15 }}
             whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            transition={{ duration: 0.3, delay: 0.1 }}
             viewport={{ once: true }}
             className="space-y-6"
           >
@@ -78,9 +78,9 @@ export function ContactSection() {
 
           {/* Right - Message */}
           <motion.div
-            initial={{ opacity: 0, x: 30 }}
+            initial={{ opacity: 0, x: 15 }}
             whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
+            transition={{ duration: 0.3, delay: 0.15 }}
             viewport={{ once: true }}
             className="text-center md:text-left"
           >

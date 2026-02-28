@@ -10,10 +10,10 @@ export function ProjectsSection({ onProjectClick }: ProjectsSectionProps) {
     <section id="projects" className="py-16 px-4 sm:px-8 relative">
       <div className="max-w-5xl w-full mx-auto">
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: 'easeOut' }}
-          viewport={{ once: true, margin: '-100px' }}
+          transition={{ duration: 0.4, ease: 'easeOut' }}
+          viewport={{ once: true, margin: '-50px' }}
         >
           <h2 className="font-mono text-2xl sm:text-3xl font-bold text-foreground mb-2 tracking-tight text-center">
             PROJECTS
@@ -28,7 +28,7 @@ export function ProjectsSection({ onProjectClick }: ProjectsSectionProps) {
                 key={project.id}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: idx * 0.1 }}
+                transition={{ duration: 0.25, delay: idx * 0.05 }}
                 viewport={{ once: true }}
                 className="group p-6 rounded-xl bg-secondary/30 border border-primary/20 hover:border-primary/50 transition-all duration-300 cursor-pointer flex flex-col h-full"
                 onClick={() => onProjectClick(project)}

@@ -13,6 +13,7 @@ import AchievementsSection from '@/components/sections/AchievementsSection';
 import EducationSection from '@/components/sections/EducationSection';
 import ContactSection from '@/components/sections/ContactSection';
 import { ProjectModal, Project } from '@/components/projects/ProjectModal';
+import ScrollProgressBar from '@/components/ui/ScrollProgressBar';
 
 const Index = () => {
   const [showIntro, setShowIntro] = useState(true);
@@ -54,6 +55,13 @@ const Index = () => {
     const sections = ['hero', 'about', 'experience', 'projects', 'skills', 'achievements', 'education', 'contact'];
     
     const handleScroll = () => {
+      // If scrolled to bottom, always highlight contact
+      const atBottom = (window.innerHeight + window.scrollY) >= (document.documentElement.scrollHeight - 100);
+      if (atBottom) {
+        setActiveSection('contact');
+        return;
+      }
+
       const scrollPosition = window.scrollY + window.innerHeight / 3;
       
       for (let i = sections.length - 1; i >= 0; i--) {
@@ -82,6 +90,9 @@ const Index = () => {
 
   return (
     <div className="relative w-full min-h-screen bg-background">
+      {/* Scroll Progress Bar */}
+      {showPortfolio && <ScrollProgressBar />}
+
       <AnimatePresence mode="wait">
         {showIntro && (
           <motion.div
