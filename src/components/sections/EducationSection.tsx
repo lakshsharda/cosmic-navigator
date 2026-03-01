@@ -52,7 +52,7 @@ export function EducationSection() {
 
           <div className="relative">
             {/* Timeline line */}
-            <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-gradient-to-b from-primary/60 via-primary/30 to-transparent" />
+            <div className="absolute left-4 sm:left-6 top-0 bottom-0 w-0.5 bg-gradient-to-b from-primary/60 via-primary/30 to-transparent" />
 
             <div className="space-y-8">
               {EDUCATION_DATA.map((edu, idx) => (
@@ -62,11 +62,11 @@ export function EducationSection() {
                   whileInView={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.3, delay: idx * 0.08 }}
                   viewport={{ once: true }}
-                  className="relative pl-16"
+                  className="relative pl-12 sm:pl-16"
                 >
                   {/* Timeline dot */}
                   <motion.div
-                    className="absolute left-3 top-1 w-7 h-7 rounded-full bg-secondary border-2 border-primary/60 flex items-center justify-center"
+                    className="absolute left-1 sm:left-3 top-1 w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-secondary border-2 border-primary/60 flex items-center justify-center"
                     whileHover={{ scale: 1.2, borderColor: 'hsl(var(--primary))' }}
                   >
                     {edu.icon === 'graduation' ? (
@@ -78,11 +78,11 @@ export function EducationSection() {
 
                   {/* Content card */}
                   <motion.div
-                    className="p-5 rounded-xl bg-secondary/30 border border-primary/20 hover:border-primary/40 transition-all"
+                    className="p-4 sm:p-5 rounded-xl bg-secondary/30 border border-primary/20 hover:border-primary/40 transition-all"
                     whileHover={{ scale: 1.02 }}
                   >
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
-                      <h3 className="font-mono text-lg font-bold text-foreground">
+                      <h3 className="font-mono text-base sm:text-lg font-bold text-foreground">
                         {edu.institution}
                       </h3>
                       <span className="font-mono text-xs text-primary px-3 py-1 rounded-full bg-primary/10 border border-primary/30 w-fit">

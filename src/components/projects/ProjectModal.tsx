@@ -310,18 +310,18 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
               )}
 
               {/* Content */}
-              <div className="p-6 sm:p-8">
+              <div className="p-4 sm:p-6 md:p-8">
                 {/* Header */}
                 <div className="mb-6">
-                  <div className="flex items-start justify-between gap-4 mb-3">
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4 mb-3">
                     <motion.h2
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
-                      className="font-mono text-xl sm:text-2xl font-bold text-foreground leading-tight"
+                      className="font-mono text-lg sm:text-xl md:text-2xl font-bold text-foreground leading-tight"
                     >
                       {project.title}
                     </motion.h2>
-                    <div className="flex items-center gap-2 flex-shrink-0">
+                    <div className="flex items-center gap-2 flex-wrap">
                       <motion.div
                         initial={{ opacity: 0, scale: 0.8 }}
                         animate={{ opacity: 1, scale: 1 }}

@@ -111,7 +111,7 @@ export function AchievementsSection() {
           {/* Carousel Container */}
           <div className="relative rounded-xl bg-secondary/30 border border-primary/20 overflow-hidden">
             {/* Slides */}
-            <div className="relative h-80 sm:h-96 flex items-center justify-center">
+            <div className="relative min-h-[420px] sm:min-h-[380px] md:min-h-0 md:h-96 flex items-center justify-center">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={currentIdx}
@@ -119,22 +119,22 @@ export function AchievementsSection() {
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -100 }}
                   transition={{ duration: 0.5, ease: 'easeInOut' }}
-                  className="absolute inset-0 flex items-center justify-center p-6 sm:p-8"
+                  className="absolute inset-0 flex items-center justify-center p-4 sm:p-6 md:p-8"
                 >
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center w-full h-full">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 items-center w-full h-full">
                     {/* Image */}
-                    <div className="flex items-center justify-center h-full">
+                    <div className="flex items-center justify-center h-36 sm:h-44 md:h-full">
                       <img
                         src={ACHIEVEMENTS[currentIdx].image}
                         alt={ACHIEVEMENTS[currentIdx].title}
-                        className="w-full h-full object-contain rounded-lg max-h-64 sm:max-h-80"
+                        className="w-full h-full object-contain rounded-lg max-h-36 sm:max-h-44 md:max-h-80"
                       />
                     </div>
 
                     {/* Content */}
-                    <div className="flex flex-col justify-center space-y-4">
+                      <div className="flex flex-col justify-center space-y-2 sm:space-y-4">
                       <div>
-                        <h3 className="font-mono text-lg sm:text-xl font-bold text-foreground mb-1">
+                        <h3 className="font-mono text-sm sm:text-lg md:text-xl font-bold text-foreground mb-1 line-clamp-2">
                           {ACHIEVEMENTS[currentIdx].title}
                         </h3>
                         <p className="text-primary font-mono text-sm font-semibold">
@@ -142,7 +142,7 @@ export function AchievementsSection() {
                         </p>
                       </div>
 
-                      <p className="text-foreground/85 text-sm leading-relaxed">
+                      <p className="text-foreground/85 text-xs sm:text-sm leading-relaxed line-clamp-3 sm:line-clamp-none">
                         {ACHIEVEMENTS[currentIdx].description}
                       </p>
 
@@ -171,7 +171,7 @@ export function AchievementsSection() {
             {/* Navigation Arrows */}
             <button
               onClick={goToPrev}
-              className="absolute left-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-background/80 border border-primary/30 flex items-center justify-center text-primary hover:bg-primary/20 hover:border-primary/50 transition-all"
+              className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-10 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-background/80 border border-primary/30 flex items-center justify-center text-primary hover:bg-primary/20 hover:border-primary/50 transition-all"
               aria-label="Previous achievement"
             >
               <ChevronLeft size={18} />
@@ -179,7 +179,7 @@ export function AchievementsSection() {
 
             <button
               onClick={goToNext}
-              className="absolute right-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-background/80 border border-primary/30 flex items-center justify-center text-primary hover:bg-primary/20 hover:border-primary/50 transition-all"
+              className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-10 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-background/80 border border-primary/30 flex items-center justify-center text-primary hover:bg-primary/20 hover:border-primary/50 transition-all"
               aria-label="Next achievement"
             >
               <ChevronRight size={18} />

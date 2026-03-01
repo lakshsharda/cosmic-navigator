@@ -33,7 +33,7 @@ export function ContactSection() {
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Phone</p>
-                <p className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
+                <p className="text-base sm:text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
                   +91 8810392753
                 </p>
               </div>
@@ -41,20 +41,20 @@ export function ContactSection() {
 
             <a 
               href="mailto:laksh.sharda.23cse@bmu.edu.in" 
-              className="flex items-center gap-4 p-4 rounded-lg bg-primary/5 hover:bg-primary/10 transition-colors group"
+              className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-lg bg-primary/5 hover:bg-primary/10 transition-colors group"
             >
-              <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center">
-                <Mail className="w-5 h-5 text-primary" />
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+                <Mail className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
               </div>
-              <div>
+              <div className="min-w-0">
                 <p className="text-sm text-muted-foreground">Email</p>
-                <p className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
+                <p className="text-sm sm:text-lg font-semibold text-foreground group-hover:text-primary transition-colors truncate">
                   laksh.sharda.23cse@bmu.edu.in
                 </p>
               </div>
             </a>
 
-            <div className="flex gap-4 pt-2">
+            <div className="flex flex-wrap gap-3 sm:gap-4 pt-2">
               <a
                 href="https://github.com/lakshsharda"
                 target="_blank"

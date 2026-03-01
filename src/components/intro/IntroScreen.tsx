@@ -239,7 +239,7 @@ export function IntroScreen({ onScrollToPortfolio }: IntroScreenProps) {
                 {nameLetters.map((letter, index) => (
                   <span
                     key={index}
-                    className={`font-mono text-5xl md:text-7xl lg:text-8xl xl:text-9xl font-bold ${letter === ' ' ? 'mx-3 md:mx-6' : 'mx-0.5 md:mx-1'}`}
+                    className={`font-mono text-3xl sm:text-5xl md:text-7xl lg:text-8xl xl:text-9xl font-bold ${letter === ' ' ? 'mx-2 sm:mx-3 md:mx-6' : 'mx-0 sm:mx-0.5 md:mx-1'}`}
                     style={{
                       color: 'hsl(210 20% 98%)',
                       textShadow: `

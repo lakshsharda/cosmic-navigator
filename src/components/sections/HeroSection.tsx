@@ -92,7 +92,7 @@ function CyclingTextAnimation({ text, isName }: { text: string; isName: boolean 
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   return (
-    <div className="h-28 sm:h-32 md:h-36 lg:h-40 flex items-center justify-center">
+    <div className="h-20 xs:h-24 sm:h-32 md:h-36 lg:h-40 flex items-center justify-center">
       <AnimatePresence mode="wait">
         <motion.div
           key={text}
@@ -134,7 +134,7 @@ function CyclingTextAnimation({ text, isName }: { text: string; isName: boolean 
         >
           {/* Cosmic floating text with soft gradient glow */}
           <h1 
-            className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-semibold tracking-wider bg-gradient-to-r from-cyan-200 via-primary to-purple-300 bg-clip-text text-transparent"
+            className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-semibold tracking-wider bg-gradient-to-r from-cyan-200 via-primary to-purple-300 bg-clip-text text-transparent"
             style={{
               textShadow: '0 0 30px rgba(103, 232, 249, 0.3), 0 0 60px rgba(103, 232, 249, 0.15)',
               letterSpacing: '0.05em',
