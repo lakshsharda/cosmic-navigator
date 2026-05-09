@@ -14,6 +14,15 @@ interface Achievement {
 
 const ACHIEVEMENTS: Achievement[] = [
   {
+    id: 9,
+    title: 'Top 10 – AI Research Teams (Centific India Hackathon)',
+    position: 'Team Member',
+    year: '2025',
+    description:
+      'Selected as top 250 students out of ~17k participants in the Centific India Hackathon. One-week residential hackathon at the Centific office, Hyderabad - worked under industry mentors and presented to leaders from big tech.',
+    image: '/1.9.jpeg',
+  },
+  {
     id: 1,
     title: 'Top 20 – Smart India Hackathon (College Level)',
     position: 'Team Member',
